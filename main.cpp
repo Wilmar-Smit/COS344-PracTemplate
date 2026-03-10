@@ -10,6 +10,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Square.h"
+#include "drawer.h"
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -44,7 +45,7 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow *window = glfwCreateWindow(800, 600, "OpenGL 3.3 Window", NULL, NULL);
+	GLFWwindow *window = glfwCreateWindow(1000, 1000, "OpenGL 3.3 Window", NULL, NULL);
 	if (!window)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -61,35 +62,25 @@ int main()
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 	libraryTesting();
 
-	// VBO
-	GLuint triangleVBO[1];
-	Triangle<2> *try1 = new Triangle(Vector<2>({1, 2}), Vector<2>({4, 5}), Vector<2>({7, 8}));
-	glGenBuffers(1, triangleVBO);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[0]);
-	glBufferData(GL_ARRAY_BUFFER, try1->getNumPoints() * sizeof(GLfloat), try1->getPoints(), GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	// VBO
+	// Each vertex = x, y, r, g, b, a
+	GLfloat triangle[] = {
+		0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
+		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
+		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f};
 
-	GLuint VAO;
-	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
-	glEnableVertexAttribArray(0);
-	glBindBuffer(GL_ARRAY_BUFFER, triangleVBO[0]);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), 0);
+	Drawer tri(triangle, 2, 3, GL_TRIANGLES); // 2D positions, 3 vertices
 
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programID);
-		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		tri.draw();
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 
-	delete try1;
 	return 0;
 }
