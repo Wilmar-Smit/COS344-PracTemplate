@@ -37,7 +37,7 @@ COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp
 
 # Source files (space-separated)
-SRCS = main.cpp glad.c $(MATHLIB_SRCS)
+SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS)
 
 # Directory where GLFW is installed.
 # This should point to the 'install' directory of your GLFW build.

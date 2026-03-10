@@ -5,7 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
-
+#include "shader.hpp"
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -54,16 +54,20 @@ int main()
 		std::cerr << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
-
+	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 	libraryTesting();
 
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
+		//
+		glUseProgram(programID);
+		//
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
-	} while (glfwGetKey(window, GLFW_KEY_SPACE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
+	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && glfwWindowShouldClose(window) == 0);
 
 	return 0;
 }
