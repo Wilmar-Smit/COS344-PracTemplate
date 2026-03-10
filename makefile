@@ -37,7 +37,7 @@ COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp
 
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) drawer.cpp
+SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) drawer.cpp GolfShapes/GolfShape.cpp
 
 # Directory where GLFW is installed.
 # This should point to the 'install' directory of your GLFW build.
@@ -96,3 +96,7 @@ coverage-html: clean
 
 run r: $(PROJECT_NAME)
 	./$(PROJECT_NAME)
+
+# Run with Valgrind
+valgrind v: $(PROJECT_NAME)
+	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(PROJECT_NAME)

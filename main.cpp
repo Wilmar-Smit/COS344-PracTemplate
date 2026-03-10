@@ -61,22 +61,54 @@ int main()
 	}
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 	libraryTesting();
+	
 
-	// Each vertex = x, y, r, g, b, a
-	GLfloat triangle[] = {
-		0.0f, 0.5f, 1.0f, 0.0f, 0.0f, 1.0f,
-		-0.5f, -0.5f, 0.0f, 1.0f, 0.0f, 1.0f,
-		0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 1.0f};
+	// Border around floor
+	const float floorSize = 1.6f;
+	const float halfFloorSize = floorSize / 2.0f;
+	const float borderThickness = 0.05f;
 
-	Drawer tri(triangle, 2, 3, GL_TRIANGLES); // 2D positions, 3 vertices
+	// Grass background
+	Square<2> grass(Vector<2>{0.0f}, floorSize - borderThickness, floorSize - borderThickness);
+	GolfShape grassShape(&grass, Colour::Green);
+	Drawer grassDrawer(&grassShape, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> topBorder(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize);
+	GolfShape topBorderShape(&topBorder, Colour::Grey);
+	Drawer topBorderDrawer(&topBorderShape, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> bottomBorder(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize);
+	GolfShape bottomBorderShape(&bottomBorder, Colour::Grey);
+	Drawer bottomBorderDrawer(&bottomBorderShape, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> leftBorder(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness);
+	GolfShape leftBorderShape(&leftBorder, Colour::Grey);
+	Drawer leftBorderDrawer(&leftBorderShape, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> rightBorder(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness);
+	GolfShape rightBorderShape(&rightBorder, Colour::Grey);
+	Drawer rightBorderDrawer(&rightBorderShape, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> riverSqr(Vector<2>{0, 0.0f}, 0.3f, 1);
+	GolfShape riverGF(&riverSqr, Colour::Blue);
+	Drawer RiverDrawer(&riverGF, 2, 4, GL_TRIANGLE_FAN);
+
+	Square<2> orginDot(Vector<2>{0, 0.0f}, 0.01f, 0.01);
+	GolfShape originGF(&orginDot, Colour::DarkBrown);
+	Drawer DotDwr(&originGF, 2, 4, GL_TRIANGLE_FAN);
 
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programID);
-		tri.draw();
-
+		grassDrawer.draw();
+		topBorderDrawer.draw();
+		bottomBorderDrawer.draw();
+		leftBorderDrawer.draw();
+		rightBorderDrawer.draw();
+		RiverDrawer.draw();
+		DotDwr.draw();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
