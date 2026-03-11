@@ -65,3 +65,43 @@ Drawer<n>::~Drawer()
     glDeleteVertexArrays(1, &VAO);
     delete shape;
 }
+template <int n>
+void Drawer<n>::Rotate(float degrees)
+{
+    // Build rotation matrix (2D rotation in XY plane)
+    float radians = degrees * (std::acos(-1.0f) / 180.0f);
+    float c = std::cos(radians);
+    float s = std::sin(radians);
+
+    Matrix<n, n> rot;
+
+    for (int i = 0; i < n; i++)
+    {
+        rot[i][i] = 1;
+    }
+    rot[0][0] = c;
+    rot[0][1] = -s;
+    rot[1][0] = s;
+    rot[1][1] = c;
+
+    Vector<n> center = this->shape->getCenter();
+    std::vector<Vector<n>> points = this->shape->getVectors();
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        points[i] = points[i] - center;
+    }
+
+    this->shape->setVectors(points);
+
+    *(this->shape) *= rot;
+
+    points = this->shape->getVectors();
+    for (int i = 0; i < points.size(); i++)
+    {
+        points[i] = points[i] + center;
+    }
+    this->shape->setVectors(points);
+
+    reloadVertices();
+}

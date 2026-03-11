@@ -26,6 +26,7 @@ public:
     Shape<n> *getShape() const override;
     void addScene(Scene<n> *scene) override;
     ~Drawer() override;
+    virtual void Rotate(float degrees);
 };
 
 #include "drawer.cpp"

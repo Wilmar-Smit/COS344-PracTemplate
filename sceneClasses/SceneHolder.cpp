@@ -40,3 +40,12 @@ SceneHolder<n>::~SceneHolder()
         delete scenes[i];
     }
 }
+
+template <int n>
+void SceneHolder<n>::Rotate(float degrees)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->Rotate(degrees);
+    }
+}

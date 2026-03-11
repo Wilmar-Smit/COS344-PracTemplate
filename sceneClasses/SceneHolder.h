@@ -14,11 +14,12 @@ protected:
     std::vector<Scene<n> *> scenes;
 
 public:
-    void draw() override;
-    void reloadVertices() override;
-    Shape<n> *getShape() const override;
-    void addScene(Scene<n> *scene) override;
-    ~SceneHolder() override;
+    virtual void draw() override;
+    virtual void reloadVertices() override;
+    virtual Shape<n> *getShape() const override;
+    virtual void addScene(Scene<n> *scene) override;
+    virtual ~SceneHolder() override;
+    virtual void Rotate(float degrees);
 };
 
 #include "SceneHolder.cpp"

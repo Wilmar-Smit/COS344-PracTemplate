@@ -31,36 +31,57 @@ void libraryTesting()
 
 Scene<2> *BorderScene()
 {
-	// Borders and axes
-	const float floorSize = 1.6f;
-	const float halfFloorSize = floorSize / 2.0f;
-	const float borderThickness = 0.05f;
+	// Border + concrete floor
+	const float borderSize = 2.0f;
+	const float floorSize = 1.9f;
 
 	SceneHolder<2> *scene = new SceneHolder<2>();
-	SceneHolder<2> *borders = new SceneHolder<2>();
-	SceneHolder<2> *axes = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, borderSize, borderSize, Colour::Black), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, floorSize, floorSize, Colour::Grey), GL_TRIANGLE_FAN));
 
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize, Colour::Grey),
+	return scene;
+}
 
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize, Colour::Grey),
+Scene<2> *AxisScene()
+{
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 0.005f, 2.0f, Colour::Black), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 2.0f, 0.005f, Colour::Black), GL_TRIANGLE_FAN));
+	return scene;
+}
 
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness, Colour::Grey),
+Scene<2> *RiverScene()
+{
+	float riverWidth = 0.3;
+	float riverlength = 1.6f;
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, 0}), riverlength, riverWidth, Colour::Blue), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, 0.5}), 0.2, 0.35, Colour::DarkBrown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, -0.5}), 0.2, 0.35, Colour::DarkBrown), GL_TRIANGLE_FAN));
+	return scene;
+}
+Scene<2> *GrassScene()
+{
+	float grassWidth = 1.6;
+	float grassheight = 1.6f;
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, 0}), grassWidth, grassheight, Colour::Green), GL_TRIANGLE_FAN));
+	return scene;
+}
+Scene<2> *ObsticleScene()
+{
+	float widthSm = 0.1f;
+	float widthLg = 0.25f;
 
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness, Colour::Grey),
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.75, -0.7}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.65, 0.6}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.25, 0.0}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({0.65, 0.2}), widthLg, Colour::Red), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({0.65, -0.2}), widthLg, Colour::Red), GL_TRIANGLE_FAN));
 
-		GL_TRIANGLE_FAN));
-
-	scene->addScene(borders);
-	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 0.005f, 20, Colour::Black), GL_TRIANGLE_FAN));
-	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 20, 0.005f, Colour::Black), GL_TRIANGLE_FAN));
-	scene->addScene(axes);
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({-0.7, 0}), 0.5, 0.05, Colour::Brown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0.3, 0}), 0.05, 1.2, Colour::Brown), GL_TRIANGLE_FAN));
 	return scene;
 }
 
@@ -82,7 +103,9 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow *window = glfwCreateWindow(1000, 1000, "OpenGL 3.3 Window", NULL, NULL);
+	const char *baseWindowTitle = "OpenGL 3.3 Window";
+	GLFWwindow *window = glfwCreateWindow(1200, 800, baseWindowTitle, NULL, NULL);
+
 	if (!window)
 	{
 		std::cerr << "Failed to create GLFW window" << std::endl;
@@ -96,16 +119,63 @@ int main()
 		std::cerr << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+
+	int nx, ny;
+	glfwGetFramebufferSize(window, &nx, &ny);
+	glViewport(0, 0, nx, ny);
+
 	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
+
 	Scene<2> *borders = BorderScene();
+	Scene<2> *river = RiverScene();
+	Scene<2> *grass = GrassScene();
+
+	Scene<2> *obs = ObsticleScene();
+
+	Scene<2> *axes = AxisScene();
+	bool eWasDown = false;
+	bool qWasDown = false;
+	double fpsTimerStart = glfwGetTime();
+	int fpsFrameCount = 0;
+
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
-
 		glUseProgram(programID);
 
+		bool eIsDown = (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
+		if (eIsDown && !eWasDown)
+		{
+			obs->Rotate(+60.0f);
+		}
+		eWasDown = eIsDown;
+
+		bool qIsDown = (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS);
+		if (qIsDown && !qWasDown)
+		{
+			obs->Rotate(-60.0f);
+		}
+		qWasDown = qIsDown;
+
 		borders->draw();
+		grass->draw();
+		river->draw();
+		obs->draw();
+		axes->draw();
+
+		fpsFrameCount++;
+		double now = glfwGetTime();
+		double elapsed = now - fpsTimerStart;
+		if (elapsed >= 1.0)
+		{
+			double fps = static_cast<double>(fpsFrameCount) / elapsed;
+
+			std::cout << "FPS: " << fps << std::endl;
+
+			fpsFrameCount = 0;
+			fpsTimerStart = now;
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -114,5 +184,9 @@ int main()
 			 !glfwWindowShouldClose(window));
 
 	delete borders;
+	delete river;
+	delete axes;
+	delete grass;
+	delete obs;
 	return 0;
 }

@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include "../include/MathLibrary/Shape.h"
-
+#include "../include/MathLibrary/Matrix.h"
 template <int n>
 class Scene
 {
@@ -15,6 +15,7 @@ public:
     virtual Shape<n> *getShape() const = 0;
     virtual void addScene(Scene<n> *scene) = 0;
     virtual ~Scene() = default;
+    virtual void Rotate(float degrees) = 0;
 };
 
 #endif
