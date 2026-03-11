@@ -10,7 +10,9 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Square.h"
-#include "drawer.h"
+#include "sceneClasses/drawer.h"
+#include "sceneClasses/SceneHolder.h"
+
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -61,56 +63,49 @@ int main()
 	}
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 	libraryTesting();
-	
 
-	// Border around floor
+	// Borders and axes
 	const float floorSize = 1.6f;
 	const float halfFloorSize = floorSize / 2.0f;
 	const float borderThickness = 0.05f;
 
-	// Grass background
-	Square<2> grass(Vector<2>{0.0f}, floorSize - borderThickness, floorSize - borderThickness);
-	GolfShape grassShape(&grass, Colour::Green);
-	Drawer grassDrawer(&grassShape, 2, 4, GL_TRIANGLE_FAN);
+	SceneHolder<2> scene;
+	SceneHolder<2> *borders = new SceneHolder<2>();
+	SceneHolder<2> *axes = new SceneHolder<2>();
 
-	Square<2> topBorder(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize);
-	GolfShape topBorderShape(&topBorder, Colour::Grey);
-	Drawer topBorderDrawer(&topBorderShape, 2, 4, GL_TRIANGLE_FAN);
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize),
+		4,
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize),
+		4,
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness),
+		4,
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness),
+		4,
+		GL_TRIANGLE_FAN));
 
-	Square<2> bottomBorder(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize);
-	GolfShape bottomBorderShape(&bottomBorder, Colour::Grey);
-	Drawer bottomBorderDrawer(&bottomBorderShape, 2, 4, GL_TRIANGLE_FAN);
-
-	Square<2> leftBorder(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness);
-	GolfShape leftBorderShape(&leftBorder, Colour::Grey);
-	Drawer leftBorderDrawer(&leftBorderShape, 2, 4, GL_TRIANGLE_FAN);
-
-	Square<2> rightBorder(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness);
-	GolfShape rightBorderShape(&rightBorder, Colour::Grey);
-	Drawer rightBorderDrawer(&rightBorderShape, 2, 4, GL_TRIANGLE_FAN);
-
-	Square<2> riverSqr(Vector<2>{0, 0.0f}, 0.3f, 1);
-	GolfShape riverGF(&riverSqr, Colour::Blue);
-	Drawer RiverDrawer(&riverGF, 2, 4, GL_TRIANGLE_FAN);
-
-	Square<2> orginDot(Vector<2>{0, 0.0f}, 0.01f, 0.01);
-	GolfShape originGF(&orginDot, Colour::DarkBrown);
-	Drawer DotDwr(&originGF, 2, 4, GL_TRIANGLE_FAN);
+	scene.addScene(borders);
+	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 0.005f, 20), 4, GL_TRIANGLE_FAN));
+	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 20, 0.005f), 4, GL_TRIANGLE_FAN));
+	scene.addScene(axes);
 
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programID);
-		grassDrawer.draw();
-		topBorderDrawer.draw();
-		bottomBorderDrawer.draw();
-		leftBorderDrawer.draw();
-		rightBorderDrawer.draw();
-		RiverDrawer.draw();
-		DotDwr.draw();
+
+		scene.draw();
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 
