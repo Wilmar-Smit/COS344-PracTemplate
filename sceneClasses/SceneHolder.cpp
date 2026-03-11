@@ -65,3 +65,12 @@ void SceneHolder<n>::Translation(Direction dir, float step)
         scenes[i]->Translation(dir, step);
     }
 }
+
+template <int n>
+void SceneHolder<n>::select()
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->select();
+    }
+}

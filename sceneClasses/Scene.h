@@ -16,7 +16,9 @@ enum class Direction
 template <int n>
 class Scene
 {
-private:
+protected:
+    bool selected = false;
+
 public:
     virtual void draw() = 0;
     virtual void reloadVertices() = 0;
@@ -25,7 +27,8 @@ public:
     virtual ~Scene() = default;
     virtual void Rotate(float degrees) = 0;
     virtual void Scale(float scale) = 0;
-    virtual void Translation(Direction dir, float step) =0;
+    virtual void Translation(Direction dir, float step) = 0;
+    virtual void select() = 0;
 };
 
 #endif

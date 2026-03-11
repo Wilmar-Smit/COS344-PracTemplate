@@ -28,7 +28,8 @@ public:
     ~Drawer() override;
     virtual void Rotate(float degrees);
     virtual void Scale(float scale);
-    virtual void Translation(Direction dir, float step) ;
+    virtual void Translation(Direction dir, float step);
+    virtual void select();
 };
 
 #include "drawer.cpp"

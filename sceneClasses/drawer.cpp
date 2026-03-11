@@ -186,3 +186,17 @@ void Drawer<n>::Translation(Direction dir, float step)
 
     reloadVertices();
 }
+template <int n>
+void Drawer<n>::select()
+{
+    if (!this->selected)
+    {
+        shape->setCoulourVec(shape->getColourPas());
+    }
+    else
+    {
+        shape->setCoulourVec(shape->dePastel(shape->getColourVec()));
+    }
+    this->selected = !this->selected;
+    reloadVertices();
+}

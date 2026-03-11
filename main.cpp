@@ -148,6 +148,7 @@ int main()
 	bool aWasDown = false;
 	bool sWasDown = false;
 	bool dWasDown = false;
+	bool spaceWasDown = false;
 	double fpsTimerStart = glfwGetTime();
 	int fpsFrameCount = 0;
 
@@ -214,6 +215,12 @@ int main()
 		obs->draw();
 		axes->draw();
 		golfBall->draw();
+
+		bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+		if (spaceDown && !spaceWasDown)
+			golfBall->select();
+
+		spaceWasDown = spaceDown;
 
 		fpsFrameCount++;
 		double now = glfwGetTime();
