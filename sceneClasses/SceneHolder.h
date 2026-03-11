@@ -20,6 +20,8 @@ public:
     virtual void addScene(Scene<n> *scene) override;
     virtual ~SceneHolder() override;
     virtual void Rotate(float degrees);
+    virtual void Scale(float scale);
+        virtual void Translation(Direction dir, float step);
 };
 
 #include "SceneHolder.cpp"

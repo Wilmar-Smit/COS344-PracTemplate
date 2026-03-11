@@ -27,6 +27,8 @@ public:
     void addScene(Scene<n> *scene) override;
     ~Drawer() override;
     virtual void Rotate(float degrees);
+    virtual void Scale(float scale);
+    virtual void Translation(Direction dir, float step) ;
 };
 
 #include "drawer.cpp"

@@ -12,7 +12,7 @@
 #include "Square.h"
 #include "sceneClasses/drawer.h"
 #include "sceneClasses/SceneHolder.h"
-
+#include "circle.h"
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -49,6 +49,12 @@ Scene<2> *AxisScene()
 	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 2.0f, 0.005f, Colour::Black), GL_TRIANGLE_FAN));
 	return scene;
 }
+Scene<2> *GolfBall()
+{
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Circle<2>(Vector<2>({0.5, -0.5}), 0.03, 9, Colour::Pink), GL_TRIANGLE_FAN));
+	return scene;
+}
 
 Scene<2> *RiverScene()
 {
@@ -81,7 +87,7 @@ Scene<2> *ObsticleScene()
 	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({0.65, -0.2}), widthLg, Colour::Red), GL_TRIANGLE_FAN));
 
 	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({-0.7, 0}), 0.5, 0.05, Colour::Brown), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0.3, 0}), 0.05, 1.2, Colour::Brown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0.3, 0}), 0.05, 1, Colour::Brown), GL_TRIANGLE_FAN));
 	return scene;
 }
 
@@ -124,7 +130,7 @@ int main()
 	glfwGetFramebufferSize(window, &nx, &ny);
 	glViewport(0, 0, nx, ny);
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 
 	Scene<2> *borders = BorderScene();
@@ -132,10 +138,16 @@ int main()
 	Scene<2> *grass = GrassScene();
 
 	Scene<2> *obs = ObsticleScene();
-
+	Scene<2> *golfBall = GolfBall();
 	Scene<2> *axes = AxisScene();
 	bool eWasDown = false;
 	bool qWasDown = false;
+	bool plusWasDown = false;
+	bool minusWasDown = false;
+	bool wWasDown = false;
+	bool aWasDown = false;
+	bool sWasDown = false;
+	bool dWasDown = false;
 	double fpsTimerStart = glfwGetTime();
 	int fpsFrameCount = 0;
 
@@ -158,11 +170,50 @@ int main()
 		}
 		qWasDown = qIsDown;
 
+		bool plusIsDown = (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS);
+		if (plusIsDown && !plusWasDown)
+		{
+			obs->Scale(1.5);
+		}
+		plusWasDown = plusIsDown;
+
+		bool minusIsDown = (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS);
+		if (minusIsDown && !minusWasDown)
+		{
+			obs->Scale((2.0f / 3));
+		}
+		minusWasDown = minusIsDown;
+
+		// 1. WASD Input Detection
+		bool wDown = (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS);
+		bool aDown = (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS);
+		bool sDown = (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS);
+		bool dDown = (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS);
+
+		float moveStep = 0.1f; // Adjust this for speed
+
+		// 2. Trigger Movement on "Press"
+		if (wDown && !wWasDown)
+			obs->Translation(Direction::up, moveStep);
+		if (aDown && !aWasDown)
+			obs->Translation(Direction::left, moveStep);
+		if (sDown && !sWasDown)
+			obs->Translation(Direction::down, moveStep);
+		if (dDown && !dWasDown)
+			obs->Translation(Direction::right, moveStep);
+
+		// 3. Update States for next frame
+		wWasDown = wDown;
+		aWasDown = aDown;
+		sWasDown = sDown;
+		dWasDown = dDown;
+
 		borders->draw();
 		grass->draw();
 		river->draw();
 		obs->draw();
 		axes->draw();
+		golfBall->draw();
 
 		fpsFrameCount++;
 		double now = glfwGetTime();
@@ -188,5 +239,6 @@ int main()
 	delete axes;
 	delete grass;
 	delete obs;
+	delete golfBall;
 	return 0;
 }

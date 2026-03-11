@@ -49,3 +49,19 @@ void SceneHolder<n>::Rotate(float degrees)
         scenes[i]->Rotate(degrees);
     }
 }
+template <int n>
+void SceneHolder<n>::Scale(float scale)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->Scale(scale);
+    }
+}
+template <int n>
+void SceneHolder<n>::Translation(Direction dir, float step)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->Translation(dir, step);
+    }
+}

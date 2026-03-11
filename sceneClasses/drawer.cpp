@@ -105,3 +105,84 @@ void Drawer<n>::Rotate(float degrees)
 
     reloadVertices();
 }
+template <int n>
+void Drawer<n>::Scale(float scale)
+{
+    // Build rotation matrix (2D rotation in XY plane)
+
+    Matrix<n, n> scaleMat;
+
+    for (int i = 0; i < n; i++)
+    {
+        scaleMat[i][i] = scale;
+    }
+
+    Vector<n> center = this->shape->getCenter();
+    std::vector<Vector<n>> points = this->shape->getVectors();
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        points[i] = points[i] - center;
+    }
+
+    this->shape->setVectors(points);
+
+    *(this->shape) *= scaleMat;
+
+    points = this->shape->getVectors();
+    for (int i = 0; i < points.size(); i++)
+    {
+        points[i] = points[i] + center;
+    }
+    this->shape->setVectors(points);
+
+    reloadVertices();
+}
+template <int n>
+void Drawer<n>::Translation(Direction dir, float step)
+{
+    float dx = 0, dy = 0;
+
+    if (dir == Direction::up)
+        dy = step;
+    if (dir == Direction::down)
+        dy = -step;
+    if (dir == Direction::left)
+        dx = -step;
+    if (dir == Direction::right)
+        dx = step;
+
+    if (n == 2)
+    {
+
+        std::vector<Vector<n>> points = this->shape->getVectors();
+
+        for (int i = 0; i < points.size(); i++)
+        {
+            points[i][0] += dx;
+            points[i][1] += dy;
+        }
+
+        this->shape->setVectors(points);
+    }
+    else
+    {
+
+        Matrix<n, n> transMat;
+
+        for (int i = 0; i < n; i++)
+        {
+            for (int j = 0; j < n; j++)
+            {
+                transMat[i][j] = (i == j) ? 1.0f : 0.0f;
+            }
+        }
+
+        transMat[0][n - 1] = dx;
+        transMat[1][n - 1] = dy;
+
+        *(this->shape) *= transMat;
+    }
+
+    reloadVertices();
+}
