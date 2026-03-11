@@ -1,8 +1,7 @@
 #include "drawer.h"
 
 template <int n>
-Drawer<n>::Drawer(Shape<n> *shape, int numVertices, GLenum type)
-    : shape(shape), numVertices(numVertices), type(type)
+Drawer<n>::Drawer(Shape<n> *shape, GLenum type) : shape(shape), numVertices(shape->getNumSides()), type(type)
 {
     glGenVertexArrays(1, &VAO);
     glBindVertexArray(VAO);

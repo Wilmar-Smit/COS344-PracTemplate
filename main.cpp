@@ -29,6 +29,41 @@ void libraryTesting()
 	SquareTesting();
 }
 
+Scene<2> *BorderScene()
+{
+	// Borders and axes
+	const float floorSize = 1.6f;
+	const float halfFloorSize = floorSize / 2.0f;
+	const float borderThickness = 0.05f;
+
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	SceneHolder<2> *borders = new SceneHolder<2>();
+	SceneHolder<2> *axes = new SceneHolder<2>();
+
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize, Colour::Grey),
+
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize, Colour::Grey),
+
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness, Colour::Grey),
+
+		GL_TRIANGLE_FAN));
+	borders->addScene(new Drawer<2>(
+		new Square<2>(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness, Colour::Grey),
+
+		GL_TRIANGLE_FAN));
+
+	scene->addScene(borders);
+	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 0.005f, 20, Colour::Black), GL_TRIANGLE_FAN));
+	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 20, 0.005f, Colour::Black), GL_TRIANGLE_FAN));
+	scene->addScene(axes);
+	return scene;
+}
+
 int main()
 {
 #ifdef COVERAGE_RUN
@@ -61,53 +96,23 @@ int main()
 		std::cerr << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
-	libraryTesting();
-
-	// Borders and axes
-	const float floorSize = 1.6f;
-	const float halfFloorSize = floorSize / 2.0f;
-	const float borderThickness = 0.05f;
-
-	SceneHolder<2> scene;
-	SceneHolder<2> *borders = new SceneHolder<2>();
-	SceneHolder<2> *axes = new SceneHolder<2>();
-
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{0.0f, halfFloorSize}, borderThickness, floorSize),
-		4,
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{0.0f, -halfFloorSize}, borderThickness, floorSize),
-		4,
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{-halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness),
-		4,
-		GL_TRIANGLE_FAN));
-	borders->addScene(new Drawer<2>(
-		new Square<2>(Vector<2>{halfFloorSize, 0.0f}, floorSize + borderThickness, borderThickness),
-		4,
-		GL_TRIANGLE_FAN));
-
-	scene.addScene(borders);
-	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 0.005f, 20), 4, GL_TRIANGLE_FAN));
-	axes->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 20, 0.005f), 4, GL_TRIANGLE_FAN));
-	scene.addScene(axes);
-
+	Scene<2> *borders = BorderScene();
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glUseProgram(programID);
 
-		scene.draw();
-		
+		borders->draw();
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 
+	delete borders;
 	return 0;
 }

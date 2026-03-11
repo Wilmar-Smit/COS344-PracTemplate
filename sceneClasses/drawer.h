@@ -20,7 +20,7 @@ private:
     Shape<n> *shape;
 
 public:
-    Drawer(Shape<n> *shape, int numVertices, GLenum type);
+    Drawer(Shape<n> *shape, GLenum type);
     void draw() override;
     void reloadVertices() override;
     Shape<n> *getShape() const override;
