@@ -200,3 +200,12 @@ void Drawer<n>::select()
     this->selected = !this->selected;
     reloadVertices();
 }
+
+template <int n>
+void Drawer<n>::deselect()
+{
+    if (this->selected)
+    {
+        this->select();
+    }
+}

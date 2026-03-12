@@ -30,6 +30,8 @@ public:
     virtual void Scale(float scale);
     virtual void Translation(Direction dir, float step);
     virtual void select();
+    virtual void deselect() override;
+    virtual Scene<n> *selectNext() { return this; };
 };
 
 #include "drawer.cpp"

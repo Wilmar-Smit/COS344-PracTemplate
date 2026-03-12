@@ -18,6 +18,7 @@ class Scene
 {
 protected:
     bool selected = false;
+    Scene<n> *parent = nullptr;
 
 public:
     virtual void draw() = 0;
@@ -29,6 +30,9 @@ public:
     virtual void Scale(float scale) = 0;
     virtual void Translation(Direction dir, float step) = 0;
     virtual void select() = 0;
+    virtual void deselect() = 0;
+    virtual void setParent(Scene *parent) { this->parent = parent; };
+    virtual Scene<n> *selectNext() = 0;
 };
 
 #endif

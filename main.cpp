@@ -149,39 +149,53 @@ int main()
 	bool sWasDown = false;
 	bool dWasDown = false;
 	bool spaceWasDown = false;
+	bool oWasDown = false;
 	double fpsTimerStart = glfwGetTime();
 	int fpsFrameCount = 0;
-
+	Scene<2> *selectedScene = nullptr;
+	
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(programID);
 
-		bool eIsDown = (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
-		if (eIsDown && !eWasDown)
+		bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
+		if (spaceDown && !spaceWasDown)
+			selectedScene = obs->selectNext();
+
+		bool oDown = glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS;
+		if (oDown && !oWasDown)
 		{
-			obs->Rotate(+60.0f);
+			obs->deselect();
+			selectedScene = nullptr;
+		}
+		oWasDown = oDown;
+
+		bool eIsDown = (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
+		if (eIsDown && !eWasDown && selectedScene != nullptr)
+		{
+			selectedScene->Rotate(+60.0f);
 		}
 		eWasDown = eIsDown;
 
 		bool qIsDown = (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS);
-		if (qIsDown && !qWasDown)
+		if (qIsDown && !qWasDown && selectedScene != nullptr)
 		{
-			obs->Rotate(-60.0f);
+			selectedScene->Rotate(-60.0f);
 		}
 		qWasDown = qIsDown;
 
 		bool plusIsDown = (glfwGetKey(window, GLFW_KEY_KP_ADD) == GLFW_PRESS);
-		if (plusIsDown && !plusWasDown)
+		if (plusIsDown && !plusWasDown && selectedScene != nullptr)
 		{
-			obs->Scale(1.5);
+			selectedScene->Scale(1.5);
 		}
 		plusWasDown = plusIsDown;
 
 		bool minusIsDown = (glfwGetKey(window, GLFW_KEY_KP_SUBTRACT) == GLFW_PRESS);
-		if (minusIsDown && !minusWasDown)
+		if (minusIsDown && !minusWasDown && selectedScene != nullptr)
 		{
-			obs->Scale((2.0f / 3));
+			selectedScene->Scale((2.0f / 3));
 		}
 		minusWasDown = minusIsDown;
 
@@ -194,14 +208,17 @@ int main()
 		float moveStep = 0.1f; // Adjust this for speed
 
 		// 2. Trigger Movement on "Press"
-		if (wDown && !wWasDown)
-			obs->Translation(Direction::up, moveStep);
-		if (aDown && !aWasDown)
-			obs->Translation(Direction::left, moveStep);
-		if (sDown && !sWasDown)
-			obs->Translation(Direction::down, moveStep);
-		if (dDown && !dWasDown)
-			obs->Translation(Direction::right, moveStep);
+		if (selectedScene != nullptr)
+		{
+			if (wDown && !wWasDown)
+				selectedScene->Translation(Direction::up, moveStep);
+			if (aDown && !aWasDown)
+				selectedScene->Translation(Direction::left, moveStep);
+			if (sDown && !sWasDown)
+				selectedScene->Translation(Direction::down, moveStep);
+			if (dDown && !dWasDown)
+				selectedScene->Translation(Direction::right, moveStep);
+		}
 
 		// 3. Update States for next frame
 		wWasDown = wDown;
@@ -215,10 +232,6 @@ int main()
 		obs->draw();
 		axes->draw();
 		golfBall->draw();
-
-		bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
-		if (spaceDown && !spaceWasDown)
-			golfBall->select();
 
 		spaceWasDown = spaceDown;
 

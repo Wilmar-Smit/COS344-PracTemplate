@@ -69,8 +69,73 @@ void SceneHolder<n>::Translation(Direction dir, float step)
 template <int n>
 void SceneHolder<n>::select()
 {
+    this->selected = !this->selected;
     for (int i = 0; i < scenes.size(); i++)
     {
         scenes[i]->select();
     }
+}
+
+template <int n>
+void SceneHolder<n>::deselect()
+{
+    this->selected = false;
+    this->selectedScene = nullptr;
+
+    for (int i = 0; i < (int)scenes.size(); i++)
+    {
+        scenes[i]->deselect();
+    }
+}
+
+template <int n>
+Scene<n> *SceneHolder<n>::selectNext()
+{
+ 
+    if (this->selected && !scenes.empty())
+    {
+        this->select(); 
+        this->selectedScene = scenes[0];
+        this->selectedScene->select(); 
+        return this->selectedScene;
+    }
+
+ 
+    if (this->selectedScene != nullptr)
+    {
+        for (int i = 0; i < scenes.size(); i++)
+        {
+            if (scenes[i] == selectedScene)
+            {
+             
+                if (i + 1 < scenes.size())
+                {
+                    this->selectedScene->select();
+                    this->selectedScene = scenes[i + 1];
+                    this->selectedScene->select(); 
+                    return this->selectedScene;
+                }
+                break; 
+            }
+        }
+    }
+
+
+    if (this->parent)
+    {
+        if (this->selectedScene) this->selectedScene->select(); 
+        this->selectedScene = nullptr;
+        
+ 
+        if (this->selected) this->select(); 
+        
+        return this->parent->selectNext();
+    }
+
+
+    if (this->selectedScene) this->selectedScene->select();
+    this->selectedScene = nullptr;
+    
+    if (!this->selected) this->select();
+    return this;
 }

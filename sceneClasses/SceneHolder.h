@@ -12,6 +12,7 @@ class SceneHolder : public Scene<n>
 {
 protected:
     std::vector<Scene<n> *> scenes;
+    Scene<n> *selectedScene = nullptr;
 
 public:
     virtual void draw() override;
@@ -22,7 +23,9 @@ public:
     virtual void Rotate(float degrees);
     virtual void Scale(float scale);
     virtual void Translation(Direction dir, float step);
-    virtual void select() ;
+    virtual void select();
+    virtual void deselect() override;
+    virtual Scene<n> *selectNext();
 };
 
 #include "SceneHolder.cpp"
