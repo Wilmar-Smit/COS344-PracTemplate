@@ -26,6 +26,14 @@ public:
     virtual void select();
     virtual void deselect() override;
     virtual Scene<n> *selectNext();
+    virtual Scene<n> *getIndex(int i)
+    {
+        if (selectedScene)
+        {
+            this->deselect();
+        }
+        return scenes[i];
+    };
 };
 
 #include "SceneHolder.cpp"

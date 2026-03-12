@@ -33,6 +33,7 @@ public:
     virtual void deselect() = 0;
     virtual void setParent(Scene *parent) { this->parent = parent; };
     virtual Scene<n> *selectNext() = 0;
+    virtual Scene<n> *getIndex(int i)=0;
 };
 
 #endif

@@ -32,13 +32,29 @@ void libraryTesting()
 Scene<2> *BorderScene()
 {
 	// Border + concrete floor
-	const float borderSize = 2.0f;
-	const float floorSize = 1.9f;
+	float borderWidth = 0.125;
+	float borderlength = 1.6;
+
+	float x = 0.8625;
 
 	SceneHolder<2> *scene = new SceneHolder<2>();
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, borderSize, borderSize, Colour::Black), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, floorSize, floorSize, Colour::Grey), GL_TRIANGLE_FAN));
 
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{x, 0.0f}, borderlength, borderWidth, Colour::Grey), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{-x, 0.0f}, borderlength, borderWidth, Colour::Grey), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.0f, -x}, borderWidth, borderlength + 2 * borderWidth, Colour::Grey), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.0f, x}, borderWidth, borderlength + 2 * borderWidth, Colour::Grey), GL_TRIANGLE_FAN));
+
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.83, 0.0f}, borderlength, borderWidth / 2, Colour::DarkBrown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{-0.83, 0.0f}, borderlength, borderWidth / 2 + 0.005, Colour::DarkBrown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.0f, -0.83}, borderWidth / 2, (borderlength + borderWidth), Colour::DarkBrown), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.0f, 0.83}, borderWidth / 2, (borderlength + borderWidth), Colour::DarkBrown), GL_TRIANGLE_FAN));
+	return scene;
+}
+Scene<2> *backgroundScene()
+{
+
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0.0, 0.0f}, 2.2, 2.2, Colour::Cyan), GL_TRIANGLE_FAN));
 	return scene;
 }
 
@@ -49,21 +65,53 @@ Scene<2> *AxisScene()
 	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>{0, 0.0f}, 2.0f, 0.005f, Colour::Black), GL_TRIANGLE_FAN));
 	return scene;
 }
+Scene<2> *GolfHole()
+{
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	scene->addScene(new Drawer<2>(new Circle<2>(Vector<2>({0.7, 0.1}), 0.03, 9, Colour::Pink), GL_TRIANGLE_FAN));
+	return scene;
+}
+
 Scene<2> *GolfBall()
 {
 	SceneHolder<2> *scene = new SceneHolder<2>();
-	scene->addScene(new Drawer<2>(new Circle<2>(Vector<2>({0.5, -0.5}), 0.03, 9, Colour::Pink), GL_TRIANGLE_FAN));
+	scene->addScene(new Drawer<2>(new Circle<2>(Vector<2>({0.5, -0.5}), 0.015, 100, Colour::White), GL_TRIANGLE_FAN));
 	return scene;
 }
 
 Scene<2> *RiverScene()
 {
 	float riverWidth = 0.3;
-	float riverlength = 1.6f;
+	float riverlength = 2.26;
 	SceneHolder<2> *scene = new SceneHolder<2>();
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, 0}), riverlength, riverWidth, Colour::Blue), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, 0.5}), 0.2, 0.35, Colour::DarkBrown), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0, -0.5}), 0.2, 0.35, Colour::DarkBrown), GL_TRIANGLE_FAN));
+	Drawer<2> *river = new Drawer<2>(new Square<2>(Vector<2>({0, 0}), riverlength, riverWidth, Colour::Blue), GL_TRIANGLE_FAN);
+	river->Rotate(-45);
+	scene->addScene(river);
+
+	Drawer<2> *rock = new Drawer<2>(new Square<2>(Vector<2>({-0.105, 0.105}), 2, 0.01, Colour::Grey), GL_TRIANGLE_FAN);
+	rock->Rotate(-45);
+	scene->addScene(rock);
+
+	rock = new Drawer<2>(new Square<2>(Vector<2>({0.105, -0.105}), 2, 0.01, Colour::Grey), GL_TRIANGLE_FAN);
+	rock->Rotate(-45);
+	scene->addScene(rock);
+
+	Drawer<2> *bridge = new Drawer<2>(new Square<2>(Vector<2>({0.4, 0.4}), 0.1, 0.4, Colour::DarkBrown), GL_TRIANGLE_FAN);
+	bridge->Rotate(135);
+	scene->addScene(bridge);
+
+	bridge = new Drawer<2>(new Square<2>(Vector<2>({-0.3, -0.3}), 0.2, 0.4, Colour::DarkBrown), GL_TRIANGLE_FAN);
+	bridge->Rotate(135);
+	scene->addScene(bridge);
+
+	bridge = new Drawer<2>(new Square<2>(Vector<2>({0.1, 0.1}), 0.05, 0.5, Colour::DarkBrown), GL_TRIANGLE_FAN);
+	bridge->Rotate(100);
+	scene->addScene(bridge);
+
+	bridge = new Drawer<2>(new Square<2>(Vector<2>({0.6, -0.4}), 0.1, 0.25, Colour::Magenta), GL_TRIANGLE_FAN);
+	bridge->Rotate(135);
+	scene->addScene(bridge);
+
 	return scene;
 }
 Scene<2> *GrassScene()
@@ -79,15 +127,48 @@ Scene<2> *ObsticleScene()
 	float widthSm = 0.1f;
 	float widthLg = 0.25f;
 
-	SceneHolder<2> *scene = new SceneHolder<2>();
-	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.75, -0.7}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.65, 0.6}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({-0.25, 0.0}), widthSm, Colour::Cyan), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({0.65, 0.2}), widthLg, Colour::Red), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Triangle<2>(Vector<2>({0.65, -0.2}), widthLg, Colour::Red), GL_TRIANGLE_FAN));
+	float positionx = -0.3;
+	float positiony = 0.6;
 
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({-0.7, 0}), 0.5, 0.05, Colour::Brown), GL_TRIANGLE_FAN));
-	scene->addScene(new Drawer<2>(new Square<2>(Vector<2>({0.3, 0}), 0.05, 1, Colour::Brown), GL_TRIANGLE_FAN));
+	SceneHolder<2> *scene = new SceneHolder<2>();
+	// Triangles
+	Scene<2> *object;
+
+	for (int j = 0; j < 2; j++)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			object = new Drawer<2>(new Triangle<2>(Vector<2>({positionx, positiony}), widthSm, Colour::Yellow), GL_TRIANGLE_FAN);
+			object->Rotate(-45);
+			scene->addScene(object);
+			positionx -= 0.3;
+		}
+		positiony -= 0.2;
+		positionx = -0.1;
+	}
+
+	object = new Drawer<2>(new Triangle<2>(Vector<2>({0.5, 0.080}), widthLg, Colour::Red), GL_TRIANGLE_FAN);
+	object->Rotate(0);
+	scene->addScene(object);
+	object = new Drawer<2>(new Triangle<2>(Vector<2>({0.72, 0.3}), widthLg, Colour::Red), GL_TRIANGLE_FAN);
+	object->Rotate(30);
+	scene->addScene(object);
+	// triangles
+	Drawer<2> *bridge = new Drawer<2>(new Square<2>(Vector<2>({0.55, -0.2}), 0.05, 0.8, Colour::Brown), GL_TRIANGLE_FAN);
+	bridge->Rotate(135);
+	scene->addScene(bridge);
+
+	object = new Drawer<2>(new Square<2>(Vector<2>({-0.75, 0.75}), 0.05, 0.2, Colour::Brown), GL_TRIANGLE_FAN);
+	object->Rotate(45);
+	scene->addScene(object);
+
+	object = new Drawer<2>(new Square<2>(Vector<2>({0.7, 0.7}), 0.05, 0.4, Colour::Brown), GL_TRIANGLE_FAN);
+	object->Rotate(135);
+	scene->addScene(object);
+
+	object = new Drawer<2>(new Square<2>(Vector<2>({-0.7, -0.7}), 0.05, 0.4, Colour::Brown), GL_TRIANGLE_FAN);
+	object->Rotate(135);
+	scene->addScene(object);
 	return scene;
 }
 
@@ -130,16 +211,19 @@ int main()
 	glfwGetFramebufferSize(window, &nx, &ny);
 	glViewport(0, 0, nx, ny);
 
-	glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+	glClearColor(0.18f, 0.45f, 0.45f, 1.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
-
-	Scene<2> *borders = BorderScene();
 	Scene<2> *river = RiverScene();
+	Scene<2> *borders = BorderScene();
+
 	Scene<2> *grass = GrassScene();
+	grass->addScene(river);
+	Scene<2> *background = backgroundScene();
 
 	Scene<2> *obs = ObsticleScene();
-	Scene<2> *golfBall = GolfBall();
+	Scene<2> *golfhole = GolfHole();
 	Scene<2> *axes = AxisScene();
+	Scene<2> *golfBall = GolfBall();
 	bool eWasDown = false;
 	bool qWasDown = false;
 	bool plusWasDown = false;
@@ -150,14 +234,68 @@ int main()
 	bool dWasDown = false;
 	bool spaceWasDown = false;
 	bool oWasDown = false;
+
+	bool key1WasDown = false;
+	bool key2WasDown = false;
+	bool key3WasDown = false;
+	bool key4WasDown = false;
 	double fpsTimerStart = glfwGetTime();
 	int fpsFrameCount = 0;
 	Scene<2> *selectedScene = nullptr;
-	
+
 	do
 	{
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(programID);
+
+		bool key1IsDown = (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS);
+		if (key1IsDown && !key1WasDown)
+		{
+			if (selectedScene)
+				selectedScene->deselect();
+			obs->deselect();
+			selectedScene = nullptr;
+			golfhole->select();
+			selectedScene = golfhole;
+		}
+		key1WasDown = key1IsDown;
+
+		bool key2IsDown = (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS);
+		if (key2IsDown && !key2WasDown)
+		{
+			if (selectedScene)
+				selectedScene->deselect();
+			obs->deselect();
+			selectedScene = nullptr;
+			obs->getIndex(2)->select();
+			selectedScene = obs->getIndex(2);
+		}
+		key2WasDown = key2IsDown;
+
+		bool key3IsDown = (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS);
+		if (key3IsDown && !key3WasDown)
+		{
+			if (selectedScene)
+				selectedScene->deselect();
+			obs->deselect();
+			selectedScene = nullptr;
+			obs->getIndex(4)->select();
+			selectedScene = obs->getIndex(4);
+		}
+		key3WasDown = key3IsDown;
+
+		bool key4IsDown = (glfwGetKey(window, GLFW_KEY_4) == GLFW_PRESS);
+		if (key4IsDown && !key4WasDown)
+		{
+			if (selectedScene)
+				selectedScene->deselect();
+			obs->deselect();
+			selectedScene = nullptr;
+			golfBall->select();
+			selectedScene = golfBall;
+		}
+		key4WasDown = key4IsDown;
 
 		bool spaceDown = glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS;
 		if (spaceDown && !spaceWasDown)
@@ -166,6 +304,8 @@ int main()
 		bool oDown = glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS;
 		if (oDown && !oWasDown)
 		{
+			if (selectedScene )
+				selectedScene->deselect();
 			obs->deselect();
 			selectedScene = nullptr;
 		}
@@ -225,13 +365,14 @@ int main()
 		aWasDown = aDown;
 		sWasDown = sDown;
 		dWasDown = dDown;
-
-		borders->draw();
+		background->draw();
 		grass->draw();
-		river->draw();
+
 		obs->draw();
-		axes->draw();
+		borders->draw();
 		golfBall->draw();
+		axes->draw();
+		golfhole->draw();
 
 		spaceWasDown = spaceDown;
 
@@ -255,10 +396,11 @@ int main()
 			 !glfwWindowShouldClose(window));
 
 	delete borders;
-	delete river;
+
 	delete axes;
 	delete grass;
 	delete obs;
+	delete golfhole;
 	delete golfBall;
 	return 0;
 }

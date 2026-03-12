@@ -32,6 +32,10 @@ public:
     virtual void select();
     virtual void deselect() override;
     virtual Scene<n> *selectNext() { return this; };
+    virtual Scene<n> *getIndex(int i)
+    {
+        return this;
+    }
 };
 
 #include "drawer.cpp"

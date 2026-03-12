@@ -68,7 +68,7 @@ Drawer<n>::~Drawer()
 template <int n>
 void Drawer<n>::Rotate(float degrees)
 {
-    // Build rotation matrix (2D rotation in XY plane)
+
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
     float c = std::cos(radians);
     float s = std::sin(radians);
@@ -108,36 +108,30 @@ void Drawer<n>::Rotate(float degrees)
 template <int n>
 void Drawer<n>::Scale(float scale)
 {
-    // Build rotation matrix (2D rotation in XY plane)
-
     Matrix<n, n> scaleMat;
-
     for (int i = 0; i < n; i++)
-    {
         scaleMat[i][i] = scale;
-    }
 
     Vector<n> center = this->shape->getCenter();
     std::vector<Vector<n>> points = this->shape->getVectors();
 
-    for (int i = 0; i < points.size(); i++)
-    {
-        points[i] = points[i] - center;
-    }
+    // Move points relative to center
+    for (auto &p : points)
+        p = p - center;
 
-    this->shape->setVectors(points);
+    // Scale points
+    for (auto &p : points)
+        p = scaleMat * (Matrix<n,1>)p;
 
-    *(this->shape) *= scaleMat;
+    // Move points back
+    for (auto &p : points)
+        p = p + center;
 
-    points = this->shape->getVectors();
-    for (int i = 0; i < points.size(); i++)
-    {
-        points[i] = points[i] + center;
-    }
     this->shape->setVectors(points);
 
     reloadVertices();
 }
+
 template <int n>
 void Drawer<n>::Translation(Direction dir, float step)
 {
