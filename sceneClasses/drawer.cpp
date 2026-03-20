@@ -107,118 +107,61 @@ Drawer<n>::~Drawer()
 template <int n>
 void Drawer<n>::Rotate(float degrees)
 {
-
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
-    float c = std::cos(radians);
-    float s = std::sin(radians);
+    float cosTheta = std::cos(radians);
+    float sinTheta = std::sin(radians);
 
-    Matrix<n, n> rot;
+    Matrix<n + 1, n + 1> rotationMatrix;
+    for (int i = 0; i < n + 1; i++)
+        for (int j = 0; j < n + 1; j++)
+            rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
-    for (int i = 0; i < n; i++)
-    {
-        rot[i][i] = 1;
-    }
-    rot[0][0] = c;
-    rot[0][1] = -s;
-    rot[1][0] = s;
-    rot[1][1] = c;
+    rotationMatrix[0][0] = cosTheta;
+    rotationMatrix[0][1] = -sinTheta;
+    rotationMatrix[1][0] = sinTheta;
+    rotationMatrix[1][1] = cosTheta;
 
-    Vector<n> center = this->shape->getCenter();
-    std::vector<Vector<n>> points = this->shape->getVectors();
-
-    for (int i = 0; i < points.size(); i++)
-    {
-        points[i] = points[i] - center;
-    }
-
-    this->shape->setVectors(points);
-
-    *(this->shape) *= rot;
-
-    points = this->shape->getVectors();
-    for (int i = 0; i < points.size(); i++)
-    {
-        points[i] = points[i] + center;
-    }
-    this->shape->setVectors(points);
-
-    reloadVertices();
-}
-template <int n>
-void Drawer<n>::Scale(float scale)
-{
-    Matrix<n, n> scaleMat;
-    for (int i = 0; i < n; i++)
-        scaleMat[i][i] = scale;
-
-    Vector<n> center = this->shape->getCenter();
-    std::vector<Vector<n>> points = this->shape->getVectors();
-
-    // Move points relative to center
-    for (auto &p : points)
-        p = p - center;
-
-    // Scale points
-    for (auto &p : points)
-        p = scaleMat * (Matrix<n, 1>)p;
-
-    // Move points back
-    for (auto &p : points)
-        p = p + center;
-
-    this->shape->setVectors(points);
-
-    reloadVertices();
+    transform(rotationMatrix, true);
 }
 
 template <int n>
-void Drawer<n>::Translation(Direction dir, float step)
+void Drawer<n>::Scale(float scaleFactor)
 {
-    float dx = 0, dy = 0;
+    Matrix<n + 1, n + 1> scaleMatrix;
+    for (int i = 0; i < n + 1; i++)
+        for (int j = 0; j < n + 1; j++)
+            scaleMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
-    if (dir == Direction::up)
-        dy = step;
-    if (dir == Direction::down)
-        dy = -step;
-    if (dir == Direction::left)
-        dx = -step;
-    if (dir == Direction::right)
-        dx = step;
+    for (int i = 0; i < n; i++)
+        scaleMatrix[i][i] = scaleFactor;
 
-    if (n == 2)
-    {
-
-        std::vector<Vector<n>> points = this->shape->getVectors();
-
-        for (int i = 0; i < points.size(); i++)
-        {
-            points[i][0] += dx;
-            points[i][1] += dy;
-        }
-
-        this->shape->setVectors(points);
-    }
-    else
-    {
-
-        Matrix<n, n> transMat;
-
-        for (int i = 0; i < n; i++)
-        {
-            for (int j = 0; j < n; j++)
-            {
-                transMat[i][j] = (i == j) ? 1.0f : 0.0f;
-            }
-        }
-
-        transMat[0][n - 1] = dx;
-        transMat[1][n - 1] = dy;
-
-        *(this->shape) *= transMat;
-    }
-
-    reloadVertices();
+    transform(scaleMatrix, true);
 }
+
+template <int n>
+void Drawer<n>::Translation(Direction direction, float stepSize)
+{
+    float dx = 0.0f, dy = 0.0f;
+    if (direction == Direction::up)
+        dy = stepSize;
+    if (direction == Direction::down)
+        dy = -stepSize;
+    if (direction == Direction::left)
+        dx = -stepSize;
+    if (direction == Direction::right)
+        dx = stepSize;
+
+    Matrix<n + 1, n + 1> translationMatrix;
+    for (int i = 0; i < n + 1; i++)
+        for (int j = 0; j < n + 1; j++)
+            translationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
+
+    translationMatrix[0][n] = dx;
+    translationMatrix[1][n] = dy;
+
+    transform(translationMatrix, false);
+}
+
 template <int n>
 void Drawer<n>::select()
 {
@@ -241,4 +184,34 @@ void Drawer<n>::deselect()
     {
         this->select();
     }
+}
+template <int n>
+void Drawer<n>::transform(Matrix<n + 1, n + 1> &localTransform, bool relativeToCenter)
+{
+    Matrix<n + 1, n + 1> fullTransform = localTransform;
+
+    if (relativeToCenter)
+    {
+        Vector<n> center = shape->getCenter();
+
+        Matrix<n + 1, n + 1> toCenter, backToOrigin;
+        for (int i = 0; i < n + 1; i++)
+            for (int j = 0; j < n + 1; j++)
+            {
+                toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
+                backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
+            }
+
+        for (int i = 0; i < n; i++)
+        {
+            toCenter[i][n] = -center[i];
+            backToOrigin[i][n] = center[i];
+        }
+
+        fullTransform = backToOrigin * localTransform * toCenter;
+    }
+
+    shape->applyMatrix(fullTransform);
+
+    reloadVertices();
 }

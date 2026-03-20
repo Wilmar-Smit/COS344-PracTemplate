@@ -33,6 +33,7 @@ public:
     virtual void deselect() override;
     virtual void setWireframeMode();
     virtual void setNormalMode();
+    virtual void transform( Matrix<n+1,n+1> &trans, bool toCenter);
     virtual Scene<n> *selectNext() { return this; };
     virtual Scene<n> *getIndex(int i)
     {

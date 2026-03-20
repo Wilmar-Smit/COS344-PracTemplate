@@ -36,6 +36,7 @@ public:
     virtual void setParent(Scene *parent) { this->parent = parent; };
     virtual Scene<n> *selectNext() = 0;
     virtual Scene<n> *getIndex(int i) = 0;
+    virtual void transform(Matrix<n + 1, n + 1> &trans, bool toCenter) = 0;
 };
 
 #endif
