@@ -108,7 +108,7 @@ Scene<2> *RiverScene()
 	bridge->Rotate(100);
 	scene->addScene(bridge);
 
-	bridge = new Drawer<2>(new Square<2>(Vector<2>({0.6, -0.4}), 0.1, 0.25, Colour::Magenta), GL_TRIANGLE_FAN);
+	bridge = new Drawer<2>(new Square<2>(Vector<2>({0.6, -0.4}), 0.1, 0.25, Colour::Maroon), GL_TRIANGLE_FAN);
 	bridge->Rotate(135);
 	scene->addScene(bridge);
 
@@ -290,8 +290,8 @@ int main()
 				selectedScene->deselect();
 			obs->deselect();
 			selectedScene = nullptr;
-			golfhole->select();
-			selectedScene = golfhole;
+			golfBall->select();
+			selectedScene = golfBall;
 		}
 		key1WasDown = key1IsDown;
 
@@ -326,8 +326,8 @@ int main()
 				selectedScene->deselect();
 			obs->deselect();
 			selectedScene = nullptr;
-			golfBall->select();
-			selectedScene = golfBall;
+			golfhole->select();
+			selectedScene = golfhole;
 		}
 		key4WasDown = key4IsDown;
 
@@ -335,7 +335,7 @@ int main()
 		if (spaceDown && !spaceWasDown)
 			selectedScene = obs->selectNext();
 
-		bool oDown = glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS;
+		bool oDown = glfwGetKey(window, GLFW_KEY_0) == GLFW_PRESS;
 		if (oDown && !oWasDown)
 		{
 			if (selectedScene)
@@ -348,14 +348,14 @@ int main()
 		bool eIsDown = (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS);
 		if (eIsDown && !eWasDown && selectedScene != nullptr)
 		{
-			selectedScene->Rotate(+60.0f);
+			selectedScene->Rotate(-60.0f);
 		}
 		eWasDown = eIsDown;
 
 		bool qIsDown = (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS);
 		if (qIsDown && !qWasDown && selectedScene != nullptr)
 		{
-			selectedScene->Rotate(-60.0f);
+			selectedScene->Rotate(+60.0f);
 		}
 		qWasDown = qIsDown;
 
