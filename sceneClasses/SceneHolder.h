@@ -24,6 +24,8 @@ public:
     virtual void Scale(float scale);
     virtual void Translation(Direction dir, float step);
     virtual void select();
+    virtual void setWireframeMode();
+    virtual void setNormalMode();
     virtual void deselect() override;
     virtual Scene<n> *selectNext();
     virtual Scene<n> *getIndex(int i)

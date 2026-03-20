@@ -234,13 +234,15 @@ int main()
 	bool dWasDown = false;
 	bool spaceWasDown = false;
 	bool oWasDown = false;
-
+	bool enterwasDown = false;
 	bool key1WasDown = false;
 	bool key2WasDown = false;
 	bool key3WasDown = false;
 	bool key4WasDown = false;
 	double fpsTimerStart = glfwGetTime();
 	int fpsFrameCount = 0;
+
+	bool currModeWire = false;
 	Scene<2> *selectedScene = nullptr;
 
 	do
@@ -248,6 +250,38 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(programID);
+
+		bool enterIsDown = (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS);
+		if (enterIsDown && !enterwasDown)
+		{
+			if (!currModeWire)
+			{
+				currModeWire = true;
+				glClearColor(0, 0, 0, 1.0f);
+				background->setWireframeMode();
+				grass->setWireframeMode();
+
+				obs->setWireframeMode();
+				borders->setWireframeMode();
+				golfBall->setWireframeMode();
+				axes->setWireframeMode();
+				golfhole->setWireframeMode();
+			}
+			else
+			{
+				currModeWire = false;
+				glClearColor(0.18f, 0.45f, 0.45f, 1.0f);
+				background->setNormalMode();
+				grass->setNormalMode();
+
+				obs->setNormalMode();
+				borders->setNormalMode();
+				golfBall->setNormalMode();
+				axes->setNormalMode();
+				golfhole->setNormalMode();
+			}
+		}
+		enterwasDown = enterIsDown;
 
 		bool key1IsDown = (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS);
 		if (key1IsDown && !key1WasDown)
@@ -304,7 +338,7 @@ int main()
 		bool oDown = glfwGetKey(window, GLFW_KEY_O) == GLFW_PRESS;
 		if (oDown && !oWasDown)
 		{
-			if (selectedScene )
+			if (selectedScene)
 				selectedScene->deselect();
 			obs->deselect();
 			selectedScene = nullptr;
@@ -347,7 +381,6 @@ int main()
 
 		float moveStep = 0.1f; // Adjust this for speed
 
-		// 2. Trigger Movement on "Press"
 		if (selectedScene != nullptr)
 		{
 			if (wDown && !wWasDown)
@@ -359,12 +392,11 @@ int main()
 			if (dDown && !dWasDown)
 				selectedScene->Translation(Direction::right, moveStep);
 		}
-
-		// 3. Update States for next frame
 		wWasDown = wDown;
 		aWasDown = aDown;
 		sWasDown = sDown;
 		dWasDown = dDown;
+
 		background->draw();
 		grass->draw();
 

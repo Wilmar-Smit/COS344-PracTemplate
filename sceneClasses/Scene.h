@@ -31,9 +31,11 @@ public:
     virtual void Translation(Direction dir, float step) = 0;
     virtual void select() = 0;
     virtual void deselect() = 0;
+    virtual void setWireframeMode() = 0;
+    virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { this->parent = parent; };
     virtual Scene<n> *selectNext() = 0;
-    virtual Scene<n> *getIndex(int i)=0;
+    virtual Scene<n> *getIndex(int i) = 0;
 };
 
 #endif

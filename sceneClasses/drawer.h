@@ -31,6 +31,8 @@ public:
     virtual void Translation(Direction dir, float step);
     virtual void select();
     virtual void deselect() override;
+    virtual void setWireframeMode();
+    virtual void setNormalMode();
     virtual Scene<n> *selectNext() { return this; };
     virtual Scene<n> *getIndex(int i)
     {

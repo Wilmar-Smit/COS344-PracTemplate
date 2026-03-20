@@ -91,51 +91,67 @@ void SceneHolder<n>::deselect()
 template <int n>
 Scene<n> *SceneHolder<n>::selectNext()
 {
- 
+
     if (this->selected && !scenes.empty())
     {
-        this->select(); 
+        this->select();
         this->selectedScene = scenes[0];
-        this->selectedScene->select(); 
+        this->selectedScene->select();
         return this->selectedScene;
     }
 
- 
     if (this->selectedScene != nullptr)
     {
         for (int i = 0; i < scenes.size(); i++)
         {
             if (scenes[i] == selectedScene)
             {
-             
+
                 if (i + 1 < scenes.size())
                 {
                     this->selectedScene->select();
                     this->selectedScene = scenes[i + 1];
-                    this->selectedScene->select(); 
+                    this->selectedScene->select();
                     return this->selectedScene;
                 }
-                break; 
+                break;
             }
         }
     }
 
-
     if (this->parent)
     {
-        if (this->selectedScene) this->selectedScene->select(); 
+        if (this->selectedScene)
+            this->selectedScene->select();
         this->selectedScene = nullptr;
-        
- 
-        if (this->selected) this->select(); 
-        
+
+        if (this->selected)
+            this->select();
+
         return this->parent->selectNext();
     }
 
-
-    if (this->selectedScene) this->selectedScene->select();
+    if (this->selectedScene)
+        this->selectedScene->select();
     this->selectedScene = nullptr;
-    
-    if (!this->selected) this->select();
+
+    if (!this->selected)
+        this->select();
     return this;
+}
+template <int n>
+void SceneHolder<n>::setWireframeMode()
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->setWireframeMode();
+    }
+}
+template <int n>
+void SceneHolder<n>::setNormalMode()
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->setNormalMode();
+    }
 }

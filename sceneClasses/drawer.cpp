@@ -25,6 +25,32 @@ Drawer<n>::Drawer(Shape<n> *shape, GLenum type) : shape(shape), numVertices(shap
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 }
+template <int n>
+
+void Drawer<n>::setWireframeMode()
+{
+    float *vertices = shape->exportWireframe();
+    numVertices = shape->getWireframeVertexCount(); // or however you expose it
+    type = GL_LINES;
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    delete[] vertices;
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+template <int n>
+void Drawer<n>::setNormalMode()
+{
+    float *vertices = shape->exportValues();
+    numVertices = shape->getNumSides();
+    type = GL_TRIANGLE_FAN;
+
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+    delete[] vertices;
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 template <int n>
 void Drawer<n>::draw()
@@ -121,7 +147,7 @@ void Drawer<n>::Scale(float scale)
 
     // Scale points
     for (auto &p : points)
-        p = scaleMat * (Matrix<n,1>)p;
+        p = scaleMat * (Matrix<n, 1>)p;
 
     // Move points back
     for (auto &p : points)
