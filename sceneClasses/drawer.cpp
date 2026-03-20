@@ -30,7 +30,7 @@ template <int n>
 void Drawer<n>::setWireframeMode()
 {
     float *vertices = shape->exportWireframe();
-    numVertices = shape->getWireframeVertexCount(); // or however you expose it
+    numVertices = shape->getNumSides() * 2;
     type = GL_LINES;
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -63,13 +63,26 @@ void Drawer<n>::draw()
 template <int n>
 void Drawer<n>::reloadVertices()
 {
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    float *vertices = shape->exportValues();
-    glBufferSubData(GL_ARRAY_BUFFER, 0,
-                    numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
-                    vertices);
-    delete[] vertices;
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    if (type == GL_TRIANGLE_FAN)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        float *vertices = shape->exportValues();
+        glBufferSubData(GL_ARRAY_BUFFER, 0,
+                        numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
+                        vertices);
+        delete[] vertices;
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
+    else
+    {
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        float *vertices = shape->exportWireframe();
+        glBufferSubData(GL_ARRAY_BUFFER, 0,
+                        shape->getNumSides() * 2 * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
+                        vertices);
+        delete[] vertices;
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+    }
 }
 
 template <int n>
