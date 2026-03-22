@@ -403,7 +403,7 @@ int main()
 		obs->draw();
 		borders->draw();
 		golfBall->draw();
-		axes->draw();
+		//axes->draw();
 		golfhole->draw();
 
 		spaceWasDown = spaceDown;
