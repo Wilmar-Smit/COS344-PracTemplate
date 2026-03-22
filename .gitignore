@@ -40,7 +40,7 @@
 # debug information files
 *.dwo
 
-/include
-/glfw_local
-/coverage
+*/include
+*/glfw_local
+*/coverage
 main
