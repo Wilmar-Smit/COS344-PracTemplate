@@ -3,7 +3,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "../include/MathLibrary/Shape.h"
+#include "../include/MathLibrary/2D shapes/Shape.h"
 #include <vector>
 #include "Scene.h"
 
@@ -21,6 +21,9 @@ public:
     virtual void addScene(Scene<n> *scene) override;
     virtual ~SceneHolder() override;
     virtual void Rotate(float degrees);
+    virtual void RotateX(float degrees);
+    virtual void RotateY(float degrees);
+    virtual void RotateZ(float degrees);
     virtual void Scale(float scale);
     virtual void Translation(Direction dir, float step);
     virtual void select();

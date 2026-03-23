@@ -49,6 +49,34 @@ void SceneHolder<n>::Rotate(float degrees)
         scenes[i]->Rotate(degrees);
     }
 }
+
+template <int n>
+void SceneHolder<n>::RotateX(float degrees)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->RotateX(degrees);
+    }
+}
+
+template <int n>
+void SceneHolder<n>::RotateY(float degrees)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->RotateY(degrees);
+    }
+}
+
+template <int n>
+void SceneHolder<n>::RotateZ(float degrees)
+{
+    for (int i = 0; i < scenes.size(); i++)
+    {
+        scenes[i]->RotateZ(degrees);
+    }
+}
+
 template <int n>
 void SceneHolder<n>::Scale(float scale)
 {

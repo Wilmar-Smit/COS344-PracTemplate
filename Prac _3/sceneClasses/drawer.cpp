@@ -33,6 +33,7 @@ void Drawer<n>::setWireframeMode()
     numVertices = shape->getNumSides() * 2;
     type = GL_LINES;
 
+
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
     delete[] vertices;
@@ -106,6 +107,56 @@ Drawer<n>::~Drawer()
 }
 template <int n>
 void Drawer<n>::Rotate(float degrees)
+{
+    RotateZ(degrees);
+}
+template <int n>
+void Drawer<n>::RotateX(float degrees)
+{
+    if (n > 2)
+    {
+        float radians = degrees * (std::acos(-1.0f) / 180.0f);
+        float cosTheta = std::cos(radians);
+        float sinTheta = std::sin(radians);
+
+        Matrix<n + 1, n + 1> rotationMatrix;
+        for (int i = 0; i < n + 1; i++)
+            for (int j = 0; j < n + 1; j++)
+                if (i == j)
+                    rotationMatrix[i][j] = 1.0f;
+
+        rotationMatrix[2][2] = cosTheta;
+        rotationMatrix[1][1] = cosTheta;
+        rotationMatrix[1][2] = -sinTheta;
+        rotationMatrix[2][1] = sinTheta;
+
+        transform(rotationMatrix, true);
+    }
+}
+template <int n>
+void Drawer<n>::RotateY(float degrees)
+{
+    if (n > 2)
+    {
+        float radians = degrees * (std::acos(-1.0f) / 180.0f);
+        float cosTheta = std::cos(radians);
+        float sinTheta = std::sin(radians);
+
+        Matrix<n + 1, n + 1> rotationMatrix;
+        for (int i = 0; i < n + 1; i++)
+            for (int j = 0; j < n + 1; j++)
+                rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
+
+        rotationMatrix[0][0] = cosTheta;
+        rotationMatrix[0][2] = sinTheta;
+        rotationMatrix[2][0] = -sinTheta;
+        rotationMatrix[2][2] = cosTheta;
+
+        transform(rotationMatrix, true);
+    }
+}
+template <int n>
+void Drawer<n>::RotateZ(float degrees)
 {
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
     float cosTheta = std::cos(radians);

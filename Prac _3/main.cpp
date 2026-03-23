@@ -6,13 +6,16 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "shader.hpp"
-#include "Triangle.h"
+#include "2D shapes/Triangle.h"
 #include "Vector.h"
 #include "Matrix.h"
-#include "Square.h"
+#include "2D shapes/Square.h"
 #include "sceneClasses/drawer.h"
 #include "sceneClasses/SceneHolder.h"
-#include "circle.h"
+#include "2D shapes/circle.h"
+#include "3D shapes/Cylinder.h"
+#include "3D shapes/SquarePyramid.h"
+#include "sceneClasses/drawerVisitor.h"
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -28,7 +31,6 @@ void libraryTesting()
 	std::cout << std::endl;
 	SquareTesting();
 }
-
 
 int main()
 {
@@ -71,26 +73,33 @@ int main()
 
 	glClearColor(0.18f, 0.45f, 0.45f, 1.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
-	
+
+	Circle<3> baseCircle(Vector<3>({-0.18f, -0.10f, -0.25f}), 0.35f, 24, Colour::Red);
+	Cylinder<3> *cylinder = new Cylinder<3>(baseCircle, 0.6f, Colour::Red);
+
+	DrawerVisitor<3> *test = new DrawerVisitor<3>(cylinder);
+
+	glEnable(GL_DEPTH_TEST);
 
 	do
 	{
-
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
 
-
-
-		
-
-		
+		test->draw();
+		test->RotateX(0.5);
+		test->RotateY(0.5);
+		// Check for Enter key press
+		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		{
+			test->setWireframeMode();
+		}
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
-
 
 	return 0;
 }
