@@ -76,8 +76,13 @@ int main()
 
 	Circle<3> baseCircle(Vector<3>({-0.18f, -0.10f, -0.25f}), 0.35f, 24, Colour::Red);
 	Cylinder<3> *cylinder = new Cylinder<3>(baseCircle, 0.6f, Colour::Red);
-
 	DrawerVisitor<3> *test = new DrawerVisitor<3>(cylinder);
+
+	Square<3> pyramidBase(Vector<3>({0.55f, 0.0f, -0.35f}), 0.35f, 0.35f, Colour::Blue);
+	SquarePyramid<3> *pyramid = new SquarePyramid<3>(pyramidBase, 0.45f, Colour::Blue);
+	DrawerVisitor<3> *test2 = new DrawerVisitor<3>(pyramid);
+
+	
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -87,12 +92,15 @@ int main()
 		glUseProgram(programID);
 
 		test->draw();
+		test2->draw();
 		test->RotateX(0.5);
 		test->RotateY(0.5);
+		test2->RotateY(-0.35);
 		// Check for Enter key press
 		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		{
 			test->setWireframeMode();
+			test2->setWireframeMode();
 		}
 
 		glfwSwapBuffers(window);

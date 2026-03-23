@@ -1,7 +1,7 @@
 #include "drawerVisitor.h"
 
 template <int n>
-DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape) 
+DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
     : shape(shape)
 {
     // does the visiting and populates the array
@@ -10,6 +10,7 @@ DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
 
     VAO.resize(shapes.size());
     VBO.resize(shapes.size());
+    vertexCounts.resize(shapes.size());
 
     for (size_t i = 0; i < shapes.size(); i++)
     {
@@ -20,13 +21,14 @@ DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
 
         Shape<n> *currentShape = shapes[i];
+        vertexCounts[i] = (currentShape->getNumPoints() / VERTEX_DEPTH);
         float *vertices = currentShape->exportValues();
 
         glBufferData(GL_ARRAY_BUFFER,
-                     currentShape->getNumSides() * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
+                 vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
                      vertices,
                      GL_STATIC_DRAW);
-                     
+
         delete[] vertices;
 
         // position attribute (location 0)
@@ -48,7 +50,7 @@ void DrawerVisitor<n>::draw()
     for (size_t i = 0; i < shapes.size(); i++)
     {
         glBindVertexArray(VAO[i]);
-        glDrawArrays(type, 0, shapes[i]->getNumSides());
+        glDrawArrays(type, 0, vertexCounts[i]);
         glBindVertexArray(0);
     }
 }
@@ -61,9 +63,10 @@ void DrawerVisitor<n>::reloadVertices()
         if (type == GL_TRIANGLE_FAN)
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
+            vertexCounts[i] = static_cast<int>(shapes[i]->getNumPoints() / VERTEX_DEPTH);
             float *vertices = shapes[i]->exportValues();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
-                            shapes[i]->getNumSides() * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
+                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
                             vertices);
             delete[] vertices;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -71,9 +74,10 @@ void DrawerVisitor<n>::reloadVertices()
         else
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
+            vertexCounts[i] = static_cast<int>((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
             float *vertices = shapes[i]->exportWireframe();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
-                            shapes[i]->getNumSides() * 2 * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
+                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
                             vertices);
             delete[] vertices;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -235,11 +239,11 @@ void DrawerVisitor<n>::setWireframeMode()
     for (int i = 0; i < shapes.size(); i++)
     {
         float *vertices = shapes[i]->exportWireframe();
-        int numVertices = shapes[i]->getNumSides() * 2;
+        vertexCounts[i] = static_cast<int>((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
         type = GL_LINES;
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
         delete[] vertices;
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -251,11 +255,11 @@ void DrawerVisitor<n>::setNormalMode()
     for (int i = 0; i < shapes.size(); i++)
     {
         float *vertices = shapes[i]->exportValues();
-        int numVertices = shapes[i]->getNumSides();
+        vertexCounts[i] = static_cast<int>(shapes[i]->getNumPoints() / VERTEX_DEPTH);
         type = GL_TRIANGLE_FAN;
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, numVertices * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
         delete[] vertices;
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -302,6 +306,18 @@ void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
 }
 
 template <int n>
+void DrawerVisitor<n>::Visit(Cone<n> *cone)
+{
+    (void)cone;
+}
+
+template <int n>
+void DrawerVisitor<n>::Visit(Cuboid<n> *cuboid)
+{
+    (void)cuboid;
+}
+
+template <int n>
 void DrawerVisitor<n>::Visit(Cylinder<n> *cyl)
 {
     this->shapes.push_back(cyl->base);
@@ -312,6 +328,22 @@ void DrawerVisitor<n>::Visit(Cylinder<n> *cyl)
         this->shapes.push_back(cyl->sides[i]);
     }
 }
+
+template <int n>
+void DrawerVisitor<n>::Visit(SquarePyramid<n> *squarePyramid)
+{
+    this->shapes.push_back(squarePyramid->base);
+    this->shapes.push_back(squarePyramid->side1);
+    this->shapes.push_back(squarePyramid->side2);
+    this->shapes.push_back(squarePyramid->side3);
+    this->shapes.push_back(squarePyramid->side4);
+}
+
+template <int n>
+void DrawerVisitor<n>::Visit(TriangularPrism<n> *triangularPrism)
+{
+}
+
 template <int n>
 void DrawerVisitor<n>::Visit(_3DShape<n> *shape)
 {

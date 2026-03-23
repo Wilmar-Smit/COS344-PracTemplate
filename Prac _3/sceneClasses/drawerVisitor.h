@@ -6,7 +6,11 @@
 #include "../include/MathLibrary/2D shapes/Shape.h"
 #include "../include/MathLibrary/Matrix.h"
 #include "../include/MathLibrary/3D shapes/3D_Shape.h"
+#include "../include/MathLibrary/3D shapes/Cone.h"
+#include "../include/MathLibrary/3D shapes/Cuboid.h"
 #include "../include/MathLibrary/3D shapes/Cylinder.h"
+#include "../include/MathLibrary/3D shapes/SquarePyramid.h"
+#include "../include/MathLibrary/3D shapes/TriangularPrism.h"
 #include "drawer.h"
 #include <vector>
 
@@ -18,6 +22,7 @@ class DrawerVisitor :public Scene<n>
 protected:
     _3DShape<n> *shape;             // will visit this.
     std::vector<Shape<n> *> shapes; // specific sub-shapes to draw/manage.
+    std::vector<int> vertexCounts;
     DrawerVisitor<n> *parent = nullptr;
 
     // this is the original that will bypass the pointer
@@ -50,7 +55,11 @@ public:
     virtual DrawerVisitor<n> *selectNext();
     virtual DrawerVisitor<n> *getIndex(int i);
     virtual void transform(Matrix<n + 1, n + 1> &trans, bool toCenter);
+    void Visit(Cone<n> *cone);
+    void Visit(Cuboid<n> *cuboid);
     void Visit(Cylinder<n> *cyl); // visits the cylinder and populates the array
+    void Visit(SquarePyramid<n> *squarePyramid);
+    void Visit(TriangularPrism<n> *triangularPrism);
     void Visit(_3DShape<n> *shape);
 };
 
