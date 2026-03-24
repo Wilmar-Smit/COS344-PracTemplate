@@ -11,11 +11,12 @@
 #include "../include/MathLibrary/3D shapes/Cylinder.h"
 #include "../include/MathLibrary/3D shapes/SquarePyramid.h"
 #include "../include/MathLibrary/3D shapes/TriangularPrism.h"
+#include "../include/MathLibrary/3D shapes/Sphere.h"
 #include "drawer.h"
 #include <vector>
 
 template <int n>
-class DrawerVisitor :public Scene<n>
+class DrawerVisitor : public Scene<n>
 {
     friend class Cylinder<n>;
 
@@ -60,6 +61,7 @@ public:
     void Visit(Cylinder<n> *cyl); // visits the cylinder and populates the array
     void Visit(SquarePyramid<n> *squarePyramid);
     void Visit(TriangularPrism<n> *triangularPrism);
+    void Visit(Sphere<n> *sphere);
     void Visit(_3DShape<n> *shape);
 };
 

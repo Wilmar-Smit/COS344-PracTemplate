@@ -1,0 +1,16 @@
+#ifndef BORDERCONTAINER_H
+#define BORDERCONTAINER_H
+#include "borderStub.h"
+#include <vector>
+class BorderContainer : public borderStub
+{
+    std::vector<borderStub *> boxes;
+
+public:
+    BorderContainer(borderStub *border);
+    virtual Vector<3> *Collision(borderStub *border);
+    virtual ~BorderContainer();
+    virtual void addContainer(borderStub *border);
+};
+
+#endif

@@ -25,7 +25,7 @@ DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
         float *vertices = currentShape->exportValues();
 
         glBufferData(GL_ARRAY_BUFFER,
-                 vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
+                     vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
                      vertices,
                      GL_STATIC_DRAW);
 
@@ -276,29 +276,29 @@ void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
 {
     Matrix<n + 1, n + 1> fullTransform = trans;
 
-    for (int i = 0; i < shapes.size(); i++)
+    if (toCenter)
     {
-        if (toCenter)
-        {
-            Vector<n> center = shape->getCenter();
+        Vector<n> center = shape->getCenter();
 
-            Matrix<n + 1, n + 1> toCenter, backToOrigin;
-            for (int i = 0; i < n + 1; i++)
-                for (int j = 0; j < n + 1; j++)
-                {
-                    toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
-                    backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
-                }
-
-            for (int i = 0; i < n; i++)
+        Matrix<n + 1, n + 1> toCenter, backToOrigin;
+        for (int i = 0; i < n + 1; i++)
+            for (int j = 0; j < n + 1; j++)
             {
-                toCenter[i][n] = -center[i];
-                backToOrigin[i][n] = center[i];
+                toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
+                backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
             }
 
-            fullTransform = backToOrigin * trans * toCenter;
+        for (int i = 0; i < n; i++)
+        {
+            toCenter[i][n] = -center[i];
+            backToOrigin[i][n] = center[i];
         }
 
+        fullTransform = backToOrigin * trans * toCenter;
+    }
+
+    for (int i = 0; i < shapes.size(); i++)
+    {
         shapes[i]->applyMatrix(fullTransform);
     }
 
@@ -308,13 +308,23 @@ void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
 template <int n>
 void DrawerVisitor<n>::Visit(Cone<n> *cone)
 {
-    (void)cone;
+    this->shapes.push_back(cone->base);
+
+    for (int i = 0; i < cone->sides.size(); i++)
+    {
+        this->shapes.push_back(cone->sides[i]);
+    }
 }
 
 template <int n>
 void DrawerVisitor<n>::Visit(Cuboid<n> *cuboid)
 {
-    (void)cuboid;
+    this->shapes.push_back(cuboid->base);
+    this->shapes.push_back(cuboid->back);
+    this->shapes.push_back(cuboid->top);
+    this->shapes.push_back(cuboid->front);
+    this->shapes.push_back(cuboid->leftSide);
+    this->shapes.push_back(cuboid->rightSide);
 }
 
 template <int n>
@@ -342,10 +352,26 @@ void DrawerVisitor<n>::Visit(SquarePyramid<n> *squarePyramid)
 template <int n>
 void DrawerVisitor<n>::Visit(TriangularPrism<n> *triangularPrism)
 {
+    this->shapes.push_back(triangularPrism->base);
+    this->shapes.push_back(triangularPrism->rightSide);
+    this->shapes.push_back(triangularPrism->leftSide);
+    this->shapes.push_back(triangularPrism->rightTop);
+    this->shapes.push_back(triangularPrism->leftTop);
 }
 
 template <int n>
 void DrawerVisitor<n>::Visit(_3DShape<n> *shape)
 {
     shape->acceptVisitor(this);
+}
+template <int n>
+
+void DrawerVisitor<n>::Visit(Sphere<n> *sphere)
+{
+
+    this->shapes.push_back(sphere->centerCircle);
+    for (int i = 0; i < sphere->allSides.size(); i++)
+    {
+        this->shapes.push_back(sphere->allSides[i]);
+    }
 }
