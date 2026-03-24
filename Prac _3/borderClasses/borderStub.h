@@ -3,12 +3,14 @@
 #include "Vector.h"
 #include "2D shapes/Square.h"
 #include "3D shapes/3D_Shape.h"
+#include "../shapeObservers/borderObserver.h"
 class borderStub
 {
     friend class BorderContainer;
 
 private:
-   void  initiateValues(Vector<3> minVals, Vector<3> maxVals);
+    void initiateValues(Vector<3> minVals, Vector<3> maxVals);
+    borderObserver *obs; // my parents observer to notify about my change
 
 protected:
     Vector<3> frontBottomLeft;
@@ -30,6 +32,9 @@ public:
     virtual void addContainer(borderStub *border);
     virtual _3DShape<3> *getShape(); // likely to be only the golf ball
     virtual ~borderStub();
+
+    virtual void attach(borderObserver *obs);
+    virtual void notify();
 };
 
 #endif

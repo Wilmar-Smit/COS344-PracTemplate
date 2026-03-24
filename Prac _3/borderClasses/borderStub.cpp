@@ -82,3 +82,13 @@ borderStub::borderStub(_3DShape<3> *shape)
     shape->getBorders(min, max);
     initiateValues(min, max);
 }
+
+void borderStub::attach(borderObserver *obs)
+{
+    this->obs = obs;
+}
+void borderStub::notify()
+{
+    if (obs)
+        obs->notify();
+}

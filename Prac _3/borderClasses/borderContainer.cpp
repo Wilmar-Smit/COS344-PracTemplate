@@ -30,22 +30,30 @@ BorderContainer::~BorderContainer()
     {
         delete boxes[i];
     }
+    if (myObserver)
+        delete myObserver;
 }
 
 void BorderContainer::addContainer(borderStub *border)
 {
     boxes.push_back(border);
+    updateSize();
+    if (!this->myObserver)
+    {
+        myObserver = new borderObserver();
+    }
 
-    // Initialize min/max with the first child’s values
+    border->attach(myObserver);
+}
+void BorderContainer::updateSize()
+{ // unfortunately needs to check everything since boxes grow and shrink cant just be based on the
     float minX = boxes[0]->frontBottomLeft[0];
     float maxX = boxes[0]->frontBottomRight[0];
     float minY = boxes[0]->frontBottomLeft[1];
     float maxY = boxes[0]->frontTopLeft[1];
     float minZ = boxes[0]->frontBottomLeft[2];
     float maxZ = boxes[0]->backBottomLeft[2];
-
-    // Iterate through all child boxes to update min/max
-    for (size_t i = 1; i < boxes.size(); ++i)
+    for (int i = 0; i < boxes.size(); ++i)
     {
         borderStub *b = boxes[i];
 
@@ -67,4 +75,10 @@ void BorderContainer::addContainer(borderStub *border)
     backBottomRight = Vector<3>({maxX, minY, maxZ});
     backTopLeft = Vector<3>({minX, maxY, maxZ});
     backTopRight = Vector<3>({maxX, maxY, maxZ});
+}
+void BorderContainer::notify()
+{ // called by my observer
+    if (obs)
+        obs->notify();
+    this->updateSize();
 }

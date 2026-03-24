@@ -19,6 +19,7 @@
 #include "3D shapes/Sphere.h"
 #include "3D shapes/Cuboid.h"
 #include "borderClasses/borderShape.h"
+
 void VectorTesting();
 void MatrixTesitng();
 void TriangleTesting();
@@ -86,21 +87,12 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Sphere<3> *sph = new Sphere<3>({0.0f, 0.0f, -0.75f}, 0.01f, 10, 10, Colour::Red);
-	Square<3> cubeBase({0.0f, 0.0f, -0.98f}, 0.50f, 0.50f, Colour::Blue);
+	Square<3> cubeBase({0.0f, 0.0f, -0.60f}, 0.50f, 0.50f, Colour::Blue);
 	Cuboid<3> *cube = new Cuboid<3>(cubeBase, 0.15f, Colour::Blue);
 
 	BorderShape sphereBorder(sph);
 	BorderShape cubeBorder(cube);
 	Vector<3> *collisionPoint = sphereBorder.Collision(&cubeBorder);
-	if (collisionPoint)
-	{
-		std::cout << "collision detected" << std::endl;
-		delete collisionPoint;
-	}
-	else
-	{
-		std::cout << "no collision" << std::endl;
-	}
 
 	DrawerVisitor<3> *sphereVis = new DrawerVisitor<3>(sph);
 	DrawerVisitor<3> *cubeVis = new DrawerVisitor<3>(cube);
@@ -116,6 +108,16 @@ int main()
 		sphereVis->RotateX(0.5);
 		sphereVis->RotateY(0.3);
 		sphereVis->RotateZ(0.3);
+		
+		if (collisionPoint)
+		{
+			std::cout << "collision detected" << std::endl;
+			delete collisionPoint;
+		}
+		else
+		{
+			std::cout << "no collision" << std::endl;
+		}
 
 		cubeVis->RotateX(0.2);
 		cubeVis->RotateY(0.2);
