@@ -77,7 +77,7 @@ int main()
 	glfwGetFramebufferSize(window, &nx, &ny);
 	glViewport(0, 0, nx, ny);
 
-	glClearColor(0.18f, 0.45f, 0.45f, 1.0f);
+	glClearColor(1, 1, 1, 1.0f);
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 
 	glEnable(GL_BLEND);
@@ -85,9 +85,9 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Sphere<3> *sph = new Sphere<3>({0, 0, 0}, 0.5, 10, 10, Colour::Red);
-	Square<3> cubeBase({0, 0, 0}, 1.0f, 1.0f, Colour::Blue);
-	Cuboid<3> *cube = new Cuboid<3>(cubeBase, 1.0f, Colour::Blue);
+	Sphere<3> *sph = new Sphere<3>({0.0f, 0.0f, -0.75f}, 0.01f, 10, 10, Colour::Red);
+	Square<3> cubeBase({0.0f, 0.0f, -0.98f}, 0.50f, 0.50f, Colour::Blue);
+	Cuboid<3> *cube = new Cuboid<3>(cubeBase, 0.15f, Colour::Blue);
 
 	BorderShape sphereBorder(sph);
 	BorderShape cubeBorder(cube);
