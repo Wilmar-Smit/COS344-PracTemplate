@@ -302,6 +302,7 @@ void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
         shapes[i]->applyMatrix(fullTransform);
     }
 
+    shape->notify(); // notifies the collision boxes
     reloadVertices();
 }
 

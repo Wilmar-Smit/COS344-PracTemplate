@@ -1,5 +1,5 @@
 #include "borderShape.h"
-
+#include "3D shapes/3D_Shape.h"
 BorderShape::BorderShape(_3DShape<3> *shape)
     : borderStub(shape) // 3d shapes need a function to return their mins and max each implemented.
 {

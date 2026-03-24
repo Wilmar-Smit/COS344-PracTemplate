@@ -1,5 +1,6 @@
 #include "borderStub.h"
-
+#include "3D shapes/3D_Shape.h"
+#include "../shapeObservers/borderObserver.h"
 borderStub::borderStub(Vector<3> minVals, Vector<3> maxVals)
 {
     initiateValues(minVals, maxVals);

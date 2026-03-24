@@ -36,9 +36,9 @@ COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 # Math library source files (non-template translation units only)
 MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp
 BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp
-
+OBSERVER_SRCS = shapeObservers/borderObserver.cpp
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS)
+SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS)
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner

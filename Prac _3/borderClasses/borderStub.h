@@ -2,8 +2,13 @@
 #define BORDERSTUB_H
 #include "Vector.h"
 #include "2D shapes/Square.h"
-#include "3D shapes/3D_Shape.h"
-#include "../shapeObservers/borderObserver.h"
+
+
+
+class borderObserver;
+template <int n>
+class _3DShape;
+
 class borderStub
 {
     friend class BorderContainer;

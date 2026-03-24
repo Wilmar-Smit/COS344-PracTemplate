@@ -40,7 +40,7 @@ void BorderContainer::addContainer(borderStub *border)
     updateSize();
     if (!this->myObserver)
     {
-        myObserver = new borderObserver();
+        myObserver = new borderObserver(this);
     }
 
     border->attach(myObserver);

@@ -1,6 +1,6 @@
 #include "borderObserver.h"
-
-borderObserver::borderObserver(_3DShape<3> *shape, borderStub *borderParent)
+#include "../include/MathLibrary/3D shapes/3D_Shape.h"
+borderObserver::borderObserver(borderStub *borderParent, _3DShape<3> *shape)
 {
     if (shape)
         shape->attach(this);
@@ -9,6 +9,7 @@ borderObserver::borderObserver(_3DShape<3> *shape, borderStub *borderParent)
 
 void borderObserver::notify()
 {
+    this->borderParent->notify();
 }
 void notify(borderStub *resizeTo)
 {
