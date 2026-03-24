@@ -4,6 +4,7 @@ BorderShape::BorderShape(_3DShape<3> *shape)
     : borderStub(shape) // 3d shapes need a function to return their mins and max each implemented.
 {
     this->shape = shape;
+    this->shape->attach(new borderObserver(this));
 }
 
 Vector<3> *BorderShape::Collision(borderStub *border)
@@ -83,4 +84,11 @@ BorderShape::~BorderShape()
 _3DShape<3> *BorderShape::getShape()
 {
     return this->shape;
+}
+
+void BorderShape::notify()
+{
+    recalculateCol(this->shape);
+    if (obs)
+        obs->notify();
 }

@@ -4,7 +4,7 @@
 
 class BorderShape : public borderStub
 {
-    _3DShape<3> *shape;
+    _3DShape<3> *shape = nullptr;
 
 public:
     BorderShape(_3DShape<3>* shape); // needs to build this based on shapes inside its container
@@ -13,6 +13,7 @@ public:
     // so shape stays still but its box will move if collision calculated the wall it would be his
     virtual ~BorderShape();
     virtual _3DShape<3> *getShape();
+    void notify();
 };
 
 #endif

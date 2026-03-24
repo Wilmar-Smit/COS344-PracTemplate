@@ -1,5 +1,5 @@
 #include "borderContainer.h"
-
+#include "../shapeObservers/borderObserver.h"
 BorderContainer::BorderContainer(borderStub *border)
     : borderStub(*border) // original size based on the border given
 {
@@ -20,7 +20,8 @@ Vector<3> *BorderContainer::Collision(borderStub *border)
             }
         }
     }
-    else
+    
+    
         return nullptr;
 }
 

@@ -3,8 +3,6 @@
 #include "Vector.h"
 #include "2D shapes/Square.h"
 
-
-
 class borderObserver;
 template <int n>
 class _3DShape;
@@ -13,11 +11,9 @@ class borderStub
 {
     friend class BorderContainer;
 
-private:
-    void initiateValues(Vector<3> minVals, Vector<3> maxVals);
-    borderObserver *obs; // my parents observer to notify about my change
-
 protected:
+    void initiateValues(Vector<3> minVals, Vector<3> maxVals);
+    borderObserver *obs = nullptr; // my parents observer to notify about my change
     Vector<3> frontBottomLeft;
     Vector<3> frontBottomRight;
     Vector<3> frontTopLeft;
@@ -40,6 +36,7 @@ public:
 
     virtual void attach(borderObserver *obs);
     virtual void notify();
+    virtual void recalculateCol(_3DShape<3> *shape);
 };
 
 #endif

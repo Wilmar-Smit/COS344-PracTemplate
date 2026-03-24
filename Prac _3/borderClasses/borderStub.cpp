@@ -93,3 +93,13 @@ void borderStub::notify()
     if (obs)
         obs->notify();
 }
+void borderStub::recalculateCol(_3DShape<3> *shape)
+{
+    if (shape)
+    {
+        Vector<3> min;
+        Vector<3> max;
+        shape->getBorders(min, max);
+        initiateValues(min, max);
+    }
+}

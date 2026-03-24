@@ -86,46 +86,48 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Sphere<3> *sph = new Sphere<3>({0.0f, 0.0f, -0.75f}, 0.01f, 10, 10, Colour::Red);
-	Square<3> cubeBase({0.0f, 0.0f, -0.60f}, 0.50f, 0.50f, Colour::Blue);
-	Cuboid<3> *cube = new Cuboid<3>(cubeBase, 0.15f, Colour::Blue);
+	Square<3> cubeBaseA({0.0f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Blue);
+	Square<3> cubeBaseB({0.55f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Red);
+	Cuboid<3> *cubeA = new Cuboid<3>(cubeBaseA, 0.15f, Colour::Blue);
+	Cuboid<3> *cubeB = new Cuboid<3>(cubeBaseB, 0.15f, Colour::Red);
 
-	BorderShape sphereBorder(sph);
-	BorderShape cubeBorder(cube);
-	Vector<3> *collisionPoint = sphereBorder.Collision(&cubeBorder);
+	BorderShape cubeABorder(cubeA);
+	BorderShape cubeBBorder(cubeB);
 
-	DrawerVisitor<3> *sphereVis = new DrawerVisitor<3>(sph);
-	DrawerVisitor<3> *cubeVis = new DrawerVisitor<3>(cube);
+	DrawerVisitor<3> *cubeAVis = new DrawerVisitor<3>(cubeA);
+	DrawerVisitor<3> *cubeBVis = new DrawerVisitor<3>(cubeB);
 
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
 
-		sphereVis->draw();
-		cubeVis->draw();
+		cubeAVis->draw();
+		cubeBVis->draw();
 
-		sphereVis->RotateX(0.5);
-		sphereVis->RotateY(0.3);
-		sphereVis->RotateZ(0.3);
-		
+		cubeBVis->RotateZ(0.5);
+
+		Vector<3> *collisionPoint = cubeABorder.Collision(&cubeBBorder);
 		if (collisionPoint)
 		{
 			std::cout << "collision detected" << std::endl;
-			delete collisionPoint;
 		}
-		else
+		else if (!collisionPoint)
 		{
 			std::cout << "no collision" << std::endl;
 		}
 
-		cubeVis->RotateX(0.2);
-		cubeVis->RotateY(0.2);
+		if (collisionPoint)
+		{
+			delete collisionPoint;
+			collisionPoint = nullptr;
+		}
+
 		// Check for Enter key press
 		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		{
-			sphereVis->setWireframeMode();
-			cubeVis->setWireframeMode();
+			cubeAVis->setWireframeMode();
+			cubeBVis->setWireframeMode();
 		}
 
 		glfwSwapBuffers(window);
@@ -134,8 +136,8 @@ int main()
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 
-	delete sphereVis;
-	delete cubeVis;
+	delete cubeAVis;
+	delete cubeBVis;
 	glfwTerminate();
 
 	return 0;

@@ -5,7 +5,7 @@
 class BorderContainer : public borderStub
 {
     std::vector<borderStub *> boxes;
-    borderObserver *myObserver;
+    borderObserver *myObserver = nullptr;
     void updateSize();
 
 public:
