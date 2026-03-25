@@ -120,7 +120,7 @@ int main()
 
 		// fan rotations
 
-		golfCourse->RotateX(0.2);
+	//	golfCourse->RotateX(0.2);
 		// Put scene here
 		golfCourse->draw();
 

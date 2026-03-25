@@ -135,7 +135,7 @@ complexSceneHolder *WindMillTower()
 TotalScene *GolfCourse()
 {
     complexSceneHolder *wm = WindMillFan();
-    TotalScene *totalScene = new TotalScene(wm->getGivenCenter());
+    TotalScene *totalScene = new TotalScene();
     totalScene->addScene(wm);
     totalScene->addScene(WindMillTower());
 

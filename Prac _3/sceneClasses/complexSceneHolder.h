@@ -23,7 +23,7 @@ private:
     std::vector<DrawerVisitor *> visitors;
 
 public:
-    Vector<3> TotalCenter;
+    
     bool useTotal = false;
     complexSceneHolder();
     virtual ~complexSceneHolder();
