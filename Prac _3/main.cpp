@@ -10,14 +10,13 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "2D shapes/Square.h"
-#include "sceneClasses/drawer.h"
-#include "sceneClasses/SceneHolder.h"
+
 #include "2D shapes/circle.h"
-#include "3D shapes/Cylinder.h"
-#include "3D shapes/SquarePyramid.h"
+#include "3D_shapes/Cylinder.h"
+#include "3D_shapes/SquarePyramid.h"
 #include "sceneClasses/drawerVisitor.h"
-#include "3D shapes/Sphere.h"
-#include "3D shapes/Cuboid.h"
+#include "3D_shapes/Sphere.h"
+#include "3D_shapes/Cuboid.h"
 #include "borderClasses/borderShape.h"
 
 void VectorTesting();
@@ -87,15 +86,14 @@ int main()
 	glEnable(GL_DEPTH_TEST);
 
 	Square<3> cubeBaseA({0.0f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Blue);
-	Square<3> cubeBaseB({0.55f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Red);
-	Cuboid<3> *cubeA = new Cuboid<3>(cubeBaseA, 0.15f, Colour::Blue);
-	Cuboid<3> *cubeB = new Cuboid<3>(cubeBaseB, 0.15f, Colour::Red);
+	Cuboid *cubeA = new Cuboid(cubeBaseA, 0.15f, Colour::Blue);
+	Sphere *sph = new Sphere({0.4f, 0.0f, 0.0f}, 0.08f, 10, 3, Colour::Red);
 
 	BorderShape cubeABorder(cubeA);
-	BorderShape cubeBBorder(cubeB);
+	BorderShape sphereBorder(sph);
 
-	DrawerVisitor<3> *cubeAVis = new DrawerVisitor<3>(cubeA);
-	DrawerVisitor<3> *cubeBVis = new DrawerVisitor<3>(cubeB);
+	DrawerVisitor *cubeAVis = new DrawerVisitor(cubeA);
+	DrawerVisitor *sphereVis = new DrawerVisitor(sph);
 
 	do
 	{
@@ -103,11 +101,11 @@ int main()
 		glUseProgram(programID);
 
 		cubeAVis->draw();
-		cubeBVis->draw();
+		sphereVis->draw();
 
-		cubeBVis->RotateZ(0.5);
+		cubeAVis->RotateZ(0.5);
 
-		Vector<3> *collisionPoint = cubeABorder.Collision(&cubeBBorder);
+		Vector<3> *collisionPoint = cubeABorder.Collision(&sphereBorder);
 		if (collisionPoint)
 		{
 			std::cout << "collision detected" << std::endl;
@@ -127,7 +125,7 @@ int main()
 		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
 		{
 			cubeAVis->setWireframeMode();
-			cubeBVis->setWireframeMode();
+			sphereVis->setWireframeMode();
 		}
 
 		glfwSwapBuffers(window);
@@ -137,7 +135,7 @@ int main()
 			 !glfwWindowShouldClose(window));
 
 	delete cubeAVis;
-	delete cubeBVis;
+	delete sphereVis;
 	glfwTerminate();
 
 	return 0;

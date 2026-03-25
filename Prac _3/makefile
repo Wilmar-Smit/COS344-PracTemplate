@@ -37,12 +37,16 @@ COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp
 BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp borderClasses/borderContainer.cpp
 OBSERVER_SRCS = shapeObservers/borderObserver.cpp
+# 3D shape source files (now compiled separately, no longer templates)
+SHAPE3D_SRCS := $(wildcard include/MathLibrary/3D_shapes/*.cpp)
+# Scene class source files (now compiled separately)
+SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS)
+SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner
-TEST_SRCS = test_main.cpp $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS)
+TEST_SRCS = test_main.cpp $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS)
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
 
 # Directory where GLFW is installed.

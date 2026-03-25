@@ -1,5 +1,5 @@
 #include "borderStub.h"
-#include "3D shapes/3D_Shape.h"
+#include "3D_shapes/3D_Shape.h"
 #include "../shapeObservers/borderObserver.h"
 borderStub::borderStub(Vector<3> minVals, Vector<3> maxVals)
 {
@@ -71,12 +71,12 @@ Vector<3> *borderStub::Collision(borderStub *other)
     return nullptr; // no collision
 }
 
-_3DShape<3> *borderStub::getShape() // likely to be only the golf ball
+_3DShape *borderStub::getShape() // likely to be only the golf ball
 {
     return nullptr;
 }
 
-borderStub::borderStub(_3DShape<3> *shape)
+borderStub::borderStub(_3DShape *shape)
 {
     Vector<3> min;
     Vector<3> max;
@@ -93,7 +93,7 @@ void borderStub::notify()
     if (obs)
         obs->notify();
 }
-void borderStub::recalculateCol(_3DShape<3> *shape)
+void borderStub::recalculateCol(_3DShape *shape)
 {
     if (shape)
     {

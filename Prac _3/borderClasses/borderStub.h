@@ -4,7 +4,6 @@
 #include "2D shapes/Square.h"
 
 class borderObserver;
-template <int n>
 class _3DShape;
 
 class borderStub
@@ -27,16 +26,16 @@ protected:
 public:
     borderStub(Vector<3> minVals, Vector<3> maxVals);
     borderStub(borderStub &stub);
-    borderStub(_3DShape<3> *shape);
+    borderStub(_3DShape *shape);
 
     virtual Vector<3> *Collision(borderStub *border); // returns a vector of where the collision is blocked from == wall
     virtual void addContainer(borderStub *border);
-    virtual _3DShape<3> *getShape(); // likely to be only the golf ball
+    virtual _3DShape *getShape(); // likely to be only the golf ball
     virtual ~borderStub();
 
     virtual void attach(borderObserver *obs);
     virtual void notify();
-    virtual void recalculateCol(_3DShape<3> *shape);
+    virtual void recalculateCol(_3DShape *shape);
 };
 
 #endif

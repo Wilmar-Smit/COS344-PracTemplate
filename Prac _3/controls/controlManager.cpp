@@ -1,44 +1,44 @@
 #include "controlManager.h"
 #include "Scene.h" // your templated Scene definition
 // Movement
-template <typename n>
+template <int n>
 void ControlManager<n>::moveForward(Scene<n> *scene)
 {
     scene.Translation(Direction::up, 1);
 }
 
-template <typename n>
+template <int n>
 void ControlManager<n>::moveBackward(Scene<n> *scene)
 {
     scene->Translation(Direction::down, 1);
 }
 
-template <typename n>
+template <int n>
 void ControlManager<n>::moveLeft(Scene<n> *scene)
 {
     scene->Translation(Direction::left, 1);
 }
 
-template <typename n>
+template <int n>
 void ControlManager<n>::moveRight(Scene<n> *scene)
 {
     scene->Translation(Direction::right, 1);
 }
 
 // Rotation
-template <typename n>
+template <int n>
 void ControlManager<n>::rotateX(Scene<n> *scene)
 {
     // TODO: implement rotation around X axis
 }
 
-template <typename n>
+template <int n>
 void ControlManager<n>::rotateY(Scene<n> *scene)
 {
     // TODO: implement rotation around Y axis
 }
 
-template <typename n>
+template <int n>
 void ControlManager<n>::rotateZ(Scene<n> *scene)
 {
     // TODO: implement rotation around Z axis
@@ -46,7 +46,7 @@ void ControlManager<n>::rotateZ(Scene<n> *scene)
 }
 
 // Dispatcher
-template <typename n>
+template <int n>
 void ControlManager<n>::processInput(GLFWwindow *window, Scene<n> *scene)
 {
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)

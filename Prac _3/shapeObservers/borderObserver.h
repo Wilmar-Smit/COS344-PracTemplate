@@ -10,7 +10,7 @@ private:
     borderStub *borderParent = nullptr;
 
 public:
-    borderObserver(borderStub *borderParent, _3DShape<3> *shape = nullptr);
+    borderObserver(borderStub *borderParent, _3DShape *shape = nullptr);
     // calls shape.attach
     void notify(); // tells border to change recalculate its vertices
 };

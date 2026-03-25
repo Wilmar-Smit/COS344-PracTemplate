@@ -4,10 +4,10 @@
 #include <GLFW/glfw3.h>
 
 // Forward declaration of templated Scene type
-template <typename n>
+template <int n>
 class Scene;
 
-template <typename n>
+template <int n>
 class ControlManager {
 public:
     ControlManager() = default;

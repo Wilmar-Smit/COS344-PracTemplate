@@ -5,43 +5,42 @@
 #include <GLFW/glfw3.h>
 #include "../include/MathLibrary/2D shapes/Shape.h"
 #include "../include/MathLibrary/Matrix.h"
-#include "../include/MathLibrary/3D shapes/3D_Shape.h"
-#include "../include/MathLibrary/3D shapes/Cone.h"
-#include "../include/MathLibrary/3D shapes/Cuboid.h"
-#include "../include/MathLibrary/3D shapes/Cylinder.h"
-#include "../include/MathLibrary/3D shapes/SquarePyramid.h"
-#include "../include/MathLibrary/3D shapes/TriangularPrism.h"
-#include "../include/MathLibrary/3D shapes/Sphere.h"
-#include "drawer.h"
+#include "../include/MathLibrary/3D_shapes/3D_Shape.h"
+#include "../include/MathLibrary/3D_shapes/Cone.h"
+#include "../include/MathLibrary/3D_shapes/Cuboid.h"
+#include "../include/MathLibrary/3D_shapes/Cylinder.h"
+#include "../include/MathLibrary/3D_shapes/SquarePyramid.h"
+#include "../include/MathLibrary/3D_shapes/TriangularPrism.h"
+#include "../include/MathLibrary/3D_shapes/Sphere.h"
 #include <vector>
+#include "Scene.h"
 
-template <int n>
-class DrawerVisitor : public Scene<n>
+class DrawerVisitor : public Scene
 {
-    friend class Cylinder<n>;
+    friend class Cylinder;
+    Vector<3> givenCenter;
+    bool aroundGivenPoint = false;
 
 protected:
-    _3DShape<n> *shape;             // will visit this.
-    std::vector<Shape<n> *> shapes; // specific sub-shapes to draw/manage.
+    _3DShape *shape;
+    std::vector<Shape<3> *> shapes;
     std::vector<int> vertexCounts;
-    DrawerVisitor<n> *parent = nullptr;
 
-    // this is the original that will bypass the pointer
-    // 3D shape will call the visitor and put Visit(this) with its correct 3d pointer basically double d
+    DrawerVisitor *parent = nullptr;
 
-    std::vector<GLuint> VAO, VBO;  // now vectors
-    GLenum type = GL_TRIANGLE_FAN; // the draw typ
+    std::vector<GLuint> VAO, VBO;
+    GLenum type = GL_TRIANGLE_FAN;
 
     static const int COLOR_DEPTH = 4;
-    static const int VERTEX_DEPTH = n;
+    static const int VERTEX_DEPTH = 3;
 
 public:
-    DrawerVisitor(_3DShape<n> *shape); // does the visiting on shape
+    DrawerVisitor(_3DShape *shape);
     virtual ~DrawerVisitor() { delete shape; };
     virtual void draw();
     virtual void reloadVertices();
-    virtual Shape<n> *getShape() const;
-    virtual void addScene(Scene<n> *scene) override;
+    virtual Shape<3> *getShape() const;
+    virtual void addScene(Scene *scene) override;
     virtual void Rotate(float degrees);
     virtual void RotateX(float degrees);
     virtual void RotateY(float degrees);
@@ -53,18 +52,17 @@ public:
     virtual void setWireframeMode();
     virtual void setNormalMode();
     virtual void setParent(DrawerVisitor *parent) { this->parent = parent; };
-    virtual DrawerVisitor<n> *selectNext();
-    virtual DrawerVisitor<n> *getIndex(int i);
-    virtual void transform(Matrix<n + 1, n + 1> &trans, bool toCenter);
-    void Visit(Cone<n> *cone);
-    void Visit(Cuboid<n> *cuboid);
-    void Visit(Cylinder<n> *cyl); // visits the cylinder and populates the array
-    void Visit(SquarePyramid<n> *squarePyramid);
-    void Visit(TriangularPrism<n> *triangularPrism);
-    void Visit(Sphere<n> *sphere);
-    void Visit(_3DShape<n> *shape);
-};
+    virtual DrawerVisitor *selectNext();
+    virtual DrawerVisitor *getIndex(int i);
+    virtual void transform(Matrix<4, 4> &trans, bool toCenter);
 
-#include "drawerVisitor.cpp"
+    void Visit(Cone *cone);
+    void Visit(Cuboid *cuboid);
+    void Visit(Cylinder *cyl);
+    void Visit(SquarePyramid *squarePyramid);
+    void Visit(TriangularPrism *triangularPrism);
+    void Visit(Sphere *sphere);
+    void Visit(_3DShape *shape);
+};
 
 #endif

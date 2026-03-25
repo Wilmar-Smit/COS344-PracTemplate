@@ -1,6 +1,6 @@
 #include "borderShape.h"
-#include "3D shapes/3D_Shape.h"
-BorderShape::BorderShape(_3DShape<3> *shape)
+#include "3D_shapes/3D_Shape.h"
+BorderShape::BorderShape(_3DShape *shape)
     : borderStub(shape) // 3d shapes need a function to return their mins and max each implemented.
 {
     this->shape = shape;
@@ -13,7 +13,7 @@ Vector<3> *BorderShape::Collision(borderStub *border)
     if (!borderCollisionPoint)
         return nullptr;
 
-    _3DShape<3> *colShape = border->getShape();
+    _3DShape *colShape = border->getShape();
     if (!colShape)
     {
         delete borderCollisionPoint;
@@ -81,7 +81,7 @@ BorderShape::~BorderShape()
 {
 }
 
-_3DShape<3> *BorderShape::getShape()
+_3DShape *BorderShape::getShape()
 {
     return this->shape;
 }

@@ -13,18 +13,17 @@ enum class Direction
     up,
     down
 };
-template <int n>
+
 class Scene
 {
 protected:
     bool selected = false;
-    Scene<n> *parent = nullptr;
 
 public:
     virtual void draw() = 0;
     virtual void reloadVertices() = 0;
-    virtual Shape<n> *getShape() const = 0;
-    virtual void addScene(Scene<n> *scene) = 0;
+    virtual Shape<3> *getShape() const = 0;
+    virtual void addScene(Scene *scene) = 0;
     virtual ~Scene() = default;
     virtual void Rotate(float degrees) = 0;
     virtual void RotateX(float degrees) = 0;
@@ -36,10 +35,8 @@ public:
     virtual void deselect() = 0;
     virtual void setWireframeMode() = 0;
     virtual void setNormalMode() = 0;
-    virtual void setParent(Scene *parent) { this->parent = parent; };
-    virtual Scene<n> *selectNext() = 0;
-    virtual Scene<n> *getIndex(int i) = 0;
-    virtual void transform(Matrix<n + 1, n + 1> &trans, bool toCenter) = 0;
+    virtual void setParent(Scene *parent) { (void)parent; };
+    virtual void transform(Matrix<4, 4> &trans, bool toCenter) = 0;
 };
 
 #endif

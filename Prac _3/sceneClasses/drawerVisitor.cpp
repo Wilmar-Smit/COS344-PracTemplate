@@ -1,7 +1,6 @@
 #include "drawerVisitor.h"
 
-template <int n>
-DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
+DrawerVisitor::DrawerVisitor(_3DShape *shape)
     : shape(shape)
 {
     // does the visiting and populates the array
@@ -20,7 +19,7 @@ DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
         glGenBuffers(1, &VBO[i]);
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
 
-        Shape<n> *currentShape = shapes[i];
+        Shape<3> *currentShape = shapes[i];
         vertexCounts[i] = (currentShape->getNumPoints() / VERTEX_DEPTH);
         float *vertices = currentShape->exportValues();
 
@@ -44,8 +43,7 @@ DrawerVisitor<n>::DrawerVisitor(_3DShape<n> *shape)
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::draw()
+void DrawerVisitor::draw()
 {
     for (size_t i = 0; i < shapes.size(); i++)
     {
@@ -55,8 +53,7 @@ void DrawerVisitor<n>::draw()
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::reloadVertices()
+void DrawerVisitor::reloadVertices()
 {
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -85,34 +82,29 @@ void DrawerVisitor<n>::reloadVertices()
     }
 }
 
-template <int n>
-Shape<n> *DrawerVisitor<n>::getShape() const { return shape; }
+Shape<3> *DrawerVisitor::getShape() const { return shape; }
 
-template <int n>
-void DrawerVisitor<n>::addScene(Scene<n> *scene)
+void DrawerVisitor::addScene(Scene *scene)
 {
     delete scene; // shouldnt do anything
 }
 
-template <int n>
-void DrawerVisitor<n>::Rotate(float degrees)
+void DrawerVisitor::Rotate(float degrees)
 {
     RotateZ(degrees);
 }
 
-template <int n>
-void DrawerVisitor<n>::RotateX(float degrees)
+void DrawerVisitor::RotateX(float degrees)
 {
 
-    if (n > 2)
     {
         float radians = degrees * (std::acos(-1.0f) / 180.0f);
         float cosTheta = std::cos(radians);
         float sinTheta = std::sin(radians);
 
-        Matrix<n + 1, n + 1> rotationMatrix;
-        for (int i = 0; i < n + 1; i++)
-            for (int j = 0; j < n + 1; j++)
+        Matrix<4, 4> rotationMatrix;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
                 if (i == j)
                     rotationMatrix[i][j] = 1.0f;
 
@@ -125,18 +117,16 @@ void DrawerVisitor<n>::RotateX(float degrees)
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::RotateY(float degrees)
+void DrawerVisitor::RotateY(float degrees)
 {
-    if (n > 2)
     {
         float radians = degrees * (std::acos(-1.0f) / 180.0f);
         float cosTheta = std::cos(radians);
         float sinTheta = std::sin(radians);
 
-        Matrix<n + 1, n + 1> rotationMatrix;
-        for (int i = 0; i < n + 1; i++)
-            for (int j = 0; j < n + 1; j++)
+        Matrix<4, 4> rotationMatrix;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
                 rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
         rotationMatrix[0][0] = cosTheta;
@@ -148,16 +138,15 @@ void DrawerVisitor<n>::RotateY(float degrees)
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::RotateZ(float degrees)
+void DrawerVisitor::RotateZ(float degrees)
 {
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
     float cosTheta = std::cos(radians);
     float sinTheta = std::sin(radians);
 
-    Matrix<n + 1, n + 1> rotationMatrix;
-    for (int i = 0; i < n + 1; i++)
-        for (int j = 0; j < n + 1; j++)
+    Matrix<4, 4> rotationMatrix;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
     rotationMatrix[0][0] = cosTheta;
@@ -168,22 +157,20 @@ void DrawerVisitor<n>::RotateZ(float degrees)
     transform(rotationMatrix, true);
 }
 
-template <int n>
-void DrawerVisitor<n>::Scale(float scale)
+void DrawerVisitor::Scale(float scale)
 {
-    Matrix<n + 1, n + 1> scaleMatrix;
-    for (int i = 0; i < n + 1; i++)
-        for (int j = 0; j < n + 1; j++)
+    Matrix<4, 4> scaleMatrix;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             scaleMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
-    for (int i = 0; i < n; i++)
+    for (int i = 0; i < 3; i++)
         scaleMatrix[i][i] = scale;
 
     transform(scaleMatrix, true);
 }
 
-template <int n>
-void DrawerVisitor<n>::Translation(Direction dir, float step)
+void DrawerVisitor::Translation(Direction dir, float step)
 {
     float dx = 0.0f, dy = 0.0f;
     if (dir == Direction::up)
@@ -195,19 +182,18 @@ void DrawerVisitor<n>::Translation(Direction dir, float step)
     if (dir == Direction::right)
         dx = step;
 
-    Matrix<n + 1, n + 1> translationMatrix;
-    for (int i = 0; i < n + 1; i++)
-        for (int j = 0; j < n + 1; j++)
+    Matrix<4, 4> translationMatrix;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
             translationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
 
-    translationMatrix[0][n] = dx;
-    translationMatrix[1][n] = dy;
+    translationMatrix[0][3] = dx;
+    translationMatrix[1][3] = dy;
 
     transform(translationMatrix, false);
 }
 
-template <int n>
-void DrawerVisitor<n>::select()
+void DrawerVisitor::select()
 {
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -224,8 +210,7 @@ void DrawerVisitor<n>::select()
     reloadVertices();
 }
 
-template <int n>
-void DrawerVisitor<n>::deselect()
+void DrawerVisitor::deselect()
 {
     if (this->selected)
     {
@@ -233,8 +218,7 @@ void DrawerVisitor<n>::deselect()
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::setWireframeMode()
+void DrawerVisitor::setWireframeMode()
 {
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -249,8 +233,7 @@ void DrawerVisitor<n>::setWireframeMode()
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::setNormalMode()
+void DrawerVisitor::setNormalMode()
 {
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -265,33 +248,30 @@ void DrawerVisitor<n>::setNormalMode()
     }
 }
 
-template <int n>
-DrawerVisitor<n> *DrawerVisitor<n>::selectNext() { return nullptr; }
+DrawerVisitor *DrawerVisitor::selectNext() { return nullptr; }
 
-template <int n>
-DrawerVisitor<n> *DrawerVisitor<n>::getIndex(int i) { return nullptr; }
+DrawerVisitor *DrawerVisitor::getIndex(int i) { return nullptr; }
 
-template <int n>
-void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
+void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter)
 {
-    Matrix<n + 1, n + 1> fullTransform = trans;
+    Matrix<4, 4> fullTransform = trans;
 
     if (toCenter)
     {
-        Vector<n> center = shape->getCenter();
+        Vector<3> center = shape->getCenter();
 
-        Matrix<n + 1, n + 1> toCenter, backToOrigin;
-        for (int i = 0; i < n + 1; i++)
-            for (int j = 0; j < n + 1; j++)
+        Matrix<4, 4> toCenter, backToOrigin;
+        for (int i = 0; i < 4; i++)
+            for (int j = 0; j < 4; j++)
             {
                 toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
                 backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
             }
 
-        for (int i = 0; i < n; i++)
+        for (int i = 0; i < 3; i++)
         {
-            toCenter[i][n] = -center[i];
-            backToOrigin[i][n] = center[i];
+            toCenter[i][3] = -center[i];
+            backToOrigin[i][3] = center[i];
         }
 
         fullTransform = backToOrigin * trans * toCenter;
@@ -306,8 +286,7 @@ void DrawerVisitor<n>::transform(Matrix<n + 1, n + 1> &trans, bool toCenter)
     reloadVertices();
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(Cone<n> *cone)
+void DrawerVisitor::Visit(Cone *cone)
 {
     this->shapes.push_back(cone->base);
 
@@ -317,8 +296,7 @@ void DrawerVisitor<n>::Visit(Cone<n> *cone)
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(Cuboid<n> *cuboid)
+void DrawerVisitor::Visit(Cuboid *cuboid)
 {
     this->shapes.push_back(cuboid->base);
     this->shapes.push_back(cuboid->back);
@@ -328,8 +306,7 @@ void DrawerVisitor<n>::Visit(Cuboid<n> *cuboid)
     this->shapes.push_back(cuboid->rightSide);
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(Cylinder<n> *cyl)
+void DrawerVisitor::Visit(Cylinder *cyl)
 {
     this->shapes.push_back(cyl->base);
     this->shapes.push_back(cyl->top);
@@ -340,8 +317,7 @@ void DrawerVisitor<n>::Visit(Cylinder<n> *cyl)
     }
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(SquarePyramid<n> *squarePyramid)
+void DrawerVisitor::Visit(SquarePyramid *squarePyramid)
 {
     this->shapes.push_back(squarePyramid->base);
     this->shapes.push_back(squarePyramid->side1);
@@ -350,8 +326,7 @@ void DrawerVisitor<n>::Visit(SquarePyramid<n> *squarePyramid)
     this->shapes.push_back(squarePyramid->side4);
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(TriangularPrism<n> *triangularPrism)
+void DrawerVisitor::Visit(TriangularPrism *triangularPrism)
 {
     this->shapes.push_back(triangularPrism->base);
     this->shapes.push_back(triangularPrism->rightSide);
@@ -360,14 +335,11 @@ void DrawerVisitor<n>::Visit(TriangularPrism<n> *triangularPrism)
     this->shapes.push_back(triangularPrism->leftTop);
 }
 
-template <int n>
-void DrawerVisitor<n>::Visit(_3DShape<n> *shape)
+void DrawerVisitor::Visit(_3DShape *shape)
 {
     shape->acceptVisitor(this);
 }
-template <int n>
-
-void DrawerVisitor<n>::Visit(Sphere<n> *sphere)
+void DrawerVisitor::Visit(Sphere *sphere)
 {
 
     this->shapes.push_back(sphere->centerCircle);
