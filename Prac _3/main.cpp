@@ -17,6 +17,7 @@
 #include "sceneClasses/drawerVisitor.h"
 #include "3D_shapes/Sphere.h"
 #include "3D_shapes/Cuboid.h"
+#include "borderClasses/borderContainer.h"
 #include "borderClasses/borderShape.h"
 
 void VectorTesting();
@@ -89,24 +90,38 @@ int main()
 	Cuboid *cubeA = new Cuboid(cubeBaseA, 0.15f, Colour::Blue);
 	Sphere *sph = new Sphere({0.4f, 0.0f, 0.0f}, 0.08f, 10, 3, Colour::Red);
 
-	BorderShape cubeABorder(cubeA);
-	BorderShape sphereBorder(sph);
+	BorderShape *cubeABorder = new BorderShape(cubeA);
+	BorderShape *sphereBorder = new BorderShape(sph);
 
 	DrawerVisitor *cubeAVis = new DrawerVisitor(cubeA);
 	DrawerVisitor *sphereVis = new DrawerVisitor(sph);
-
+	BorderContainer container = new BorderContainer(cubeABorder);
+	container.addContainer(sphereBorder);
 	do
 	{
-
+		DrawerVisitor *contBorder = new DrawerVisitor(container.exportShape());
+		DrawerVisitor *sphereBorderVis = new DrawerVisitor(sphereBorder->exportShape());
+		DrawerVisitor *cubeborderVis = new DrawerVisitor(cubeABorder->exportShape());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
-
+		contBorder->setWireframeMode();
+		sphereBorderVis->setWireframeMode();
+		cubeborderVis->setWireframeMode();
+		sphereBorderVis->draw();
+		cubeborderVis->draw();
 		cubeAVis->draw();
 		sphereVis->draw();
-
+		contBorder->draw();
 		cubeAVis->RotateZ(0.3);
 
-		Vector<3> *collisionPoint = cubeABorder.Collision(&sphereBorder);
+		// Check for Enter key press
+		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		{
+			cubeAVis->setWireframeMode();
+			sphereVis->setWireframeMode();
+		}
+
+		Vector<3> *collisionPoint = cubeABorder->Collision(sphereBorder);
 		if (collisionPoint)
 		{
 			std::cout << "collision detected" << std::endl;
@@ -127,17 +142,9 @@ int main()
 			collisionPoint = nullptr;
 		}
 
-		// Check for Enter key press
-		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
-		{
-			cubeAVis->setWireframeMode();
-			sphereVis->setWireframeMode();
-		}
-
+		delete contBorder;
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 

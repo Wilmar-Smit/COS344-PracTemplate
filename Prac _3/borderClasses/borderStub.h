@@ -28,8 +28,9 @@ public:
     borderStub(Vector<3> minVals, Vector<3> maxVals);
     borderStub(borderStub &stub);
     borderStub(_3DShape *shape);
-    borderStub(Cuboid *shape); // makes accurate border 
+    borderStub(Cuboid *shape); // makes accurate border
 
+    void provideMinMax(Vector<3> &minVals, Vector<3> &maxVals);
 
     virtual Vector<3> *Collision(borderStub *border); // returns a vector of where the collision is blocked from == wall
     virtual void addContainer(borderStub *border);
@@ -39,7 +40,7 @@ public:
     virtual void attach(borderObserver *obs);
     virtual void notify();
     virtual void recalculateCol(_3DShape *shape);
-    virtual void recalculateCol(Cuboid* shape);// needs to use a visitor mini class 
+    virtual void recalculateCol(Cuboid *shape); // needs to use a visitor mini class
     virtual Cuboid *exportShape();
 };
 

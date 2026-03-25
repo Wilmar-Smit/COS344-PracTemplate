@@ -3,6 +3,7 @@
 BorderContainer::BorderContainer(borderStub *border)
     : borderStub(*border) // original size based on the border given
 {
+    this->addContainer(border);
 }
 
 Vector<3> *BorderContainer::Collision(borderStub *border)
@@ -20,9 +21,8 @@ Vector<3> *BorderContainer::Collision(borderStub *border)
             }
         }
     }
-    
-    
-        return nullptr;
+
+    return nullptr;
 }
 
 BorderContainer::~BorderContainer()
@@ -48,22 +48,33 @@ void BorderContainer::addContainer(borderStub *border)
 }
 void BorderContainer::updateSize()
 { // unfortunately needs to check everything since boxes grow and shrink cant just be based on the
-    float minX = boxes[0]->frontBottomLeft[0];
-    float maxX = boxes[0]->frontBottomRight[0];
-    float minY = boxes[0]->frontBottomLeft[1];
-    float maxY = boxes[0]->frontTopLeft[1];
-    float minZ = boxes[0]->frontBottomLeft[2];
-    float maxZ = boxes[0]->backBottomLeft[2];
+    if (boxes.empty())
+    {
+        return;
+    }
+
+    Vector<3> minVals;
+    Vector<3> maxVals;
+    boxes[0]->provideMinMax(minVals, maxVals);
+
+    float minX = minVals[0];
+    float maxX = maxVals[0];
+    float minY = minVals[1];
+    float maxY = maxVals[1];
+    float minZ = minVals[2];
+    float maxZ = maxVals[2];
+
     for (int i = 0; i < boxes.size(); ++i)
     {
         borderStub *b = boxes[i];
+        b->provideMinMax(minVals, maxVals);
 
-        minX = std::min(minX, b->frontBottomLeft[0]);
-        maxX = std::max(maxX, b->frontBottomRight[0]);
-        minY = std::min(minY, b->frontBottomLeft[1]);
-        maxY = std::max(maxY, b->frontTopLeft[1]);
-        minZ = std::min(minZ, b->frontBottomLeft[2]);
-        maxZ = std::max(maxZ, b->backBottomLeft[2]);
+        minX = std::min(minX, minVals[0]);
+        maxX = std::max(maxX, maxVals[0]);
+        minY = std::min(minY, minVals[1]);
+        maxY = std::max(maxY, maxVals[1]);
+        minZ = std::min(minZ, minVals[2]);
+        maxZ = std::max(maxZ, maxVals[2]);
     }
 
     // Recalculate this container’s own corners
@@ -81,5 +92,6 @@ void BorderContainer::notify()
 { // called by my observer
     if (obs)
         obs->notify();
+
     this->updateSize();
 }

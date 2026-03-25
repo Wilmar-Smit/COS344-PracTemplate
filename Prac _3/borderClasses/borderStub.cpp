@@ -20,6 +20,26 @@ void borderStub::initiateValues(Vector<3> minVals, Vector<3> maxVals)
     backTopRight = Vector<3>({maxVals[0], maxVals[1], maxVals[2]});
 }
 
+void borderStub::provideMinMax(Vector<3> &minVals, Vector<3> &maxVals)
+{
+    Vector<3> points[] = {frontBottomLeft, frontBottomRight, frontTopLeft, frontTopRight,
+                          backBottomLeft, backBottomRight, backTopLeft, backTopRight};
+
+    minVals = points[0];
+    maxVals = points[0];
+
+    for (int i = 1; i < 8; ++i)
+    {
+        minVals[0] = std::min(minVals[0], points[i][0]);
+        minVals[1] = std::min(minVals[1], points[i][1]);
+        minVals[2] = std::min(minVals[2], points[i][2]);
+
+        maxVals[0] = std::max(maxVals[0], points[i][0]);
+        maxVals[1] = std::max(maxVals[1], points[i][1]);
+        maxVals[2] = std::max(maxVals[2], points[i][2]);
+    }
+}
+
 borderStub::borderStub(borderStub &stub)
 {
     frontBottomLeft = stub.frontBottomLeft;
