@@ -11,7 +11,9 @@ enum class Direction
     left,
     right,
     up,
-    down
+    down,
+    forward,
+    back
 };
 
 class Scene

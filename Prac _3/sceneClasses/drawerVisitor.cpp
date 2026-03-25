@@ -172,7 +172,7 @@ void DrawerVisitor::Scale(float scale)
 
 void DrawerVisitor::Translation(Direction dir, float step)
 {
-    float dx = 0.0f, dy = 0.0f;
+    float dx = 0.0f, dy = 0.0f, dz = 0.0f;
     if (dir == Direction::up)
         dy = step;
     if (dir == Direction::down)
@@ -181,6 +181,10 @@ void DrawerVisitor::Translation(Direction dir, float step)
         dx = -step;
     if (dir == Direction::right)
         dx = step;
+    if (dir == Direction::forward)
+        dz = step;
+    if (dir == Direction::back)
+        dz = -step;
 
     Matrix<4, 4> translationMatrix;
     for (int i = 0; i < 4; i++)
@@ -189,6 +193,7 @@ void DrawerVisitor::Translation(Direction dir, float step)
 
     translationMatrix[0][3] = dx;
     translationMatrix[1][3] = dy;
+    translationMatrix[2][3] = dz;
 
     transform(translationMatrix, false);
 }
