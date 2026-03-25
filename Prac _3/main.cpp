@@ -6,19 +6,8 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "shader.hpp"
-#include "2D shapes/Triangle.h"
-#include "Vector.h"
-#include "Matrix.h"
-#include "2D shapes/Square.h"
 
-#include "2D shapes/circle.h"
-#include "3D_shapes/Cylinder.h"
-#include "3D_shapes/SquarePyramid.h"
-#include "sceneClasses/drawerVisitor.h"
-#include "3D_shapes/Sphere.h"
-#include "3D_shapes/Cuboid.h"
-#include "borderClasses/borderContainer.h"
-#include "borderClasses/borderShape.h"
+#include "assets.h"
 
 void VectorTesting();
 void MatrixTesitng();
@@ -78,7 +67,8 @@ int main()
 	glfwGetFramebufferSize(window, &nx, &ny);
 	glViewport(0, 0, nx, ny);
 
-	glClearColor(1, 1, 1, 1.0f);
+	glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
+
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 
 	glEnable(GL_BLEND);
@@ -86,70 +76,64 @@ int main()
 
 	glEnable(GL_DEPTH_TEST);
 
-	Square<3> cubeBaseA({0.0f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Blue);
-	Cuboid *cubeA = new Cuboid(cubeBaseA, 0.15f, Colour::Blue);
-	Sphere *sph = new Sphere({0.4f, 0.0f, 0.0f}, 0.08f, 10, 3, Colour::Red);
+	const float axisLength = 1.0f;
+	const GLfloat axisVertices[] = {
+		-axisLength, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		axisLength, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+		0.0f, -axisLength, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, axisLength, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		0.0f, 0.0f, -axisLength, 0.0f, 0.0f, 1.0f, 1.0f,
+		0.0f, 0.0f, axisLength, 0.0f, 0.0f, 1.0f, 1.0f};
 
-	BorderShape *cubeABorder = new BorderShape(cubeA);
-	BorderShape *sphereBorder = new BorderShape(sph);
+	GLuint axisVAO = 0;
+	GLuint axisVBO = 0;
+	glGenVertexArrays(1, &axisVAO);
+	glGenBuffers(1, &axisVBO);
 
-	DrawerVisitor *cubeAVis = new DrawerVisitor(cubeA);
-	DrawerVisitor *sphereVis = new DrawerVisitor(sph);
-	BorderContainer container = new BorderContainer(cubeABorder);
-	container.addContainer(sphereBorder);
+	glBindVertexArray(axisVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, axisVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(axisVertices), axisVertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (const void *)0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 7 * sizeof(GLfloat), (const void *)(3 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	TotalScene *golfCourse = GolfCourse();
+	golfCourse->Scale(0.5);
 	do
 	{
-		DrawerVisitor *contBorder = new DrawerVisitor(container.exportShape());
-		DrawerVisitor *sphereBorderVis = new DrawerVisitor(sphereBorder->exportShape());
-		DrawerVisitor *cubeborderVis = new DrawerVisitor(cubeABorder->exportShape());
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
-		contBorder->setWireframeMode();
-		sphereBorderVis->setWireframeMode();
-		cubeborderVis->setWireframeMode();
-		sphereBorderVis->draw();
-		cubeborderVis->draw();
-		cubeAVis->draw();
-		sphereVis->draw();
-		contBorder->draw();
-		cubeAVis->RotateZ(0.3);
 
-		// Check for Enter key press
-		if (glfwGetKey(window, GLFW_KEY_ENTER) == GLFW_PRESS)
+		glBindVertexArray(axisVAO);
+		glDrawArrays(GL_LINES, 0, 6);
+		glBindVertexArray(0);
+
+		// Put scene here
+		golfCourse->draw();
+
+		golfCourse->RotateZ(0.1);
+		golfCourse->RotateX(0.1);
+		golfCourse->RotateY(0.1);
+		//  put scene here
+
+		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			cubeAVis->setWireframeMode();
-			sphereVis->setWireframeMode();
+			golfCourse->setWireframeMode();
 		}
 
-		Vector<3> *collisionPoint = cubeABorder->Collision(sphereBorder);
-		if (collisionPoint)
-		{
-			std::cout << "collision detected" << std::endl;
-
-			Sphere *collisionDot = new Sphere(*collisionPoint, 0.005f, 8, 3, Colour::Black);
-			DrawerVisitor *collisionDotVis = new DrawerVisitor(collisionDot);
-			collisionDotVis->draw();
-			delete collisionDotVis;
-		}
-		else if (!collisionPoint)
-		{
-			std::cout << "no collision" << std::endl;
-		}
-
-		if (collisionPoint)
-		{
-			delete collisionPoint;
-			collisionPoint = nullptr;
-		}
-
-		delete contBorder;
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));
 
-	delete cubeAVis;
-	delete sphereVis;
+	glDeleteBuffers(1, &axisVBO);
+	glDeleteVertexArrays(1, &axisVAO);
+	delete golfCourse;
 	glfwTerminate();
 
 	return 0;

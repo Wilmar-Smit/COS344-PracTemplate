@@ -43,6 +43,24 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
     }
 }
 
+DrawerVisitor::~DrawerVisitor()
+{
+    if (!VBO.empty())
+    {
+        glDeleteBuffers((VBO.size()), VBO.data());
+    }
+
+    if (!VAO.empty())
+    {
+        glDeleteVertexArrays((VAO.size()), VAO.data());
+    }
+
+    VBO.clear();
+    VAO.clear();
+
+    delete shape;
+}
+
 void DrawerVisitor::draw()
 {
     for (size_t i = 0; i < shapes.size(); i++)
@@ -84,7 +102,7 @@ void DrawerVisitor::reloadVertices()
 
 Shape<3> *DrawerVisitor::getShape() const { return shape; }
 
-void DrawerVisitor::addScene(Scene *scene)
+void DrawerVisitor::addScene(DrawerVisitor *scene)
 {
     delete scene; // shouldnt do anything
 }
@@ -263,7 +281,11 @@ void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter)
 
     if (toCenter)
     {
-        Vector<3> center = shape->getCenter();
+        Vector<3> center;
+        if (!this->aroundGivenPoint)
+            center = shape->getCenter();
+        else
+            center = this->givenCenter;
 
         Matrix<4, 4> toCenter, backToOrigin;
         for (int i = 0; i < 4; i++)

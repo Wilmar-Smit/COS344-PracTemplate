@@ -16,13 +16,12 @@ private:
     std::vector<DrawerVisitor *> visitors;
 
 public:
-    complexSceneHolder(_3DShape *shape);
+    complexSceneHolder();
     virtual ~complexSceneHolder();
-
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
-    virtual void addScene(Scene *scene) override;
+    virtual void addScene(DrawerVisitor*);
     virtual void Rotate(float degrees);
     virtual void RotateX(float degrees);
     virtual void RotateY(float degrees);
@@ -37,10 +36,12 @@ public:
     virtual Scene *getIndex(int i);
     virtual void transform(Matrix<4, 4> &trans, bool toCenter);
 
-    void setGivenCenter(const Vector<3> &center) { givenCenter = center; }
+    void setGivenCenter(const Vector<3> &center);
+
     Vector<3> getGivenCenter() const { return givenCenter; }
 
     void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
+
     const std::vector<DrawerVisitor *> &getVisitors() const { return visitors; }
 };
 

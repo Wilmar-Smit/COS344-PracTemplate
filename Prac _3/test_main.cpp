@@ -1,5 +1,4 @@
 #include <iostream>
-#include "sceneClasses/drawerVisitor.h"
 #include "3D_shapes/3D_Shape.h"
 #include "3D_shapes/Sphere.h"
 #include "3D_shapes/Cuboid.h"
@@ -22,7 +21,9 @@ int main()
     _3DShape *cylinder = new Cylinder(circleBase, 0.30f, Colour::Cyan);
     _3DShape *squarePyramid = new SquarePyramid(squareBase, 0.25f, Colour::Orange);
     _3DShape *triangularPrism = new TriangularPrism(prismBase, 0.20f, Colour::Purple);
+   Vector<3> vsc =  cylinder->getCenter();
 
+   
     delete sphere;
     delete cuboid;
     delete cone;

@@ -40,15 +40,16 @@ OBSERVER_SRCS = shapeObservers/borderObserver.cpp
 # 3D shape source files (now compiled separately, no longer templates)
 SHAPE3D_SRCS := $(wildcard include/MathLibrary/3D_shapes/*.cpp)
 # Scene class source files (now compiled separately)
-SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
+SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp sceneClasses/TotalScene.cpp
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+SRCS = main.cpp shader.cpp assets.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner
-TEST_SRCS = test_main.cpp $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS)
+TEST_SRCS = test_main.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) sceneClasses/drawerVisitor.cpp
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
-
+TEST_OBJS := $(TEST_OBJS:.c=.o)
+ 
 # Directory where GLFW is installed.
 # This should point to the 'install' directory of your GLFW build.
 # Example: /home/user/my_project/glfw_local/install
@@ -69,7 +70,7 @@ $(PROJECT_NAME): $(OBJS)
 
 
 $(TEST_NAME): $(TEST_OBJS)
-	$(CXX) $(TEST_OBJS) -o $(TEST_NAME)
+	$(CXX) $(TEST_OBJS) $(LDFLAGS) $(LIBS) -o $(TEST_NAME)
 
 # Build the standalone test runner
 test: $(TEST_NAME)

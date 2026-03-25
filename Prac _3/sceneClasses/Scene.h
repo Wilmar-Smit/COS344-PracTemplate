@@ -25,7 +25,7 @@ public:
     virtual void draw() = 0;
     virtual void reloadVertices() = 0;
     virtual Shape<3> *getShape() const = 0;
-    virtual void addScene(Scene *scene) = 0;
+    virtual void addScene(DrawerVisitor *scene) = 0;
     virtual ~Scene() = default;
     virtual void Rotate(float degrees) = 0;
     virtual void RotateX(float degrees) = 0;
@@ -39,6 +39,8 @@ public:
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };
     virtual void transform(Matrix<4, 4> &trans, bool toCenter) = 0;
+    void setGivenCenter(const Vector<3> &center) {}
+    Vector<3> getGivenCenter() const { return Vector<3>(); }
 };
 
 #endif

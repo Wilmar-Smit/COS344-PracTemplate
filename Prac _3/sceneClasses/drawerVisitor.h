@@ -18,10 +18,10 @@
 class DrawerVisitor : public Scene
 {
     friend class Cylinder;
-    Vector<3> givenCenter;
-    bool aroundGivenPoint = false;
 
 protected:
+    Vector<3> givenCenter;
+    bool aroundGivenPoint = false;
     _3DShape *shape;
     std::vector<Shape<3> *> shapes;
     std::vector<int> vertexCounts;
@@ -36,11 +36,11 @@ protected:
 
 public:
     DrawerVisitor(_3DShape *shape);
-    virtual ~DrawerVisitor() { delete shape; };
+    virtual ~DrawerVisitor() override;
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
-    virtual void addScene(Scene *scene) override;
+    virtual void addScene(DrawerVisitor *scene) override;
     virtual void Rotate(float degrees);
     virtual void RotateX(float degrees);
     virtual void RotateY(float degrees);
@@ -55,6 +55,13 @@ public:
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
     virtual void transform(Matrix<4, 4> &trans, bool toCenter);
+
+    void setGivenCenter(const Vector<3> &center)
+    {
+        givenCenter = center;
+        aroundGivenPoint = true;
+    }
+    Vector<3> getGivenCenter() const { return givenCenter; }
 
     void Visit(Cone *cone);
     void Visit(Cuboid *cuboid);
