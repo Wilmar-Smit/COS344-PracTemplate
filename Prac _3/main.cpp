@@ -104,14 +104,14 @@ int main()
 		cubeAVis->draw();
 		sphereVis->draw();
 
-		cubeAVis->RotateZ(0.5);
+		cubeAVis->RotateZ(0.3);
 
 		Vector<3> *collisionPoint = cubeABorder.Collision(&sphereBorder);
 		if (collisionPoint)
 		{
 			std::cout << "collision detected" << std::endl;
 
-			Sphere *collisionDot = new Sphere(*collisionPoint, 0.01f, 8, 3, Colour::Black);
+			Sphere *collisionDot = new Sphere(*collisionPoint, 0.005f, 8, 3, Colour::Black);
 			DrawerVisitor *collisionDotVis = new DrawerVisitor(collisionDot);
 			collisionDotVis->draw();
 			delete collisionDotVis;
