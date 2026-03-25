@@ -13,15 +13,24 @@ class complexSceneHolder : public Scene
 {
 private:
     Vector<3> givenCenter;
+
+    // center for my translations
+    // Easiest way to update all the centers is to add a function that applies a center to all (already exists just needs a version for global)
+    // Make a function for switching which center a rotation is done around bool flag
+    // given center == my rotation point individually
+    // totalCenter == my rotation point when the flag is set
+    // on flag set and not set it will just change which center is applied
     std::vector<DrawerVisitor *> visitors;
 
 public:
+    Vector<3> TotalCenter;
+    bool useTotal = false;
     complexSceneHolder();
     virtual ~complexSceneHolder();
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
-    virtual void addScene(DrawerVisitor*);
+    virtual void addScene(DrawerVisitor *);
     virtual void Rotate(float degrees);
     virtual void RotateX(float degrees);
     virtual void RotateY(float degrees);
@@ -38,7 +47,7 @@ public:
 
     void setGivenCenter(const Vector<3> &center);
 
-    Vector<3> getGivenCenter() const { return givenCenter; }
+    Vector<3> &getGivenCenter()  { return givenCenter; }
 
     void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
 

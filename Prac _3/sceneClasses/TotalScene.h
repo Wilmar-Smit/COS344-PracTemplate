@@ -13,24 +13,34 @@ class TotalScene
 {
 
     std::vector<complexSceneHolder *> containers;
+
     bool selected = false;
 
 public:
-    TotalScene();
-    virtual ~TotalScene();
-    virtual void draw();
-    virtual void addScene(complexSceneHolder *);
-    virtual void Rotate(float degrees);
-    virtual void RotateX(float degrees);
-    virtual void RotateY(float degrees);
-    virtual void RotateZ(float degrees);
-    virtual void Scale(float scale);
-    virtual void Translation(Direction dir, float step);
+ 
+    TotalScene(); // the passed in center is the shared center amongst all 
+    // links to the center of the windmill
+    ~TotalScene();
+    void draw();
+    void addScene(complexSceneHolder *scene);
+    void Rotate(float degrees);
+    void RotateX(float degrees);
+    void RotateY(float degrees);
+    void RotateZ(float degrees);
+    void Scale(float scale);
+    void Translation(Direction dir, float step);
 
-    virtual void select();
-    virtual void deselect();
-    virtual void setWireframeMode();
-    virtual void setNormalMode();
+    void select();
+    void deselect();
+    void setWireframeMode();
+    void setNormalMode();
+    complexSceneHolder *getIndex(int i)
+    {
+        if ((i >= 0 && i < containers.size()))
+            return this->containers[i];
+
+        return nullptr;
+    }
 };
 
 #endif

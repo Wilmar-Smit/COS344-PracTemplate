@@ -39,39 +39,54 @@ void complexSceneHolder::Rotate(float degrees)
         if (visitors[i])
             visitors[i]->RotateZ(degrees);
     }
+
+
 }
 void complexSceneHolder::RotateX(float degrees)
 {
+
+
     for (int i = 0; i < visitors.size(); i++)
     {
         if (visitors[i])
             visitors[i]->RotateX(degrees);
     }
+
+
 }
 
 void complexSceneHolder::RotateY(float degrees)
 {
+
     for (int i = 0; i < visitors.size(); i++)
     {
         if (visitors[i])
             visitors[i]->RotateY(degrees);
     }
+
+
 }
 void complexSceneHolder::RotateZ(float degrees)
 {
+
     for (int i = 0; i < visitors.size(); i++)
     {
         if (visitors[i])
             visitors[i]->RotateZ(degrees);
     }
+
+
 }
 void complexSceneHolder::Scale(float scale)
 {
+
     for (int i = 0; i < visitors.size(); i++)
     {
         if (visitors[i])
             visitors[i]->Scale(scale);
     }
+
+
 }
 void complexSceneHolder::Translation(Direction dir, float step)
 {
@@ -81,6 +96,8 @@ void complexSceneHolder::Translation(Direction dir, float step)
         if (visitors[i])
             visitors[i]->Translation(dir, step);
     }
+
+
 }
 void complexSceneHolder::select()
 {
@@ -126,13 +143,30 @@ Scene *complexSceneHolder::selectNext() { return nullptr; }    // only complex o
 Scene *complexSceneHolder::getIndex(int i) { return nullptr; } // only complex objects can be selected not individual parts
 void complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter)
 {
+    if (this->useTotal)
+    {
+        std::cout << "I ran useTotal Center" << std::endl;
+        for (int i = 0; i < visitors.size(); i++)
+        {
+            if (visitors[i])
+                visitors[i]->setGivenCenter(TotalCenter);
+        }
+    }
     for (int i = 0; i < visitors.size(); i++)
     {
         if (visitors[i])
             visitors[i]->transform(trans, toCenter);
     }
-}
 
+    if (this->useTotal)
+    {
+        for (int i = 0; i < visitors.size(); i++)
+        {
+            if (visitors[i])
+                visitors[i]->setGivenCenter(givenCenter);
+        }
+    }
+}
 void complexSceneHolder::setGivenCenter(const Vector<3> &center)
 {
     this->givenCenter = center;

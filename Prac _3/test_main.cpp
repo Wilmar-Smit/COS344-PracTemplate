@@ -8,6 +8,7 @@
 #include "3D_shapes/TriangularPrism.h"
 #include "2D shapes/Square.h"
 #include "2D shapes/circle.h"
+#include "assets.h"
 
 int main()
 {
@@ -21,9 +22,8 @@ int main()
     _3DShape *cylinder = new Cylinder(circleBase, 0.30f, Colour::Cyan);
     _3DShape *squarePyramid = new SquarePyramid(squareBase, 0.25f, Colour::Orange);
     _3DShape *triangularPrism = new TriangularPrism(prismBase, 0.20f, Colour::Purple);
-   Vector<3> vsc =  cylinder->getCenter();
+    Vector<3> vsc = cylinder->getCenter();
 
-   
     delete sphere;
     delete cuboid;
     delete cone;

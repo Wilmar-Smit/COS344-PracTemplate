@@ -46,7 +46,7 @@ SRCS = main.cpp shader.cpp assets.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OB
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner
-TEST_SRCS = test_main.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) sceneClasses/drawerVisitor.cpp
+TEST_SRCS = test_main.cpp glad.c assets.cpp $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
 TEST_OBJS := $(TEST_OBJS:.c=.o)
  

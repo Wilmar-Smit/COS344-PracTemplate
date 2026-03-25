@@ -71,10 +71,9 @@ int main()
 
 	GLuint programID = LoadShaders("vertex_shader.glsl", "fragment_shader.glsl");
 
+	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	glEnable(GL_DEPTH_TEST);
 
 	const float axisLength = 1.0f;
 	const GLfloat axisVertices[] = {
@@ -103,6 +102,9 @@ int main()
 	glBindVertexArray(0);
 
 	TotalScene *golfCourse = GolfCourse();
+
+	golfCourse->Translation(Direction::back, 0.2);
+	golfCourse->Translation(Direction::up, 0.3);
 	golfCourse->Scale(0.5);
 	do
 	{
@@ -112,14 +114,15 @@ int main()
 		glBindVertexArray(axisVAO);
 		glDrawArrays(GL_LINES, 0, 6);
 		glBindVertexArray(0);
+		// fan rotations
+	//	if (golfCourse->getIndex(0) != nullptr)
+			golfCourse->getIndex(0)->RotateZ(0.1);
 
+		// fan rotations
+
+		golfCourse->RotateX(0.2);
 		// Put scene here
 		golfCourse->draw();
-
-		golfCourse->RotateZ(0.1);
-		golfCourse->RotateX(0.1);
-		golfCourse->RotateY(0.1);
-		//  put scene here
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{

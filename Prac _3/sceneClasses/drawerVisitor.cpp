@@ -278,7 +278,6 @@ DrawerVisitor *DrawerVisitor::getIndex(int i) { return nullptr; }
 void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter)
 {
     Matrix<4, 4> fullTransform = trans;
-
     if (toCenter)
     {
         Vector<3> center;
@@ -304,12 +303,21 @@ void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter)
         fullTransform = backToOrigin * trans * toCenter;
     }
 
+    // apply to shapes
     for (int i = 0; i < shapes.size(); i++)
     {
         shapes[i]->applyMatrix(fullTransform);
     }
 
-    shape->notify(); // notifies the collision boxes
+    // also apply to givenCenter if it exists
+    if (this->aroundGivenPoint)
+    {
+        Vector<4> gcHomogeneous({this->givenCenter[0], this->givenCenter[1], this->givenCenter[2], 1.0f});
+        gcHomogeneous = fullTransform * (Matrix<4, 1>)gcHomogeneous;
+        this->givenCenter = Vector<3>({gcHomogeneous[0], gcHomogeneous[1], gcHomogeneous[2]});
+    }
+
+    shape->notify();
     reloadVertices();
 }
 
