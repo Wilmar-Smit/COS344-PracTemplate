@@ -97,6 +97,7 @@ int main()
 
 	do
 	{
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glUseProgram(programID);
 
@@ -109,6 +110,11 @@ int main()
 		if (collisionPoint)
 		{
 			std::cout << "collision detected" << std::endl;
+
+			Sphere *collisionDot = new Sphere(*collisionPoint, 0.01f, 8, 3, Colour::Black);
+			DrawerVisitor *collisionDotVis = new DrawerVisitor(collisionDot);
+			collisionDotVis->draw();
+			delete collisionDotVis;
 		}
 		else if (!collisionPoint)
 		{
@@ -130,6 +136,7 @@ int main()
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
 
 	} while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
 			 !glfwWindowShouldClose(window));

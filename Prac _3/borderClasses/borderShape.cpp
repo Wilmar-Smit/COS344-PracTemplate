@@ -1,5 +1,7 @@
 #include "borderShape.h"
 #include "3D_shapes/3D_Shape.h"
+#include "3D_shapes/Cuboid.h"
+
 BorderShape::BorderShape(_3DShape *shape)
     : borderStub(shape) // 3d shapes need a function to return their mins and max each implemented.
 {
@@ -12,29 +14,31 @@ Vector<3> *BorderShape::Collision(borderStub *border)
     Vector<3> *borderCollisionPoint = borderStub::Collision(border);
     if (!borderCollisionPoint)
         return nullptr;
+    Vector<3> overlapPoint = *borderCollisionPoint;
 
-    _3DShape *colShape = border->getShape();
-    if (!colShape)
+    Vector<3> thisPoints[] = {frontBottomLeft, frontBottomRight, frontTopLeft, frontTopRight,
+                              backBottomLeft, backBottomRight, backTopLeft, backTopRight};
+
+    float minX = thisPoints[0][0], maxX = thisPoints[0][0];
+    float minY = thisPoints[0][1], maxY = thisPoints[0][1];
+    float minZ = thisPoints[0][2], maxZ = thisPoints[0][2];
+
+    for (int i = 1; i < 8; i++)
     {
-        delete borderCollisionPoint;
-        return nullptr;
+        minX = std::min(minX, thisPoints[i][0]);
+        maxX = std::max(maxX, thisPoints[i][0]);
+        minY = std::min(minY, thisPoints[i][1]);
+        maxY = std::max(maxY, thisPoints[i][1]);
+        minZ = std::min(minZ, thisPoints[i][2]);
+        maxZ = std::max(maxZ, thisPoints[i][2]);
     }
 
-    Vector<3> center = colShape->getCenter();
-
-    float minX = frontBottomLeft[0];
-    float maxX = frontBottomRight[0];
-    float minY = frontBottomLeft[1];
-    float maxY = frontTopLeft[1];
-    float minZ = frontBottomLeft[2];
-    float maxZ = backBottomLeft[2];
-
-    float distToMinX = std::abs(center[0] - minX);
-    float distToMaxX = std::abs(center[0] - maxX);
-    float distToMinY = std::abs(center[1] - minY);
-    float distToMaxY = std::abs(center[1] - maxY);
-    float distToMinZ = std::abs(center[2] - minZ);
-    float distToMaxZ = std::abs(center[2] - maxZ);
+    float distToMinX = std::abs(overlapPoint[0] - minX);
+    float distToMaxX = std::abs(overlapPoint[0] - maxX);
+    float distToMinY = std::abs(overlapPoint[1] - minY);
+    float distToMaxY = std::abs(overlapPoint[1] - maxY);
+    float distToMinZ = std::abs(overlapPoint[2] - minZ);
+    float distToMaxZ = std::abs(overlapPoint[2] - maxZ);
 
     float smallest = distToMinX;
     int wallAxis = 0;
@@ -70,9 +74,22 @@ Vector<3> *BorderShape::Collision(borderStub *border)
         wallValue = maxZ;
     }
 
-    Vector<3> wallPoint(*borderCollisionPoint);
+    Vector<3> wallPoint(overlapPoint);
     delete borderCollisionPoint;
     wallPoint[wallAxis] = wallValue;
+
+    if (wallPoint[0] < minX)
+        wallPoint[0] = minX;
+    if (wallPoint[0] > maxX)
+        wallPoint[0] = maxX;
+    if (wallPoint[1] < minY)
+        wallPoint[1] = minY;
+    if (wallPoint[1] > maxY)
+        wallPoint[1] = maxY;
+    if (wallPoint[2] < minZ)
+        wallPoint[2] = minZ;
+    if (wallPoint[2] > maxZ)
+        wallPoint[2] = maxZ;
 
     return new Vector<3>(wallPoint);
 }
@@ -88,7 +105,12 @@ _3DShape *BorderShape::getShape()
 
 void BorderShape::notify()
 {
-    recalculateCol(this->shape);
+    BorderVisitor *vis = new BorderVisitor;
+    this->shape->acceptVisitor(vis, this);
+
     if (obs)
         obs->notify();
+
+    if (vis)
+        delete vis;
 }

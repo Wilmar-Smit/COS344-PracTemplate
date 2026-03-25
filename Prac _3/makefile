@@ -34,8 +34,8 @@ COVERAGE_HTML_FILE = $(COVERAGE_HTML_DIR)/index.html
 COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 
 # Math library source files (non-template translation units only)
-MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp
-BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp borderClasses/borderContainer.cpp
+MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp 
+BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp borderClasses/borderContainer.cpp borderClasses/borderVisitor.cpp
 OBSERVER_SRCS = shapeObservers/borderObserver.cpp
 # 3D shape source files (now compiled separately, no longer templates)
 SHAPE3D_SRCS := $(wildcard include/MathLibrary/3D_shapes/*.cpp)

@@ -1,6 +1,8 @@
 #include "borderStub.h"
 #include "3D_shapes/3D_Shape.h"
 #include "../shapeObservers/borderObserver.h"
+#include "3D_shapes/Cuboid.h"
+
 borderStub::borderStub(Vector<3> minVals, Vector<3> maxVals)
 {
     initiateValues(minVals, maxVals);
@@ -41,19 +43,35 @@ void borderStub::addContainer(borderStub *border)
 
 Vector<3> *borderStub::Collision(borderStub *other)
 {
-    float thisMinX = frontBottomLeft[0];
-    float thisMaxX = frontBottomRight[0];
-    float thisMinY = frontBottomLeft[1];
-    float thisMaxY = frontTopLeft[1];
-    float thisMinZ = frontBottomLeft[2];
-    float thisMaxZ = backBottomLeft[2];
+    Vector<3> thisPoints[] = {frontBottomLeft, frontBottomRight, frontTopLeft, frontTopRight,
+                              backBottomLeft, backBottomRight, backTopLeft, backTopRight};
+    Vector<3> otherPoints[] = {other->frontBottomLeft, other->frontBottomRight, other->frontTopLeft, other->frontTopRight,
+                               other->backBottomLeft, other->backBottomRight, other->backTopLeft, other->backTopRight};
 
-    float otherMinX = other->frontBottomLeft[0];
-    float otherMaxX = other->frontBottomRight[0];
-    float otherMinY = other->frontBottomLeft[1];
-    float otherMaxY = other->frontTopLeft[1];
-    float otherMinZ = other->frontBottomLeft[2];
-    float otherMaxZ = other->backBottomLeft[2];
+    float thisMinX = thisPoints[0][0], thisMaxX = thisPoints[0][0];
+    float thisMinY = thisPoints[0][1], thisMaxY = thisPoints[0][1];
+    float thisMinZ = thisPoints[0][2], thisMaxZ = thisPoints[0][2];
+
+    float otherMinX = otherPoints[0][0], otherMaxX = otherPoints[0][0];
+    float otherMinY = otherPoints[0][1], otherMaxY = otherPoints[0][1];
+    float otherMinZ = otherPoints[0][2], otherMaxZ = otherPoints[0][2];
+
+    for (int i = 1; i < 8; i++)
+    {
+        thisMinX = std::min(thisMinX, thisPoints[i][0]);
+        thisMaxX = std::max(thisMaxX, thisPoints[i][0]);
+        thisMinY = std::min(thisMinY, thisPoints[i][1]);
+        thisMaxY = std::max(thisMaxY, thisPoints[i][1]);
+        thisMinZ = std::min(thisMinZ, thisPoints[i][2]);
+        thisMaxZ = std::max(thisMaxZ, thisPoints[i][2]);
+
+        otherMinX = std::min(otherMinX, otherPoints[i][0]);
+        otherMaxX = std::max(otherMaxX, otherPoints[i][0]);
+        otherMinY = std::min(otherMinY, otherPoints[i][1]);
+        otherMaxY = std::max(otherMaxY, otherPoints[i][1]);
+        otherMinZ = std::min(otherMinZ, otherPoints[i][2]);
+        otherMaxZ = std::max(otherMaxZ, otherPoints[i][2]);
+    }
 
     bool overlapX = (thisMinX <= otherMaxX && thisMaxX >= otherMinX);
     bool overlapY = (thisMinY <= otherMaxY && thisMaxY >= otherMinY);
@@ -83,6 +101,18 @@ borderStub::borderStub(_3DShape *shape)
     shape->getBorders(min, max);
     initiateValues(min, max);
 }
+borderStub::borderStub(Cuboid *shape)
+{
+    frontBottomLeft = shape->base->bl;
+    frontBottomRight = shape->base->br;
+    frontTopLeft = shape->base->tl;
+    frontTopRight = shape->base->tr;
+
+    backBottomLeft = shape->top->bl;
+    backBottomRight = shape->top->br;
+    backTopLeft = shape->top->tl;
+    backTopRight = shape->top->tr;
+}
 
 void borderStub::attach(borderObserver *obs)
 {
@@ -102,4 +132,54 @@ void borderStub::recalculateCol(_3DShape *shape)
         shape->getBorders(min, max);
         initiateValues(min, max);
     }
+}
+void borderStub::recalculateCol(Cuboid *shape)
+{
+    frontBottomLeft = shape->base->bl;
+    frontBottomRight = shape->base->br;
+    frontTopLeft = shape->base->tl;
+    frontTopRight = shape->base->tr;
+
+    backBottomLeft = shape->top->bl;
+    backBottomRight = shape->top->br;
+    backTopLeft = shape->top->tl;
+    backTopRight = shape->top->tr;
+}
+
+Cuboid *borderStub::exportShape()
+{
+    Square<3> tempBase({0.0f, 0.0f, 0.0f}, 0.1f, 0.1f, Colour::Black);
+    Cuboid *boundingBox = new Cuboid(tempBase, 0.1f, Colour::Black);
+
+    boundingBox->base->bl = frontBottomLeft;
+    boundingBox->base->br = frontBottomRight;
+    boundingBox->base->tl = frontTopLeft;
+    boundingBox->base->tr = frontTopRight;
+
+    boundingBox->top->bl = backBottomLeft;
+    boundingBox->top->br = backBottomRight;
+    boundingBox->top->tl = backTopLeft;
+    boundingBox->top->tr = backTopRight;
+
+    boundingBox->front->tl = frontTopLeft;
+    boundingBox->front->tr = frontTopRight;
+    boundingBox->front->bl = frontBottomLeft;
+    boundingBox->front->br = frontBottomRight;
+
+    boundingBox->back->tl = backTopLeft;
+    boundingBox->back->tr = backTopRight;
+    boundingBox->back->bl = backBottomLeft;
+    boundingBox->back->br = backBottomRight;
+
+    boundingBox->leftSide->tl = frontTopLeft;
+    boundingBox->leftSide->tr = backTopLeft;
+    boundingBox->leftSide->bl = frontBottomLeft;
+    boundingBox->leftSide->br = backBottomLeft;
+
+    boundingBox->rightSide->tl = frontTopRight;
+    boundingBox->rightSide->tr = backTopRight;
+    boundingBox->rightSide->bl = frontBottomRight;
+    boundingBox->rightSide->br = backBottomRight;
+
+    return boundingBox;
 }
