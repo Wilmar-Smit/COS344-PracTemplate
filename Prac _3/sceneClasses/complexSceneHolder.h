@@ -12,7 +12,7 @@
 class complexSceneHolder : public Scene
 {
 private:
-    std::vector<DrawerVisitor *> visitors;
+    std::vector<Scene *> visitors;
 
 public:
     complexSceneHolder();
@@ -21,9 +21,8 @@ public:
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
-    virtual void addScene(DrawerVisitor *);
+    virtual void addScene(Scene *scene);
 
-    // Forward transforms to visitors
     virtual void Rotate(float degrees, OrientationObject *orient = nullptr);
     virtual void RotateX(float degrees, OrientationObject *orient = nullptr);
     virtual void RotateY(float degrees, OrientationObject *orient = nullptr);
@@ -40,7 +39,7 @@ public:
     virtual Scene *getIndex(int i);
 
     void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
-    const std::vector<DrawerVisitor *> &getVisitors() const { return visitors; }
+    const std::vector<Scene *> &getVisitors() const { return visitors; }
 };
 
 #endif

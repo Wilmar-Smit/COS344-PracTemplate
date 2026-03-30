@@ -40,7 +40,7 @@ OBSERVER_SRCS = shapeObservers/borderObserver.cpp
 # 3D shape source files (now compiled separately, no longer templates)
 SHAPE3D_SRCS := $(wildcard include/MathLibrary/3D_shapes/*.cpp)
 # Scene class source files (now compiled separately)
-SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp sceneClasses/TotalScene.cpp
+SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 # Source files (space-separated)
 SRCS = main.cpp shader.cpp assets.cpp glad.c $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 

@@ -30,7 +30,7 @@ void complexSceneHolder::reloadVertices()
     }
 }
 Shape<3> *complexSceneHolder::getShape() const { return nullptr; }
-void complexSceneHolder::addScene(DrawerVisitor *scene)
+void complexSceneHolder::addScene(Scene *scene)
 {
     visitors.push_back(scene);
 }

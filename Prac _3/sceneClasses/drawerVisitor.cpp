@@ -100,7 +100,7 @@ void DrawerVisitor::reloadVertices()
 
 Shape<3> *DrawerVisitor::getShape() const { return shape; }
 
-void DrawerVisitor::addScene(DrawerVisitor *scene)
+void DrawerVisitor::addScene(Scene *scene)
 {
     delete scene; // shouldnt do anything
 }

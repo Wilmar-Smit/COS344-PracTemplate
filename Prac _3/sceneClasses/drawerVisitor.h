@@ -36,7 +36,7 @@ public:
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
-    virtual void addScene(DrawerVisitor *scene) override;
+    virtual void addScene(Scene *scene) override;
 
     // Transform operations with optional orientation
     virtual void Rotate(float degrees, OrientationObject *orient = nullptr);
