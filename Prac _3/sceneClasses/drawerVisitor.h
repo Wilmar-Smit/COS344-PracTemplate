@@ -17,16 +17,11 @@
 
 class DrawerVisitor : public Scene
 {
-    friend class Cylinder;
 
 protected:
-    Vector<3> givenCenter;
-    bool aroundGivenPoint = false;
     _3DShape *shape;
     std::vector<Shape<3> *> shapes;
     std::vector<int> vertexCounts;
-
-    DrawerVisitor *parent = nullptr;
 
     std::vector<GLuint> VAO, VBO;
     GLenum type = GL_TRIANGLE_FAN;
@@ -51,17 +46,10 @@ public:
     virtual void deselect();
     virtual void setWireframeMode();
     virtual void setNormalMode();
-    virtual void setParent(DrawerVisitor *parent) { this->parent = parent; };
+    virtual void setParent(DrawerVisitor *parent) {};
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
     virtual void transform(Matrix<4, 4> &trans, bool toCenter);
-
-    void setGivenCenter(const Vector<3> &center)
-    {
-        givenCenter = center;
-        aroundGivenPoint = true;
-    }
-    Vector<3> getGivenCenter() const { return givenCenter; }
 
     void Visit(Cone *cone);
     void Visit(Cuboid *cuboid);

@@ -132,12 +132,10 @@ complexSceneHolder *WindMillTower()
     return windMill;
 }
 
-TotalScene *GolfCourse()
-{
-    complexSceneHolder *wm = WindMillFan();
-    TotalScene *totalScene = new TotalScene();
-    totalScene->addScene(wm);
-    totalScene->addScene(WindMillTower());
-
-    return totalScene;
-}
+//TotalScene *GolfCourse()
+//{
+//  //  TotalScene *totalScene = new TotalScene();
+//  //  totalScene->addScene(WindMillFan());
+//  //  totalScene->addScene(WindMillTower());
+//  //  return totalScene;
+//}

@@ -18,8 +18,10 @@ enum class Direction
 
 class Scene
 {
+
 protected:
     bool selected = false;
+    OrientationObject *orientation = nullptr;
 
 public:
     virtual void draw() = 0;
@@ -39,8 +41,38 @@ public:
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };
     virtual void transform(Matrix<4, 4> &trans, bool toCenter) = 0;
-    void setGivenCenter(const Vector<3> &center) {}
-    Vector<3> getGivenCenter() const { return Vector<3>(); }
+    virtual void setGivenCenter(const Vector<3> &center) {}
+    virtual Vector<3> getGivenCenter() const { return Vector<3>(); }
+
+    virtual void SetMyOrientation(OrientationObject *obj) { this->orientation = obj; };
+    virtual OrientationObject *getMyOrientation() { return this->orientation; };
+    virtual Vector<3> getRotateDirection()
+    {
+        if (this->orientation)
+        {
+            return this->orientation->generateDirection();
+        }
+        else
+            return Vector<3>({0, 0, 0});
+    };
 };
 
+class OrientationObject
+{
+private:
+    Vector<3> *OPstart;
+    Vector<3> *OPend;
+
+public:
+    OrientationObject(Vector<3> *OPstart, Vector<3> *OPend, Vector<3> *center) : OPstart(OPstart), OPend(OPend) {};
+    // no copy contructor
+    Vector<3> generateDirection()
+    {
+        return *OPend - *OPstart;
+    };
+    Vector<3> getCenter()
+    {
+        return (*OPend + *OPstart)* 0.5;
+    }
+};
 #endif

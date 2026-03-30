@@ -101,11 +101,6 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
-	TotalScene *golfCourse = GolfCourse();
-
-	golfCourse->Translation(Direction::back, 0.2);
-	golfCourse->Translation(Direction::up, 0.3);
-	golfCourse->Scale(0.5);
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -114,19 +109,9 @@ int main()
 		glBindVertexArray(axisVAO);
 		glDrawArrays(GL_LINES, 0, 6);
 		glBindVertexArray(0);
-		// fan rotations
-	//	if (golfCourse->getIndex(0) != nullptr)
-			golfCourse->getIndex(0)->RotateZ(0.1);
-
-		// fan rotations
-
-	//	golfCourse->RotateX(0.2);
-		// Put scene here
-		golfCourse->draw();
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
-			golfCourse->setWireframeMode();
 		}
 
 		glfwSwapBuffers(window);
@@ -136,7 +121,6 @@ int main()
 
 	glDeleteBuffers(1, &axisVBO);
 	glDeleteVertexArrays(1, &axisVAO);
-	delete golfCourse;
 	glfwTerminate();
 
 	return 0;

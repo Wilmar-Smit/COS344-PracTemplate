@@ -1,10 +1,9 @@
 #include "drawerVisitor.h"
 
+
 DrawerVisitor::DrawerVisitor(_3DShape *shape)
     : shape(shape)
 {
-    // does the visiting and populates the array
-    // Each shape sees visitor as a friend hence it can see its internals
     Visit(this->shape);
 
     VAO.resize(shapes.size());
@@ -78,7 +77,7 @@ void DrawerVisitor::reloadVertices()
         if (type == GL_TRIANGLE_FAN)
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-            vertexCounts[i] = static_cast<int>(shapes[i]->getNumPoints() / VERTEX_DEPTH);
+            vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             float *vertices = shapes[i]->exportValues();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
                             vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
@@ -89,7 +88,7 @@ void DrawerVisitor::reloadVertices()
         else
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-            vertexCounts[i] = static_cast<int>((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
+            vertexCounts[i] = ((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
             float *vertices = shapes[i]->exportWireframe();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
                             vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
@@ -114,65 +113,29 @@ void DrawerVisitor::Rotate(float degrees)
 
 void DrawerVisitor::RotateX(float degrees)
 {
+    float radians = degrees * (std::acos(-1.0f) / 180.0f);
 
-    {
-        float radians = degrees * (std::acos(-1.0f) / 180.0f);
-        float cosTheta = std::cos(radians);
-        float sinTheta = std::sin(radians);
+    Matrix<4, 4> rot;
 
-        Matrix<4, 4> rotationMatrix;
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
-                if (i == j)
-                    rotationMatrix[i][j] = 1.0f;
-
-        rotationMatrix[2][2] = cosTheta;
-        rotationMatrix[1][1] = cosTheta;
-        rotationMatrix[1][2] = -sinTheta;
-        rotationMatrix[2][1] = sinTheta;
-
-        transform(rotationMatrix, true);
-    }
+    transform(rot, true);
 }
 
 void DrawerVisitor::RotateY(float degrees)
 {
-    {
-        float radians = degrees * (std::acos(-1.0f) / 180.0f);
-        float cosTheta = std::cos(radians);
-        float sinTheta = std::sin(radians);
+    float radians = degrees * (std::acos(-1.0f) / 180.0f);
 
-        Matrix<4, 4> rotationMatrix;
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
-                rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
+    Matrix<4, 4> rot;
 
-        rotationMatrix[0][0] = cosTheta;
-        rotationMatrix[0][2] = sinTheta;
-        rotationMatrix[2][0] = -sinTheta;
-        rotationMatrix[2][2] = cosTheta;
-
-        transform(rotationMatrix, true);
-    }
+    transform(rot, true);
 }
 
 void DrawerVisitor::RotateZ(float degrees)
 {
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
-    float cosTheta = std::cos(radians);
-    float sinTheta = std::sin(radians);
 
-    Matrix<4, 4> rotationMatrix;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            rotationMatrix[i][j] = (i == j) ? 1.0f : 0.0f;
+    Matrix<4, 4> rot;
 
-    rotationMatrix[0][0] = cosTheta;
-    rotationMatrix[0][1] = -sinTheta;
-    rotationMatrix[1][0] = sinTheta;
-    rotationMatrix[1][1] = cosTheta;
-
-    transform(rotationMatrix, true);
+    transform(rot, true);
 }
 
 void DrawerVisitor::Scale(float scale)
@@ -220,7 +183,7 @@ void DrawerVisitor::select()
 {
     for (int i = 0; i < shapes.size(); i++)
     {
-        if (!this)
+        if (!this->selected)
         {
             shapes[i]->setCoulourVec(shapes[i]->getColourPas());
         }
@@ -277,46 +240,7 @@ DrawerVisitor *DrawerVisitor::getIndex(int i) { return nullptr; }
 
 void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter)
 {
-    Matrix<4, 4> fullTransform = trans;
-    if (toCenter)
-    {
-        Vector<3> center;
-        if (!this->aroundGivenPoint)
-            center = shape->getCenter();
-        else
-            center = this->givenCenter;
-
-        Matrix<4, 4> toCenter, backToOrigin;
-        for (int i = 0; i < 4; i++)
-            for (int j = 0; j < 4; j++)
-            {
-                toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
-                backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
-            }
-
-        for (int i = 0; i < 3; i++)
-        {
-            toCenter[i][3] = -center[i];
-            backToOrigin[i][3] = center[i];
-        }
-
-        fullTransform = backToOrigin * trans * toCenter;
-    }
-
-    // apply to shapes
-    for (int i = 0; i < shapes.size(); i++)
-    {
-        shapes[i]->applyMatrix(fullTransform);
-    }
-
-    // also apply to givenCenter if it exists
-    if (this->aroundGivenPoint)
-    {
-        Vector<4> gcHomogeneous({this->givenCenter[0], this->givenCenter[1], this->givenCenter[2], 1.0f});
-        gcHomogeneous = fullTransform * (Matrix<4, 1>)gcHomogeneous;
-        this->givenCenter = Vector<3>({gcHomogeneous[0], gcHomogeneous[1], gcHomogeneous[2]});
-    }
-
+    // Removed to
     shape->notify();
     reloadVertices();
 }

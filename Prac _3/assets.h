@@ -14,9 +14,9 @@
 #include "borderClasses/borderContainer.h"
 #include "borderClasses/borderShape.h"
 #include "sceneClasses/complexSceneHolder.h"
-#include "sceneClasses/TotalScene.h"
+
 
 complexSceneHolder *WindMillFan();
 complexSceneHolder *WindMillTower();
-TotalScene *GolfCourse();
+//TotalScene *GolfCourse();
 #endif
