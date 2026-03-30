@@ -16,6 +16,25 @@ enum class Direction
     back
 };
 
+class OrientationObject
+{
+private:
+    Vector<3> *OPstart;
+    Vector<3> *OPend;
+
+public:
+    OrientationObject(Vector<3> *OPstart, Vector<3> *OPend, Vector<3> *center) : OPstart(OPstart), OPend(OPend) {};
+    // no copy contructor
+    Vector<3> generateDirection()
+    {
+        return *OPend - *OPstart;
+    };
+    Vector<3> getCenter()
+    {
+        return (*OPend + *OPstart) * 0.5;
+    }
+};
+
 class Scene
 {
 
@@ -29,18 +48,19 @@ public:
     virtual Shape<3> *getShape() const = 0;
     virtual void addScene(DrawerVisitor *scene) = 0;
     virtual ~Scene() = default;
-    virtual void Rotate(float degrees) = 0;
-    virtual void RotateX(float degrees) = 0;
-    virtual void RotateY(float degrees) = 0;
-    virtual void RotateZ(float degrees) = 0;
-    virtual void Scale(float scale) = 0;
-    virtual void Translation(Direction dir, float step) = 0;
+    virtual void Rotate(float degrees, OrientationObject *orient = nullptr) = 0;
+    virtual void RotateX(float degrees, OrientationObject *orient = nullptr) = 0;
+    virtual void RotateY(float degrees, OrientationObject *orient = nullptr) = 0;
+    virtual void RotateZ(float degrees, OrientationObject *orient = nullptr) = 0;
+    virtual void Scale(float scale, OrientationObject *orient = nullptr) = 0;
+    virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr) = 0;
+    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr) = 0;
     virtual void select() = 0;
     virtual void deselect() = 0;
     virtual void setWireframeMode() = 0;
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter) = 0;
+
     virtual void setGivenCenter(const Vector<3> &center) {}
     virtual Vector<3> getGivenCenter() const { return Vector<3>(); }
 
@@ -57,22 +77,4 @@ public:
     };
 };
 
-class OrientationObject
-{
-private:
-    Vector<3> *OPstart;
-    Vector<3> *OPend;
-
-public:
-    OrientationObject(Vector<3> *OPstart, Vector<3> *OPend, Vector<3> *center) : OPstart(OPstart), OPend(OPend) {};
-    // no copy contructor
-    Vector<3> generateDirection()
-    {
-        return *OPend - *OPstart;
-    };
-    Vector<3> getCenter()
-    {
-        return (*OPend + *OPstart)* 0.5;
-    }
-};
 #endif

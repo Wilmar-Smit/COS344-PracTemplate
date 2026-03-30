@@ -12,31 +12,34 @@
 class complexSceneHolder : public Scene
 {
 private:
-
     std::vector<DrawerVisitor *> visitors;
 
 public:
     complexSceneHolder();
     virtual ~complexSceneHolder();
+
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
     virtual void addScene(DrawerVisitor *);
-    virtual void Rotate(float degrees);
-    virtual void RotateX(float degrees);
-    virtual void RotateY(float degrees);
-    virtual void RotateZ(float degrees);
-    virtual void Scale(float scale);
-    virtual void Translation(Direction dir, float step);
+
+    // Forward transforms to visitors
+    virtual void Rotate(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateX(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateY(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateZ(float degrees, OrientationObject *orient = nullptr);
+    virtual void Scale(float scale, OrientationObject *orient = nullptr);
+    virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
+    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
+
     virtual void select();
     virtual void deselect();
     virtual void setWireframeMode();
     virtual void setNormalMode();
     virtual Scene *selectNext();
     virtual Scene *getIndex(int i);
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter);
-    void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
 
+    void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
     const std::vector<DrawerVisitor *> &getVisitors() const { return visitors; }
 };
 

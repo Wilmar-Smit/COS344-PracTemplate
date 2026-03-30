@@ -15,9 +15,9 @@
 #include <vector>
 #include "Scene.h"
 
+
 class DrawerVisitor : public Scene
 {
-
 protected:
     _3DShape *shape;
     std::vector<Shape<3> *> shapes;
@@ -32,16 +32,22 @@ protected:
 public:
     DrawerVisitor(_3DShape *shape);
     virtual ~DrawerVisitor() override;
+
     virtual void draw();
     virtual void reloadVertices();
     virtual Shape<3> *getShape() const;
     virtual void addScene(DrawerVisitor *scene) override;
-    virtual void Rotate(float degrees);
-    virtual void RotateX(float degrees);
-    virtual void RotateY(float degrees);
-    virtual void RotateZ(float degrees);
-    virtual void Scale(float scale);
-    virtual void Translation(Direction dir, float step);
+
+    // Transform operations with optional orientation
+    virtual void Rotate(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateX(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateY(float degrees, OrientationObject *orient = nullptr);
+    virtual void RotateZ(float degrees, OrientationObject *orient = nullptr);
+    virtual void Scale(float scale, OrientationObject *orient = nullptr);
+    virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
+    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
+
+    // Scene management
     virtual void select();
     virtual void deselect();
     virtual void setWireframeMode();
@@ -49,8 +55,8 @@ public:
     virtual void setParent(DrawerVisitor *parent) {};
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter);
 
+    // Visitors
     void Visit(Cone *cone);
     void Visit(Cuboid *cuboid);
     void Visit(Cylinder *cyl);

@@ -34,33 +34,48 @@ void complexSceneHolder::addScene(DrawerVisitor *scene)
 {
     visitors.push_back(scene);
 }
-void complexSceneHolder::Rotate(float degrees)
+void complexSceneHolder::Rotate(float degrees, OrientationObject *orient)
 {
-
-    RotateZ(degrees);
-}
-void complexSceneHolder::RotateX(float degrees)
-{
+    for (auto *visitor : visitors)
+        visitor->Rotate(degrees, orient);
 }
 
-void complexSceneHolder::RotateY(float degrees)
+void complexSceneHolder::RotateX(float degrees, OrientationObject *orient)
 {
+    for (auto *visitor : visitors)
+        visitor->RotateX(degrees, orient);
 }
 
-void complexSceneHolder::RotateZ(float degrees)
+void complexSceneHolder::RotateY(float degrees, OrientationObject *orient)
 {
+    for (auto *visitor : visitors)
+        visitor->RotateY(degrees, orient);
 }
 
-void complexSceneHolder::Scale(float scale)
+void complexSceneHolder::RotateZ(float degrees, OrientationObject *orient)
 {
+    for (auto *visitor : visitors)
+        visitor->RotateZ(degrees, orient);
 }
-void complexSceneHolder::Translation(Direction dir, float step)
-{
-}
- void complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter)
-{
 
+void complexSceneHolder::Scale(float scale, OrientationObject *orient)
+{
+    for (auto *visitor : visitors)
+        visitor->Scale(scale, orient);
 }
+
+void complexSceneHolder::Translation(Direction dir, float step, OrientationObject *orient)
+{
+    for (auto *visitor : visitors)
+        visitor->Translation(dir, step, orient);
+}
+
+void complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
+{
+    for (auto *visitor : visitors)
+        visitor->transform(trans, toCenter, orient);
+}
+
 void complexSceneHolder::select()
 {
     if (!this->selected)
