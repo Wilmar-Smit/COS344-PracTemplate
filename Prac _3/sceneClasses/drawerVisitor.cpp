@@ -107,7 +107,7 @@ void DrawerVisitor::addScene(Scene *scene)
 
 void DrawerVisitor::Rotate(float degrees, OrientationObject *orient)
 {
-    RotateZ(degrees);
+    RotateZ(degrees, orient);
 }
 
 void DrawerVisitor::RotateX(float degrees, OrientationObject *orient)
@@ -123,7 +123,7 @@ void DrawerVisitor::RotateX(float degrees, OrientationObject *orient)
     rot[2][2] = std::cos(radians);
     rot[3][3] = 1.0f;
 
-    transform(rot, true);
+    transform(rot, true, orient);
 }
 
 void DrawerVisitor::RotateY(float degrees, OrientationObject *orient)
@@ -139,7 +139,7 @@ void DrawerVisitor::RotateY(float degrees, OrientationObject *orient)
     rot[2][2] = std::cos(radians);
     rot[3][3] = 1.0f;
 
-    transform(rot, true);
+    transform(rot, true, orient);
 }
 
 void DrawerVisitor::RotateZ(float degrees, OrientationObject *orient)
@@ -155,7 +155,77 @@ void DrawerVisitor::RotateZ(float degrees, OrientationObject *orient)
     rot[2][2] = 1.0f;
     rot[3][3] = 1.0f;
 
-    transform(rot, true);
+    transform(rot, true, orient);
+}
+void DrawerVisitor::RotateArbitrary(float degrees, OrientationObject *orient)
+{
+    float radians = degrees * (std::acos(-1.0f) / 180.0f);
+
+    // Axis direction
+    Vector<3> u = orient ? orient->generateDirection().unitVector()
+                         : Vector<3>();
+
+    u.print();
+
+    float d = std::sqrt(u[0] * u[0] + u[1] * u[1]);
+
+    // Alignment Rx
+    Matrix<4, 4> Rx;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            Rx[i][j] = (i == j) ? 1.0f : 0.0f;
+    Rx[1][1] = u[2] / d;
+    Rx[1][2] = -u[1] / d;
+    Rx[2][1] = u[1] / d;
+    Rx[2][2] = u[2] / d;
+
+    // Alignment Ry
+    Matrix<4, 4> Ry;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            Ry[i][j] = (i == j) ? 1.0f : 0.0f;
+    Ry[0][0] = d;
+    Ry[0][2] = -u[0];
+    Ry[2][0] = u[0];
+    Ry[2][2] = d;
+
+    // Rotation about Z
+    Matrix<4, 4> Rz;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+            Rz[i][j] = (i == j) ? 1.0f : 0.0f;
+    Rz[0][0] = std::cos(radians);
+    Rz[0][1] = -std::sin(radians);
+    Rz[1][0] = std::sin(radians);
+    Rz[1][1] = std::cos(radians);
+
+    // Center of rotation
+    Vector<3> center = orient ? orient->getCenter() : shape->getCenter();
+
+    Matrix<4, 4> toCenter, backToOrigin;
+    for (int i = 0; i < 4; i++)
+        for (int j = 0; j < 4; j++)
+        {
+            toCenter[i][j] = (i == j) ? 1.0f : 0.0f;
+            backToOrigin[i][j] = (i == j) ? 1.0f : 0.0f;
+        }
+    toCenter[0][3] = -center[0];
+    toCenter[1][3] = -center[1];
+    toCenter[2][3] = -center[2];
+    backToOrigin[0][3] = center[0];
+    backToOrigin[1][3] = center[1];
+    backToOrigin[2][3] = center[2];
+
+    // Final concatenation (lecture formula)
+    Matrix<4, 4> fullTransform =
+        backToOrigin * (Rx * (Ry * (Rz * (Ry * Rx)))) * toCenter;
+
+    // Apply
+    for (int i = 0; i < shapes.size(); i++)
+        shapes[i]->applyMatrix(fullTransform);
+
+    shape->notify();
+    reloadVertices();
 }
 
 void DrawerVisitor::Scale(float scale, OrientationObject *orient)
@@ -168,7 +238,7 @@ void DrawerVisitor::Scale(float scale, OrientationObject *orient)
     for (int i = 0; i < 3; i++)
         scaleMatrix[i][i] = scale;
 
-    transform(scaleMatrix, true);
+    transform(scaleMatrix, true, orient);
 }
 
 void DrawerVisitor::Translation(Direction dir, float step, OrientationObject *orient)
@@ -196,7 +266,7 @@ void DrawerVisitor::Translation(Direction dir, float step, OrientationObject *or
     translationMatrix[1][3] = dy;
     translationMatrix[2][3] = dz;
 
-    transform(translationMatrix, false);
+    transform(translationMatrix, false, orient);
 }
 
 void DrawerVisitor::select()
@@ -258,7 +328,7 @@ DrawerVisitor *DrawerVisitor::selectNext() { return nullptr; }
 
 DrawerVisitor *DrawerVisitor::getIndex(int i) { return nullptr; }
 
-void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
+Matrix<4, 4> DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
 {
     Matrix<4, 4> fullTransform = trans;
 
@@ -297,6 +367,8 @@ void DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObj
 
     shape->notify();
     reloadVertices();
+
+    return fullTransform;
 }
 
 void DrawerVisitor::Visit(Cone *cone)

@@ -1,7 +1,6 @@
 #include "borderShape.h"
 #include "3D_shapes/3D_Shape.h"
 #include "3D_shapes/Cuboid.h"
-
 BorderShape::BorderShape(_3DShape *shape)
     : borderStub(shape) // 3d shapes need a function to return their mins and max each implemented.
 {

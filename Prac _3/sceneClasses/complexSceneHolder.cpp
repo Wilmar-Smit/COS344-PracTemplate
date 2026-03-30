@@ -42,38 +42,72 @@ void complexSceneHolder::Rotate(float degrees, OrientationObject *orient)
 
 void complexSceneHolder::RotateX(float degrees, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
     for (auto *visitor : visitors)
         visitor->RotateX(degrees, orient);
 }
 
 void complexSceneHolder::RotateY(float degrees, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
     for (auto *visitor : visitors)
         visitor->RotateY(degrees, orient);
 }
 
 void complexSceneHolder::RotateZ(float degrees, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
+
     for (auto *visitor : visitors)
         visitor->RotateZ(degrees, orient);
 }
 
 void complexSceneHolder::Scale(float scale, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
     for (auto *visitor : visitors)
         visitor->Scale(scale, orient);
 }
 
 void complexSceneHolder::Translation(Direction dir, float step, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
+
     for (auto *visitor : visitors)
         visitor->Translation(dir, step, orient);
 }
 
-void complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
+Matrix<4, 4> complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
 {
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
+
+    Matrix<4, 4> mat;
     for (auto *visitor : visitors)
-        visitor->transform(trans, toCenter, orient);
+    {
+        mat = visitor->transform(trans, toCenter, orient);
+    }
+    if (this->orientation)
+        this->orientation->update(mat, toCenter, orient);
+
+    return mat;
 }
 
 void complexSceneHolder::select()
@@ -116,5 +150,15 @@ void complexSceneHolder::setNormalMode()
             visitors[i]->setNormalMode();
     }
 }
-Scene *complexSceneHolder::selectNext() { return nullptr; }    // only complex objects can be selected not individual parts
-Scene *complexSceneHolder::getIndex(int i) { return nullptr; } // only complex objects can be selected not individual parts
+Scene *complexSceneHolder::selectNext() { return nullptr; }
+Scene *complexSceneHolder::getIndex(int i) { return this->visitors[i]; }
+
+void complexSceneHolder::RotateArbitrary(float degrees, OrientationObject *orient)
+{
+    if (!orient)
+    {
+        orient = this->orientation;
+    }
+    for (auto *visitor : visitors)
+        visitor->RotateArbitrary(degrees, orient);
+}

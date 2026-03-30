@@ -101,6 +101,8 @@ int main()
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
+	complexSceneHolder *golfCourse = GolfCourse();
+	golfCourse->Scale(0.5);
 	do
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -109,9 +111,13 @@ int main()
 		glBindVertexArray(axisVAO);
 		glDrawArrays(GL_LINES, 0, 6);
 		glBindVertexArray(0);
+		golfCourse->draw();
+		golfCourse->RotateY(0.5);
+	//	golfCourse->getIndex(0)->RotateArbitrary(0.5);
 
 		if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
 		{
+			golfCourse->setWireframeMode();
 		}
 
 		glfwSwapBuffers(window);

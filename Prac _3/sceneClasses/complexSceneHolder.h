@@ -29,7 +29,8 @@ public:
     virtual void RotateZ(float degrees, OrientationObject *orient = nullptr);
     virtual void Scale(float scale, OrientationObject *orient = nullptr);
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
+    virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
+virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
     virtual void select();
     virtual void deselect();
@@ -37,8 +38,6 @@ public:
     virtual void setNormalMode();
     virtual Scene *selectNext();
     virtual Scene *getIndex(int i);
-
-    void addVisitor(DrawerVisitor *visitor) { visitors.push_back(visitor); }
     const std::vector<Scene *> &getVisitors() const { return visitors; }
 };
 

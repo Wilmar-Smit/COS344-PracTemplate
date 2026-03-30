@@ -23,7 +23,7 @@ private:
     Vector<3> *OPend;
 
 public:
-    OrientationObject(Vector<3> *OPstart, Vector<3> *OPend, Vector<3> *center) : OPstart(OPstart), OPend(OPend) {};
+    OrientationObject(Vector<3> *OPstart, Vector<3> *OPend) : OPstart(OPstart), OPend(OPend) {};
     // no copy contructor
     Vector<3> generateDirection()
     {
@@ -98,15 +98,14 @@ public:
     virtual void RotateZ(float degrees, OrientationObject *orient = nullptr) = 0;
     virtual void Scale(float scale, OrientationObject *orient = nullptr) = 0;
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr) = 0;
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr) = 0;
+    virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr) = 0;
     virtual void select() = 0;
     virtual void deselect() = 0;
     virtual void setWireframeMode() = 0;
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };
 
-    virtual void setGivenCenter(const Vector<3> &center) {}
-    virtual Vector<3> getGivenCenter() const { return Vector<3>(); }
+virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr) = 0;
 
     virtual void SetMyOrientation(OrientationObject *obj) { this->orientation = obj; };
     virtual OrientationObject *getMyOrientation() { return this->orientation; };

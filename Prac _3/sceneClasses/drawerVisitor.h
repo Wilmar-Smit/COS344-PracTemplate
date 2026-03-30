@@ -15,7 +15,6 @@
 #include <vector>
 #include "Scene.h"
 
-
 class DrawerVisitor : public Scene
 {
 protected:
@@ -45,7 +44,7 @@ public:
     virtual void RotateZ(float degrees, OrientationObject *orient = nullptr);
     virtual void Scale(float scale, OrientationObject *orient = nullptr);
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
-    virtual void transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
+    virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
 
     // Scene management
     virtual void select();
@@ -55,6 +54,7 @@ public:
     virtual void setParent(DrawerVisitor *parent) {};
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
+virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
     // Visitors
     void Visit(Cone *cone);
