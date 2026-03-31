@@ -12,7 +12,6 @@ complexSceneHolder *WindMillFan()
     exchangeableShape = new Cylinder(Circle<3>({0.0f, 0.0f, -0.01f}, 0.04f, 10, Colour::DarkBrown), 0.5, Colour::DarkBrown);
     orient = exchangeableShape->getOrientation();
     windMillFan->SetMyOrientation(orient);
-
     center = exchangeableShape->getCenter();
     exchangeableVis = new DrawerVisitor(exchangeableShape);
 

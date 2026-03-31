@@ -5,6 +5,7 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
 {
     Visit(this->shape);
 
+    this->orientation = shape->getOrientation();
     VAO.resize(shapes.size());
     VBO.resize(shapes.size());
     vertexCounts.resize(shapes.size());
@@ -160,47 +161,49 @@ void DrawerVisitor::RotateZ(float degrees, OrientationObject *orient)
 void DrawerVisitor::RotateArbitrary(float degrees, OrientationObject *orient)
 {
     float radians = degrees * (std::acos(-1.0f) / 180.0f);
+    if (orient == nullptr)
+    {
+        orient = this->orientation;
+    }
 
-    // Axis direction
-    Vector<3> u = orient ? orient->generateDirection().unitVector()
-                         : Vector<3>();
+    Vector<3> u = orient->generateDirection().unitVector();
 
-    u.print();
+    float d = std::sqrt(u[1] * u[1] + u[2] * u[2]);
 
-    float d = std::sqrt(u[0] * u[0] + u[1] * u[1]);
+    float ax = u[0];
+    float ay = u[1];
+    float az = u[2];
 
-    // Alignment Rx
     Matrix<4, 4> Rx;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            Rx[i][j] = (i == j) ? 1.0f : 0.0f;
-    Rx[1][1] = u[2] / d;
-    Rx[1][2] = -u[1] / d;
-    Rx[2][1] = u[1] / d;
-    Rx[2][2] = u[2] / d;
+    Rx[0][0] = 1;
+    Rx[1][1] = az / d;
+    Rx[1][2] = -ay / d;
+    Rx[2][1] = ay / d;
+    Rx[2][2] = az / d;
+    Rx[3][3] = 1;
 
-    // Alignment Ry
     Matrix<4, 4> Ry;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            Ry[i][j] = (i == j) ? 1.0f : 0.0f;
     Ry[0][0] = d;
-    Ry[0][2] = -u[0];
-    Ry[2][0] = u[0];
+    Ry[0][2] = -ax;
+    Ry[1][1] = 1;
+    Ry[2][0] = ax;
     Ry[2][2] = d;
+    Ry[3][3] = 1;
 
-    // Rotation about Z
-    Matrix<4, 4> Rz;
-    for (int i = 0; i < 4; i++)
-        for (int j = 0; j < 4; j++)
-            Rz[i][j] = (i == j) ? 1.0f : 0.0f;
-    Rz[0][0] = std::cos(radians);
-    Rz[0][1] = -std::sin(radians);
-    Rz[1][0] = std::sin(radians);
-    Rz[1][1] = std::cos(radians);
+    Matrix negRx = (Rx * -1);
+
+    Matrix negRy = (Ry * -1);
+
+    Matrix<4, 4> rot;
+    rot[0][0] = std::cos(radians);
+    rot[0][1] = -std::sin(radians);
+    rot[1][0] = std::sin(radians);
+    rot[1][1] = std::cos(radians);
+    rot[2][2] = 1.0f;
+    rot[3][3] = 1.0f;
 
     // Center of rotation
-    Vector<3> center = orient ? orient->getCenter() : shape->getCenter();
+    Vector<3> center = this->shape->getCenter();
 
     Matrix<4, 4> toCenter, backToOrigin;
     for (int i = 0; i < 4; i++)
@@ -216,15 +219,16 @@ void DrawerVisitor::RotateArbitrary(float degrees, OrientationObject *orient)
     backToOrigin[1][3] = center[1];
     backToOrigin[2][3] = center[2];
 
-    // Final concatenation (lecture formula)
     Matrix<4, 4> fullTransform =
-        backToOrigin * (Rx * (Ry * (Rz * (Ry * Rx)))) * toCenter;
+        backToOrigin * negRx * Rx * toCenter;
 
-    // Apply
     for (int i = 0; i < shapes.size(); i++)
-        shapes[i]->applyMatrix(fullTransform);
+        shapes[i]
+            ->applyMatrix(fullTransform);
 
     shape->notify();
+
+    shape->getOrientation()->update(fullTransform, true, orient);
     reloadVertices();
 }
 
@@ -366,6 +370,7 @@ Matrix<4, 4> DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, Orient
     }
 
     shape->notify();
+    shape->getOrientation()->update(trans, toCenter, orient);
     reloadVertices();
 
     return fullTransform;
