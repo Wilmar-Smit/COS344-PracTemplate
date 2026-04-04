@@ -8,7 +8,6 @@ complexSceneHolder *WindMillFan()
     _3DShape *exchangeableShape = nullptr;
     OrientationObject *orient = nullptr;
 
-
     exchangeableShape = new Cylinder(Circle<3>({0.0f, 0.0f, -0.01f}, 0.04f, 10, Colour::DarkBrown), 0.5, Colour::DarkBrown);
     orient = exchangeableShape->getOrientation();
     windMillFan->SetMyOrientation(orient);
@@ -89,27 +88,30 @@ complexSceneHolder *WindMillTower()
     complexSceneHolder *windMill = new complexSceneHolder();
     _3DShape *exchangeableShape = nullptr;
     OrientationObject *orient = nullptr;
-    float moveCenter = 0.55;
+    float moveCenter = 0.2;
     // base
     exchangeableShape = new Cone(Circle<3>({0, 0, 0}, 0.7, 15, Colour::DarkBrown), 1.5, Colour::DarkBrown);
     center = exchangeableShape->getCenter();
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     orient = exchangeableShape->getOrientation();
     windMill->SetMyOrientation(orient);
-
     exchangeableVis->RotateX(270);
     exchangeableVis->Translation(Direction::down, 1);
     exchangeableVis->Translation(Direction::forward, moveCenter);
-
     windMill->addScene(exchangeableVis);
+
     //  base
     exchangeableShape = new Cone(Circle<3>({0, 0, 0}, 0.6, 15, Colour::Red), 1.5, Colour::Red);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->RotateX(270);
     exchangeableVis->Translation(Direction::down, 0.8);
     exchangeableVis->Translation(Direction::forward, moveCenter);
-
     windMill->addScene(exchangeableVis);
+
+    //  base
+    exchangeableShape = new Cylinder(Circle<3>({0, 0, 0}, 0.6, 15, Colour::Black), 1.5, Colour::Black);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    windMill->addCutoutShape(exchangeableVis);
 
     exchangeableShape = new Cone(Circle<3>({0, 0, 0}, 0.5, 15, Colour::White), 1.5, Colour::White);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
