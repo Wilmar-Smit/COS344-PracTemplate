@@ -3,8 +3,8 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "../include/MathLibrary/2D shapes/Shape.h"
-#include "../include/MathLibrary/Matrix.h"
+#include "../MathLibrary/2D_shapes/Shape.h"
+#include "../MathLibrary/Matrix.h"
 
 enum class Direction
 {
@@ -89,7 +89,7 @@ protected:
 public:
     virtual void draw() = 0;
     virtual void reloadVertices() = 0;
-    virtual Shape<3> *getShape() const = 0;
+    virtual Shape *getShape() const = 0;
     virtual void addScene(Scene *scene) = 0;
     virtual ~Scene() = default;
     virtual void Rotate(float degrees, OrientationObject *orient = nullptr) = 0;

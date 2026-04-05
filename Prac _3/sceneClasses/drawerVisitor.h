@@ -3,15 +3,15 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "../include/MathLibrary/2D shapes/Shape.h"
-#include "../include/MathLibrary/Matrix.h"
-#include "../include/MathLibrary/3D_shapes/3D_Shape.h"
-#include "../include/MathLibrary/3D_shapes/Cone.h"
-#include "../include/MathLibrary/3D_shapes/Cuboid.h"
-#include "../include/MathLibrary/3D_shapes/Cylinder.h"
-#include "../include/MathLibrary/3D_shapes/SquarePyramid.h"
-#include "../include/MathLibrary/3D_shapes/TriangularPrism.h"
-#include "../include/MathLibrary/3D_shapes/Sphere.h"
+#include "../MathLibrary/2D_shapes/Shape.h"
+#include "../MathLibrary/Matrix.h"
+#include "../MathLibrary/3D_shapes/3D_Shape.h"
+#include "../MathLibrary/3D_shapes/Cone.h"
+#include "../MathLibrary/3D_shapes/Cuboid.h"
+#include "../MathLibrary/3D_shapes/Cylinder.h"
+#include "../MathLibrary/3D_shapes/SquarePyramid.h"
+#include "../MathLibrary/3D_shapes/TriangularPrism.h"
+#include "../MathLibrary/3D_shapes/Sphere.h"
 #include <vector>
 #include "Scene.h"
 
@@ -19,7 +19,7 @@ class DrawerVisitor : public Scene
 {
 protected:
     _3DShape *shape;
-    std::vector<Shape<3> *> shapes;
+    std::vector<Shape *> shapes;
     std::vector<int> vertexCounts;
 
     std::vector<GLuint> VAO, VBO;
@@ -34,7 +34,7 @@ public:
 
     virtual void draw();
     virtual void reloadVertices();
-    virtual Shape<3> *getShape() const;
+    virtual Shape *getShape() const;
     virtual void addScene(Scene *scene) override;
 
     // Transform operations with optional orientation

@@ -1,7 +1,7 @@
 #ifndef BORDERSTUB_H
 #define BORDERSTUB_H
 #include "Vector.h"
-#include "2D shapes/Square.h"
+#include "2D_shapes/Square.h"
 
 class Cuboid;
 class borderObserver;

@@ -18,7 +18,7 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
         glGenBuffers(1, &VBO[i]);
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
 
-        Shape<3> *currentShape = shapes[i];
+        Shape *currentShape = shapes[i];
         vertexCounts[i] = (currentShape->getNumPoints() / VERTEX_DEPTH);
         float *vertices = currentShape->exportValues();
 
@@ -99,7 +99,7 @@ void DrawerVisitor::reloadVertices()
     }
 }
 
-Shape<3> *DrawerVisitor::getShape() const { return shape; }
+Shape *DrawerVisitor::getShape() const { return shape; }
 
 void DrawerVisitor::addScene(Scene *scene)
 {

@@ -6,15 +6,15 @@
 #include "3D_shapes/Cylinder.h"
 #include "3D_shapes/SquarePyramid.h"
 #include "3D_shapes/TriangularPrism.h"
-#include "2D shapes/Square.h"
-#include "2D shapes/circle.h"
+#include "2D_shapes/Square.h"
+#include "2D_shapes/circle.h"
 #include "assets.h"
 
 int main()
 {
-    Square<3> squareBase({0.0f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Blue);
-    Circle<3> circleBase({0.0f, 0.0f, 0.0f}, 0.25f, 16, Colour::Green);
-    Square<3> prismBase({0.0f, 0.0f, 0.0f}, 0.40f, 0.40f, Colour::Yellow);
+    Square squareBase({0.0f, 0.0f, 0.0f}, 0.50f, 0.50f, Colour::Blue);
+    Circle circleBase({0.0f, 0.0f, 0.0f}, 0.25f, 16, Colour::Green);
+    Square prismBase({0.0f, 0.0f, 0.0f}, 0.40f, 0.40f, Colour::Yellow);
 
     _3DShape *sphere = new Sphere({0.0f, 0.0f, 0.0f}, 0.10f, 10, 10, Colour::Red);
     _3DShape *cuboid = new Cuboid(squareBase, 0.15f, Colour::Blue);

@@ -13,7 +13,7 @@ CXX = g++
 # -I<path>: Add directory to include search path
 CXXFLAGS = -g \
            -I./include \
-		   -I./include/MathLibrary \
+		   -I./MathLibrary \
            -I./include/glad \
            -I./include/KHR \
            -I$(GLFW_INSTALL_DIR)/include
@@ -34,11 +34,15 @@ COVERAGE_HTML_FILE = $(COVERAGE_HTML_DIR)/index.html
 COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 
 # Math library source files (non-template translation units only)
-MATHLIB_SRCS = include/MathLibrary/LibraryTesting.cpp 
+MATHLIB_SRCS = MathLibrary/LibraryTesting.cpp \
+			   MathLibrary/2D_shapes/shape.cpp \
+			   MathLibrary/2D_shapes/Triangle.cpp \
+			   MathLibrary/2D_shapes/Square.cpp \
+			   MathLibrary/2D_shapes/circle.cpp
 BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp borderClasses/borderContainer.cpp borderClasses/borderVisitor.cpp
 OBSERVER_SRCS = shapeObservers/borderObserver.cpp 
 # 3D shape source files (now compiled separately, no longer templates)
-SHAPE3D_SRCS := $(wildcard include/MathLibrary/3D_shapes/*.cpp)
+SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
 # Scene class source files (now compiled separately)
 SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 # Source files (space-separated)
@@ -57,6 +61,8 @@ GLFW_INSTALL_DIR = glfw_local/install
 
 # --- End Configuration Variables ---
 
+quote = $(foreach a,$1,"$(a)")
+
 # Object files
 OBJS = $(SRCS:.cpp=.o)
 OBJS := $(OBJS:.c=.o)
@@ -66,23 +72,23 @@ OBJS := $(OBJS:.c=.o)
 all: $(PROJECT_NAME)
 
 $(PROJECT_NAME): $(OBJS)
-	$(CXX) $(OBJS) $(LDFLAGS) $(LIBS) -o $(PROJECT_NAME)
+	$(CXX) $(call quote,$(OBJS)) $(LDFLAGS) $(LIBS) -o $(PROJECT_NAME)
 
 
 $(TEST_NAME): $(TEST_OBJS)
-	$(CXX) $(TEST_OBJS) $(LDFLAGS) $(LIBS) -o $(TEST_NAME)
+	$(CXX) $(call quote,$(TEST_OBJS)) $(LDFLAGS) $(LIBS) -o $(TEST_NAME)
 
 # Build the standalone test runner
 test: $(TEST_NAME)
 
 %.o: %.cpp
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c "$<" -o "$@"
 
 %.o: %.c
-	$(CXX) $(CXXFLAGS) -c $< -o $@
+	$(CXX) $(CXXFLAGS) -c "$<" -o "$@"
 
 clean c: coverage-clean
-	rm -f $(OBJS) $(PROJECT_NAME) $(TEST_OBJS) $(TEST_NAME)
+	rm -f $(call quote,$(OBJS)) $(PROJECT_NAME) $(call quote,$(TEST_OBJS)) $(TEST_NAME)
 
 coverage-clean:
 	find . \( -name "*.gcda" -o -name "*.gcno" -o -name "*.gcov" \) -delete

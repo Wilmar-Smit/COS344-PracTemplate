@@ -168,7 +168,7 @@ void borderStub::recalculateCol(Cuboid *shape)
 
 Cuboid *borderStub::exportShape()
 {
-    Square<3> tempBase({0.0f, 0.0f, 0.0f}, 0.1f, 0.1f, Colour::Black);
+    Square tempBase({0.0f, 0.0f, 0.0f}, 0.1f, 0.1f, Colour::Black);
     Cuboid *boundingBox = new Cuboid(tempBase, 0.1f, Colour::Black);
 
     boundingBox->base->bl = frontBottomLeft;

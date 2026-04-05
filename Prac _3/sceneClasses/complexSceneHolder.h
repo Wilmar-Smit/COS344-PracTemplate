@@ -3,9 +3,9 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include "../include/MathLibrary/2D shapes/Shape.h"
-#include "../include/MathLibrary/Matrix.h"
-#include "../include/MathLibrary/3D_shapes/3D_Shape.h"
+#include "../MathLibrary/2D_shapes/Shape.h"
+#include "../MathLibrary/Matrix.h"
+#include "../MathLibrary/3D_shapes/3D_Shape.h"
 #include "drawerVisitor.h"
 #include <vector>
 
@@ -20,7 +20,7 @@ public:
 
     virtual void draw();
     virtual void reloadVertices();
-    virtual Shape<3> *getShape() const;
+    virtual Shape *getShape() const;
     virtual void addScene(Scene *scene);
 
     virtual void Rotate(float degrees, OrientationObject *orient = nullptr);

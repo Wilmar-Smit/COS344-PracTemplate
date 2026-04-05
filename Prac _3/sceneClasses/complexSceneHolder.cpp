@@ -31,7 +31,7 @@ void complexSceneHolder::reloadVertices()
     }
 }
 
-Shape<3> *complexSceneHolder::getShape() const { return nullptr; }
+Shape *complexSceneHolder::getShape() const { return nullptr; }
 
 void complexSceneHolder::addScene(Scene *scene)
 {
