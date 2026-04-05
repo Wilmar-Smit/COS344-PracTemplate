@@ -14,7 +14,7 @@
 #include "../MathLibrary/3D_shapes/Sphere.h"
 #include <vector>
 #include "Scene.h"
-
+#include "../camera/camera.h"
 class DrawerVisitor : public Scene
 {
 protected:
@@ -64,6 +64,8 @@ public:
     void Visit(TriangularPrism *triangularPrism);
     void Visit(Sphere *sphere);
     void Visit(_3DShape *shape);
+
+    void registerShape(Shape *shape);
 };
 
 #endif

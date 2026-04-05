@@ -355,63 +355,67 @@ Matrix<4, 4> DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, Orient
 
 void DrawerVisitor::Visit(Cone *cone)
 {
-    this->shapes.push_back(cone->base);
-
+    registerShape(cone->base);
     for (int i = 0; i < cone->sides.size(); i++)
     {
-        this->shapes.push_back(cone->sides[i]);
+        registerShape(cone->sides[i]);
     }
 }
 
 void DrawerVisitor::Visit(Cuboid *cuboid)
 {
-    this->shapes.push_back(cuboid->base);
-    this->shapes.push_back(cuboid->back);
-    this->shapes.push_back(cuboid->top);
-    this->shapes.push_back(cuboid->front);
-    this->shapes.push_back(cuboid->leftSide);
-    this->shapes.push_back(cuboid->rightSide);
+    registerShape(cuboid->base);
+    registerShape(cuboid->back);
+    registerShape(cuboid->top);
+    registerShape(cuboid->front);
+    registerShape(cuboid->leftSide);
+    registerShape(cuboid->rightSide);
 }
 
 void DrawerVisitor::Visit(Cylinder *cyl)
 {
-    this->shapes.push_back(cyl->base);
-    this->shapes.push_back(cyl->top);
-
+    registerShape(cyl->base);
+    registerShape(cyl->top);
     for (size_t i = 0; i < cyl->sides.size(); i++)
     {
-        this->shapes.push_back(cyl->sides[i]);
+        registerShape(cyl->sides[i]);
     }
 }
 
 void DrawerVisitor::Visit(SquarePyramid *squarePyramid)
 {
-    this->shapes.push_back(squarePyramid->base);
-    this->shapes.push_back(squarePyramid->side1);
-    this->shapes.push_back(squarePyramid->side2);
-    this->shapes.push_back(squarePyramid->side3);
-    this->shapes.push_back(squarePyramid->side4);
+    registerShape(squarePyramid->base);
+    registerShape(squarePyramid->side1);
+    registerShape(squarePyramid->side2);
+    registerShape(squarePyramid->side3);
+    registerShape(squarePyramid->side4);
 }
 
 void DrawerVisitor::Visit(TriangularPrism *triangularPrism)
 {
-    this->shapes.push_back(triangularPrism->base);
-    this->shapes.push_back(triangularPrism->rightSide);
-    this->shapes.push_back(triangularPrism->leftSide);
-    this->shapes.push_back(triangularPrism->rightTop);
-    this->shapes.push_back(triangularPrism->leftTop);
+    registerShape(triangularPrism->base);
+    registerShape(triangularPrism->rightSide);
+    registerShape(triangularPrism->leftSide);
+    registerShape(triangularPrism->rightTop);
+    registerShape(triangularPrism->leftTop);
 }
 
 void DrawerVisitor::Visit(_3DShape *shape)
 {
     shape->acceptVisitor(this);
 }
+
 void DrawerVisitor::Visit(Sphere *sphere)
 {
-
-    this->shapes.push_back(sphere->centerCircle);
+    registerShape(sphere->centerCircle);
     for (int i = 0; i < sphere->allSides.size(); i++)
     {
-        this->shapes.push_back(sphere->allSides[i]);
+        registerShape(sphere->allSides[i]);
     }
+}
+
+void DrawerVisitor::registerShape(Shape *s)
+{
+    this->shapes.push_back(s);
+    s->applyMatrix(Camera::getInstance().getMatrix(), true);
 }

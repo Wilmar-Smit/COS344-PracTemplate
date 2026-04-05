@@ -9,6 +9,7 @@ float *Shape::exportValues()
 
     int offset = 0;
     int count = 0;
+
     for (int row = 0; row < shapeSides; row++)
     {
         for (int i = 0; i < getN(); i++)
@@ -20,6 +21,7 @@ float *Shape::exportValues()
             retValues[offset++] = colour[i];
         }
     }
+
     delete[] ShapeCoords;
     return retValues;
 }
@@ -144,10 +146,9 @@ std::vector<Vector<4>> Shape::getHomogeneousVectors()
     return homogeneousPoints;
 }
 
-void Shape::applyMatrix(const Matrix<4, 4> &transformationMatrix)
+void Shape::applyMatrix(const Matrix<4, 4> &transformationMatrix, bool per)
 {
     auto originalPoints = getVectors();
-    
 
     for (auto &point : originalPoints)
     {
@@ -156,10 +157,22 @@ void Shape::applyMatrix(const Matrix<4, 4> &transformationMatrix)
             homogeneousPoint[i] = point[i];
         homogeneousPoint[this->n] = 1.0f;
 
+        // Apply transformation
         homogeneousPoint = transformationMatrix * ((Matrix<4, 1>)homogeneousPoint);
 
-        for (int i = 0; i < this->n; i++)
-            point[i] = homogeneousPoint[i];
+        if (per) // only do perspective divide if flagged
+        {
+            if (homogeneousPoint[3] != 0.0f)
+            {
+                for (int i = 0; i < this->n; i++)
+                    point[i] = homogeneousPoint[i] / homogeneousPoint[3];
+            }
+        }
+        else
+        {
+            for (int i = 0; i < this->n; i++)
+                point[i] = homogeneousPoint[i];
+        }
     }
 
     setVectors(originalPoints);

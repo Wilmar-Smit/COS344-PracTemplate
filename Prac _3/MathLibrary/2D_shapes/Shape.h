@@ -30,11 +30,7 @@ class Shape
 protected:
     int n = 3;
 
-
 public:
-
-
-
     Vector<4> colour;
     Shape(Colour col = Colour::White);
     virtual Shape &operator*=(const Matrix<3, 3> &) = 0;
@@ -77,6 +73,6 @@ public:
     virtual void setVectors(std::vector<Vector<3>>) = 0;
 
     virtual std::vector<Vector<4>> getHomogeneousVectors();
-    void applyMatrix(const Matrix<4, 4> &transformationMatrix);
+    void applyMatrix(const Matrix<4, 4> &transformationMatrix, bool per = false);
 };
 #endif

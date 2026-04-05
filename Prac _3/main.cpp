@@ -12,6 +12,13 @@
 
 int main()
 {
+
+    Vector<3> eye = {0.0f, 0.0f, 5.0f};   // camera position, away from origin
+    Vector<3> up = {0.0f, 1.0f, 0.0f};    // world up
+    Vector<3> gaze = {0.0f, 0.0f, -1.0f}; // looking toward -Z
+
+    Camera &cam = Camera::getInstance(eye, up, gaze);
+    
     if (!glfwInit())
     {
         std::cerr << "Failed to initialize GLFW" << std::endl;

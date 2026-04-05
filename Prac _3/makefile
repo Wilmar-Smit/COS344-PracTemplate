@@ -46,7 +46,7 @@ SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
 # Scene class source files (now compiled separately)
 SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp assets.cpp glad.c controls/controlManager.cpp  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+SRCS = main.cpp shader.cpp assets.cpp glad.c camera/camera.cpp controls/controlManager.cpp  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner
