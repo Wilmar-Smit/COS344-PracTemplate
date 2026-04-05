@@ -29,7 +29,6 @@ complexSceneHolder *WindMillFan()
 
     exchangeableShape = new Cuboid(Square({0.525, 0, 0}, 0.25, 0.8, Colour::White), 0.1, Colour::White);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
-
     windMillFan->addScene(exchangeableVis);
 
     exchangeableShape = new Cuboid(Square({0.525, 0, 0}, 0.25, 0.8, Colour::White), 0.1, Colour::White);
