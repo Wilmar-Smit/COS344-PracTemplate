@@ -13,12 +13,12 @@
 int main()
 {
 
-    Vector<3> eye = {0.0f, 0.0f, 5.0f};   // camera position, away from origin
+    Vector<3> eye = {0.0f, 0.0f, -2};   // camera position, away from origin
     Vector<3> up = {0.0f, 1.0f, 0.0f};    // world up
-    Vector<3> gaze = {0.0f, 0.0f, -1.0f}; // looking toward -Z
+    Vector<3> gaze = {0.0f, 0.0f,1.0f}; // looking toward -Z
 
     Camera &cam = Camera::getInstance(eye, up, gaze);
-    
+
     if (!glfwInit())
     {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -65,11 +65,10 @@ int main()
 
     // Scene setup
     complexSceneHolder *golfCourse = GolfCourse();
-    golfCourse->Scale(0.3f);
+    golfCourse->Scale(0.5);
     golfCourse->RotateX(-15.0f);
     golfCourse->RotateY(15.0f);
 
-    // Create ControlManager to handle input
     ControlManager controls(window, golfCourse);
 
     do
@@ -77,13 +76,10 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glUseProgram(programID);
 
-        // Draw scene
         golfCourse->draw();
 
-        // Continuous rotor animation
         golfCourse->getIndex(0)->RotateArbitrary(controls.getSpeed());
 
-        // Handle input
         glfwPollEvents();
         controls.processInput();
 

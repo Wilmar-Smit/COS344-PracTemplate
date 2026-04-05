@@ -12,12 +12,12 @@ private:
     Matrix<4, 4> Mper;
     Matrix<4, 4> Mtotal;
 
-    const float near = 0.1f;
-    const float far = 100.0f;
-    const float left = -10.0f;
-    const float right = 10.0f;
-    const float top = 10.0f;
-    const float bottom = -10.0f;
+    const float near = 1;
+    const float far = 10.0f;
+    const float left = -1.0f;
+    const float right = 1.0f;
+    const float top = 1.0f;
+    const float bottom =-1.0f;
 
     Camera(Vector<3> e, Vector<3> top, Vector<3> gaze);
 

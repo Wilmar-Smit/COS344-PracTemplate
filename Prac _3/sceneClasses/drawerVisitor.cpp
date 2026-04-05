@@ -416,6 +416,6 @@ void DrawerVisitor::Visit(Sphere *sphere)
 
 void DrawerVisitor::registerShape(Shape *s)
 {
+  
     this->shapes.push_back(s);
-    s->applyMatrix(Camera::getInstance().getMatrix(), true);
 }

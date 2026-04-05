@@ -1,4 +1,5 @@
 #include "Shape.h"
+#include "../../camera/camera.h"
 
 float *Shape::exportValues()
 {
@@ -6,16 +7,23 @@ float *Shape::exportValues()
     int totalValues = shapeSides * (getN() + 4);
     float *retValues = new float[totalValues];
     float *ShapeCoords = getPoints();
+    const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
 
     int offset = 0;
     int count = 0;
 
     for (int row = 0; row < shapeSides; row++)
     {
+        Vector<4> homogeneousPoint({ShapeCoords[count], ShapeCoords[count + 1], ShapeCoords[count + 2], 1.0f});
+        homogeneousPoint = cameraMatrix * ((Matrix<4, 1>)homogeneousPoint);
+
+        float w = homogeneousPoint[3];
         for (int i = 0; i < getN(); i++)
         {
-            retValues[offset++] = ShapeCoords[count++];
+            retValues[offset++] = (w != 0.0f) ? (homogeneousPoint[i] / w) : homogeneousPoint[i];
         }
+        count += getN();
+
         for (int i = 0; i < 4; i++) // 4 is for colour values
         {
             retValues[offset++] = colour[i];
