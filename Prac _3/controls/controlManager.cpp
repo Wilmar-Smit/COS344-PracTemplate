@@ -1,67 +1,76 @@
 #include "controlManager.h"
-#include "Scene.h" // your templated Scene definition
-// Movement
-template <int n>
-void ControlManager<n>::moveForward(Scene<n> *scene)
+#include "../sceneClasses/Scene.h"
+#include <algorithm>
+
+// one-shot flags
+static bool wPressed=false, sPressed=false;
+static bool aPressed=false, dPressed=false;
+static bool ePressed=false, qPressed=false;
+static bool iPressed=false, kPressed=false;
+static bool lPressed=false, jPressed=false;
+static bool oPressed=false, uPressed=false;
+static bool plusPressed=false, minusPressed=false;
+static bool enterPressed=false;   // NEW
+
+// helper: returns true only once per press/release cycle
+static bool keyPressedOnce(GLFWwindow* window, int key, bool &flag)
 {
-    scene.Translation(Direction::up, 1);
+    if (glfwGetKey(window, key) == GLFW_PRESS)
+    {
+        if (!flag) { flag = true; return true; }
+    }
+    else { flag = false; }
+    return false;
 }
 
-template <int n>
-void ControlManager<n>::moveBackward(Scene<n> *scene)
-{
-    scene->Translation(Direction::down, 1);
-}
+// Private helpers
+void ControlManager::moveForward()   { scene->Translation(Direction::forward, TransAmount); }
+void ControlManager::moveBackward()  { scene->Translation(Direction::back, TransAmount); }
+void ControlManager::moveLeft()      { scene->Translation(Direction::left, TransAmount); }
+void ControlManager::moveRight()     { scene->Translation(Direction::right, TransAmount); }
+void ControlManager::moveUp()        { scene->Translation(Direction::up, TransAmount); }
+void ControlManager::moveDown()      { scene->Translation(Direction::down, TransAmount); }
 
-template <int n>
-void ControlManager<n>::moveLeft(Scene<n> *scene)
-{
-    scene->Translation(Direction::left, 1);
-}
+void ControlManager::rotateX()       { scene->RotateX(rotationDegrees); }
+void ControlManager::rotateY()       { scene->RotateY(rotationDegrees); }
+void ControlManager::rotateZ()       { scene->RotateZ(rotationDegrees); }
 
-template <int n>
-void ControlManager<n>::moveRight(Scene<n> *scene)
+void ControlManager::processInput()
 {
-    scene->Translation(Direction::right, 1);
-}
+    // Rotations
+    if (keyPressedOnce(window, GLFW_KEY_W, wPressed)) { rotateX(); }
+    if (keyPressedOnce(window, GLFW_KEY_S, sPressed)) { rotationDegrees=-rotationDegrees; rotateX(); rotationDegrees=-rotationDegrees; }
 
-// Rotation
-template <int n>
-void ControlManager<n>::rotateX(Scene<n> *scene)
-{
-    // TODO: implement rotation around X axis
-}
+    if (keyPressedOnce(window, GLFW_KEY_A, aPressed)) { rotateY(); }
+    if (keyPressedOnce(window, GLFW_KEY_D, dPressed)) { rotationDegrees=-rotationDegrees; rotateY(); rotationDegrees=-rotationDegrees; }
 
-template <int n>
-void ControlManager<n>::rotateY(Scene<n> *scene)
-{
-    // TODO: implement rotation around Y axis
-}
+    if (keyPressedOnce(window, GLFW_KEY_E, ePressed)) { rotateZ(); }
+    if (keyPressedOnce(window, GLFW_KEY_Q, qPressed)) { rotationDegrees=-rotationDegrees; rotateZ(); rotationDegrees=-rotationDegrees; }
 
-template <int n>
-void ControlManager<n>::rotateZ(Scene<n> *scene)
-{
-    // TODO: implement rotation around Z axis
-    scene->Rotate(30);
-}
+    // Translations
+    if (keyPressedOnce(window, GLFW_KEY_I, iPressed)) { moveUp(); }
+    if (keyPressedOnce(window, GLFW_KEY_K, kPressed)) { moveDown(); }
+    if (keyPressedOnce(window, GLFW_KEY_L, lPressed)) { moveRight(); }
+    if (keyPressedOnce(window, GLFW_KEY_J, jPressed)) { moveLeft(); }
+    if (keyPressedOnce(window, GLFW_KEY_O, oPressed)) { moveForward(); }
+    if (keyPressedOnce(window, GLFW_KEY_U, uPressed)) { moveBackward(); }
 
-// Dispatcher
-template <int n>
-void ControlManager<n>::processInput(GLFWwindow *window, Scene<n> *scene)
-{
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        moveForward(scene);
-    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        moveBackward(scene);
-    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        moveLeft(scene);
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        moveRight(scene);
+    // Rotor speed control
+    if (keyPressedOnce(window, GLFW_KEY_KP_ADD, plusPressed)) { arbitrarySpeed += 0.5f; }
+    if (keyPressedOnce(window, GLFW_KEY_KP_SUBTRACT, minusPressed)) { arbitrarySpeed = std::max(0.0f, arbitrarySpeed - 0.5f); }
 
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-        rotateX(scene);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-        rotateY(scene);
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
-        rotateZ(scene);
+    // Wireframe toggle with Enter
+    if (keyPressedOnce(window, GLFW_KEY_ENTER, enterPressed))
+    {
+        if (wireframeActive)
+        {
+            scene->setNormalMode();
+            wireframeActive = false;
+        }
+        else
+        {
+            scene->setWireframeMode();
+            wireframeActive = true;
+        }
+    }
 }

@@ -105,9 +105,6 @@ public:
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };
 
-    virtual void addCutoutShape(Scene *Scene) = 0;
-    virtual void drawCutoutShapes(){};
-
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr) = 0;
 
     virtual void SetMyOrientation(OrientationObject *obj) { this->orientation = obj; };

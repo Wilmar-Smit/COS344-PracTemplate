@@ -13,7 +13,6 @@ class complexSceneHolder : public Scene
 {
 private:
     std::vector<Scene *> visitors;
-    std::vector<Scene *> cutouts;
 
 public:
     complexSceneHolder();
@@ -32,9 +31,6 @@ public:
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
     virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
-
-    virtual void addCutoutShape(Scene *Scene);
-    virtual void drawCutoutShapes();
 
     virtual void select();
     virtual void deselect();

@@ -56,7 +56,6 @@ public:
     virtual DrawerVisitor *getIndex(int i);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
-    virtual void addCutoutShape(Scene *Scene) { delete Scene; };
     // Visitors
     void Visit(Cone *cone);
     void Visit(Cuboid *cuboid);

@@ -1,30 +1,45 @@
 #ifndef CONTROLS_H
 #define CONTROLS_H
 
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
 
-// Forward declaration of templated Scene type
-template <int n>
 class Scene;
 
-template <int n>
-class ControlManager {
+class ControlManager
+{
+    GLFWwindow *window;
+    Scene *scene;
+    float TransAmount;
+    float rotationDegrees;
+    float arbitrarySpeed;
+
+    bool wireframeActive = false; // track current render mode
+
+private:
+    void moveForward();
+    void moveBackward();
+    void moveLeft();
+    void moveRight();
+    void moveUp();
+    void moveDown();
+
+    void rotateX();
+    void rotateY();
+    void rotateZ();
+
 public:
-    ControlManager() = default;
-
-    // Movement
-    void moveForward(Scene<n>* scene);
-    void moveBackward(Scene<n>* scene);
-    void moveLeft(Scene<n>* scene);
-    void moveRight(Scene<n>* scene);
-
-    // Rotation
-    void rotateX(Scene<n>* scene);
-    void rotateY(Scene<n>* scene);
-    void rotateZ(Scene<n>* scene);
-
-    // Central dispatcher: checks key states and calls the right functions
-    void processInput(GLFWwindow* window, Scene<n>* scene);
+    ControlManager(GLFWwindow *window, Scene *scene)
+    {
+        this->window = window;
+        this->scene = scene;
+        this->TransAmount = 0.1f; // sensible defaults
+        this->rotationDegrees = 5.0f;
+        this->arbitrarySpeed = 0.0f;
+    };
+    float getSpeed() { return this->arbitrarySpeed; };
+    void processInput();
 };
 
 #endif // CONTROLS_H
