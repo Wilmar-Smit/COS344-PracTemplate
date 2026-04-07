@@ -67,7 +67,7 @@ int main()
     complexSceneHolder *golfCourse = GolfCourse();
     golfCourse->Scale(0.5);
     golfCourse->RotateX(-15.0f);
-    golfCourse->RotateY(15.0f);
+
 
     ControlManager controls(window, golfCourse);
 

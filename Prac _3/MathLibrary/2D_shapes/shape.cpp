@@ -37,6 +37,7 @@ float *Shape::exportWireframe()
 {
     int shapeSides = getNumPoints() / getN();
     float *ShapeCoords = getPoints();
+    const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
 
     // Each side contributes 2 vertices (start + end)
     int totalValues = shapeSides * 2 * (getN() + 4);
@@ -47,15 +48,24 @@ float *Shape::exportWireframe()
 
     for (int row = 0; row < shapeSides; row++)
     {
+        // Current vertex
+        Vector<4> startPoint({ShapeCoords[count], ShapeCoords[count + 1], ShapeCoords[count + 2], 1.0f});
+        startPoint = cameraMatrix * ((Matrix<4, 1>)startPoint);
+        float wStart = startPoint[3];
 
         for (int i = 0; i < getN(); i++)
-            retValues[offset++] = ShapeCoords[count + i];
+            retValues[offset++] = (wStart != 0.0f) ? (startPoint[i] / wStart) : startPoint[i];
         for (int i = 0; i < 4; i++)
             retValues[offset++] = colour[i];
 
+        // Next vertex
         int next = ((row + 1) % shapeSides) * getN();
+        Vector<4> endPoint({ShapeCoords[next], ShapeCoords[next + 1], ShapeCoords[next + 2], 1.0f});
+        endPoint = cameraMatrix * ((Matrix<4, 1>)endPoint);
+        float wEnd = endPoint[3];
+
         for (int i = 0; i < getN(); i++)
-            retValues[offset++] = ShapeCoords[next + i];
+            retValues[offset++] = (wEnd != 0.0f) ? (endPoint[i] / wEnd) : endPoint[i];
         for (int i = 0; i < 4; i++)
             retValues[offset++] = colour[i];
 
