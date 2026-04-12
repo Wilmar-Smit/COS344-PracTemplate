@@ -220,9 +220,110 @@ complexSceneHolder *grounds()
 
     exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.8, Colour::DarkBrown), 1, Colour::DarkBrown);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
-
     exchangeableVis->Translation(Direction::back, 0.3);
     exchangeableVis->Translation(Direction::down, 1.795);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.07, 0.4, Colour::DarkBrown), 0.5, Colour::DarkBrown);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.5);
+    exchangeableVis->Translation(Direction::forward, 0.35);
+    exchangeableVis->RotateX(90);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.07, 0.4, Colour::DarkBrown), 0.5, Colour::DarkBrown);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.5);
+    exchangeableVis->Translation(Direction::back, 0.42);
+    exchangeableVis->RotateX(90);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Cylinder(Circle({0, 0, 0}, 0.1, 10, Colour::Black), 0.2, Colour::Black);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->Translation(Direction::down, 1.795);
+    exchangeableVis->Translation(Direction::right, 0.6);
+    exchangeableVis->Translation(Direction::forward, 1.4);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new TriangularPrism(Square({0, 0, 0}, 0.1, 0.2, Colour::Red), 0.2, Colour::Red);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.6);
+    exchangeableVis->Translation(Direction::forward, 1.8);
+    exchangeableVis->Translation(Direction::right, 0.9);
+    exchangeableVis->RotateY(90);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->RotateY(60);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new TriangularPrism(Square({0, 0, 0}, 0.1, 0.2, Colour::Red), 0.2, Colour::Red);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.6);
+    exchangeableVis->Translation(Direction::back, 2);
+    exchangeableVis->Translation(Direction::left, 0.9);
+    exchangeableVis->RotateY(90);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->RotateY(60);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new TriangularPrism(Square({0, 0, 0}, 0.1, 0.2, Colour::Red), 0.2, Colour::Red);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.6);
+    exchangeableVis->Translation(Direction::back, 2);
+    exchangeableVis->Translation(Direction::right, 0.9);
+    exchangeableVis->RotateY(90);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->RotateY(120);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new TriangularPrism(Square({0, 0, 0}, 0.1, 0.2, Colour::Red), 0.2, Colour::Red);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.6);
+    exchangeableVis->Translation(Direction::forward, 1.8);
+    exchangeableVis->Translation(Direction::left, 0.9);
+    exchangeableVis->RotateY(90);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->RotateY(120);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.1, 0.3, Colour::Magenta), 0.5, Colour::Magenta);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->Translation(Direction::down, 1.695);
+    exchangeableVis->Translation(Direction::left, 0.7);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Cylinder(Circle({0, 0, 0}, 0.1, 10, Colour::Brown), 0.5, Colour::Brown);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->Translation(Direction::down, 1.5);
+    exchangeableVis->Translation(Direction::right, 1);
+    exchangeableVis->Translation(Direction::forward, 1.8);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Sphere({0, 0, 0}, 0.2, 10, 10, Colour::Green);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->Translation(Direction::down, 1.2);
+    exchangeableVis->Translation(Direction::right, 1);
+    exchangeableVis->Translation(Direction::forward, 2.05);
+    grounds->addScene(exchangeableVis);
+
+
+
+    exchangeableShape = new Cylinder(Circle({0, 0, 0}, 0.1, 10, Colour::Brown), 0.5, Colour::Brown);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->Translation(Direction::down, 1.5);
+    exchangeableVis->Translation(Direction::right, 1);
+    exchangeableVis->Translation(Direction::back, 2.4);
+    grounds->addScene(exchangeableVis);
+
+    exchangeableShape = new Sphere({0, 0, 0}, 0.2, 10, 10, Colour::Green);
+    exchangeableVis = new DrawerVisitor(exchangeableShape);
+    exchangeableVis->RotateX(90);
+    exchangeableVis->Translation(Direction::down, 1.2);
+    exchangeableVis->Translation(Direction::right, 1);
+    exchangeableVis->Translation(Direction::back, 2.15);
     grounds->addScene(exchangeableVis);
 
     grounds->Scale(scaleValue);

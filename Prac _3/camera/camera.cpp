@@ -16,8 +16,8 @@ Camera::Camera(Vector<3> e, Vector<3> top, Vector<3> gaze)
 
 void Camera::constructMcam()
 {
-    int n = 3;                    // dimensions of the vecs
-    Matrix<4, 4> xyzMat, multMat; // 4th coord already 0
+    int n = 3;                    
+    Matrix<4, 4> xyzMat, multMat; 
 
     for (int i = 0; i < n; i++)
     {
@@ -34,13 +34,12 @@ void Camera::constructMcam()
     }
     xyzMat[3][3] = 1;
 
-    // Translation matrix with identity diagonal
     multMat[0][0] = 1;
     multMat[1][1] = 1;
     multMat[2][2] = 1;
     for (int i = 0; i < n; i++)
     {
-        multMat[i][3] = -e[i]; // negative eye
+        multMat[i][3] = -e[i];
     }
     multMat[3][3] = 1;
 

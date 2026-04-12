@@ -26,6 +26,17 @@ TriangularPrism::TriangularPrism(Square baseParam, float height, Colour col) : _
 TriangularPrism::TriangularPrism(const TriangularPrism &other) : _3DShape(other.colour)
 {
     this->colour = other.colour;
+    this->height = other.height;
+
+    this->base = new Square(*other.base);
+    this->rightTop = new Square(*other.rightTop);
+    this->leftTop = new Square(*other.leftTop);
+    this->leftSide = new Triangle(*other.leftSide);
+    this->rightSide = new Triangle(*other.rightSide);
+
+    Vector<3> topCen = this->base->getCenter();
+    topCen[2] += this->height;
+    this->orientation = new OrientationObject(new Vector<3>(this->base->getCenter()), new Vector<3>(topCen));
 }
 
 Vector<3> TriangularPrism::getCenter()
