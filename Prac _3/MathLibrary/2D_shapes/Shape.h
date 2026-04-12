@@ -19,6 +19,7 @@ enum class Colour
     Grey,
     Maroon,
     Pink,
+    Peach,
     Brown,
     DarkBrown,
     Black,
@@ -41,7 +42,7 @@ public:
     virtual void print() const = 0;
     virtual Vector<3> getCenter() = 0;
     virtual ~Shape() = default;
-    int getN() { return n; };
+    int getN() const { return n; };
 
     const Vector<4> Red{0.65f, 0.18f, 0.18f, 1.0f};
     const Vector<4> Green{0.24f * 0.7, 0.8f * 0.7, 0.24f * 0.7, 1.0f};
@@ -55,6 +56,7 @@ public:
     const Vector<4> Grey{0.38f, 0.38f, 0.38f, 1.0f};
     const Vector<4> Maroon{0.38f, 0.10f, 0.10f, 1.0f};
     const Vector<4> Pink{0.68f, 0.50f, 0.54f, 1.0f};
+    const Vector<4> Peach{0.79f, 0.72f, 0.62f, 1.0f};
     const Vector<4> Brown{0.40f, 0.25f, 0.12f, 1.0f};
     const Vector<4> DarkBrown{0.25f, 0.16f, 0.08f, 1.0f};
     const Vector<4> Black{0.05f, 0.05f, 0.05f, 1.0f};
@@ -62,7 +64,7 @@ public:
 
     virtual float *exportValues();
     float *exportWireframe();
-    int getWireframeVertexCount() { return this->getNumSides() * (getN() + 4); }
+    int getWireframeVertexCount() const;
 
     void setCoulourVec(Vector<4> col) { this->colour = col; };
     Vector<4> getColourVec(Colour col);

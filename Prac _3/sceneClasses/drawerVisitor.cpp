@@ -88,7 +88,7 @@ void DrawerVisitor::reloadVertices()
         else
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-            vertexCounts[i] = ((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
+            vertexCounts[i] = shapes[i]->getWireframeVertexCount();
             float *vertices = shapes[i]->exportWireframe();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
                             vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
@@ -280,7 +280,7 @@ void DrawerVisitor::setWireframeMode()
     for (int i = 0; i < shapes.size(); i++)
     {
         float *vertices = shapes[i]->exportWireframe();
-        vertexCounts[i] = static_cast<int>((shapes[i]->getNumPoints() / VERTEX_DEPTH) * 2);
+        vertexCounts[i] = shapes[i]->getWireframeVertexCount();
         type = GL_LINES;
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);

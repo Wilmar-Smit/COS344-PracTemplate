@@ -8,7 +8,7 @@ complexSceneHolder *WindMillFan()
     _3DShape *exchangeableShape = nullptr;
     OrientationObject *orient = nullptr;
 
-    exchangeableShape = new Cylinder(Circle({0.0f, 0.0f, -0.01f}, 0.04f, 10, Colour::DarkBrown), 0.5, Colour::DarkBrown);
+    exchangeableShape = new Cylinder(Circle({0.0f, 0.0f, -0.01f}, 0.04f, 10, Colour::Grey), 0.5, Colour::Grey);
     orient = exchangeableShape->getOrientation();
     windMillFan->SetMyOrientation(orient);
     center = exchangeableShape->getCenter();
@@ -171,35 +171,35 @@ complexSceneHolder *grounds()
     orient = exchangeableShape->getOrientation();
     grounds->SetMyOrientation(orient);
 
-    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Grey), 4, Colour::Grey);
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Peach), 4, Colour::Peach);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->Translation(Direction::down, 1.6);
     exchangeableVis->Translation(Direction::back, 2);
     exchangeableVis->Translation(Direction::left, 1 - 0.025);
     grounds->addScene(exchangeableVis);
 
-    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Grey), 2, Colour::Grey);
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Peach), 2, Colour::Peach);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->Translation(Direction::down, 1.6);
     exchangeableVis->Translation(Direction::forward, 1 - 0.025);
     exchangeableVis->RotateY(90);
     grounds->addScene(exchangeableVis);
 
-    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Grey), 4, Colour::Grey);
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Peach), 4, Colour::Peach);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->Translation(Direction::down, 1.6);
     exchangeableVis->Translation(Direction::back, 2);
     exchangeableVis->Translation(Direction::right, 1 - 0.025);
     grounds->addScene(exchangeableVis);
 
-    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Grey), 2, Colour::Grey);
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Peach), 2, Colour::Peach);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->Translation(Direction::down, 1.6);
     exchangeableVis->Translation(Direction::back, (3 - 0.025));
     exchangeableVis->RotateY(90);
     grounds->addScene(exchangeableVis);
 
-    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Grey), 2, Colour::Grey);
+    exchangeableShape = new Cuboid(Square({0, 0, 0}, 0.2, 0.05, Colour::Peach), 2, Colour::Peach);
     exchangeableVis = new DrawerVisitor(exchangeableShape);
     exchangeableVis->Translation(Direction::down, 1.6);
     exchangeableVis->Translation(Direction::back, (3 - 0.025));

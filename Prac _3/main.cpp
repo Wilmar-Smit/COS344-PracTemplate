@@ -84,11 +84,6 @@ int main()
         glfwPollEvents();
         controls.processInput();
 
-        if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
-        {
-            golfCourse->setWireframeMode();
-        }
-
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));

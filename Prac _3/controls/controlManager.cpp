@@ -33,8 +33,8 @@ static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
 // Private helpers
 void ControlManager::moveForward() { scene->Translation(Direction::forward, TransAmount); }
 void ControlManager::moveBackward() { scene->Translation(Direction::back, TransAmount); }
-void ControlManager::moveLeft() { scene->Translation(Direction::left, TransAmount); }
-void ControlManager::moveRight() { scene->Translation(Direction::right, TransAmount); }
+void ControlManager::moveLeft() { scene->Translation(Direction::right, TransAmount); }
+void ControlManager::moveRight() { scene->Translation(Direction::left, TransAmount); }
 void ControlManager::moveUp() { scene->Translation(Direction::up, TransAmount); }
 void ControlManager::moveDown() { scene->Translation(Direction::down, TransAmount); }
 
