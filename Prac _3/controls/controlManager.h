@@ -35,10 +35,11 @@ public:
         this->window = window;
         this->scene = scene;
         this->TransAmount = 0.1f; // sensible defaults
-        this->rotationDegrees = 5.0f;
+        this->rotationDegrees = 0.6f;
         this->arbitrarySpeed = 0.0f;
     };
     float getSpeed() { return this->arbitrarySpeed; };
+    void setScene(Scene *scene) { this->scene = scene; }
     void processInput();
 };
 

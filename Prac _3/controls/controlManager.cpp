@@ -2,32 +2,10 @@
 #include "../sceneClasses/Scene.h"
 #include <algorithm>
 
-// one-shot flags
-static bool wPressed = false, sPressed = false;
-static bool aPressed = false, dPressed = false;
-static bool ePressed = false, qPressed = false;
-static bool iPressed = false, kPressed = false;
-static bool lPressed = false, jPressed = false;
-static bool oPressed = false, uPressed = false;
-static bool plusPressed = false, minusPressed = false;
-static bool enterPressed = false; // NEW
-
-// helper: returns true only once per press/release cycle
-static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
+// helper: returns true while the key is held down
+static bool keyHeldDown(GLFWwindow *window, int key)
 {
-    if (glfwGetKey(window, key) == GLFW_PRESS)
-    {
-        if (!flag)
-        {
-            flag = true;
-            return true;
-        }
-    }
-    else
-    {
-        flag = false;
-    }
-    return false;
+    return glfwGetKey(window, key) == GLFW_PRESS;
 }
 
 // Private helpers
@@ -45,33 +23,33 @@ void ControlManager::rotateZ() { scene->RotateZ(rotationDegrees); }
 void ControlManager::processInput()
 {
     // Rotations
-    if (keyPressedOnce(window, GLFW_KEY_W, wPressed))
+    if (keyHeldDown(window, GLFW_KEY_W))
     {
         rotateX();
     }
-    if (keyPressedOnce(window, GLFW_KEY_S, sPressed))
+    if (keyHeldDown(window, GLFW_KEY_S))
     {
         rotationDegrees = -rotationDegrees;
         rotateX();
         rotationDegrees = -rotationDegrees;
     }
 
-    if (keyPressedOnce(window, GLFW_KEY_A, aPressed))
+    if (keyHeldDown(window, GLFW_KEY_A))
     {
         rotateY();
     }
-    if (keyPressedOnce(window, GLFW_KEY_D, dPressed))
+    if (keyHeldDown(window, GLFW_KEY_D))
     {
         rotationDegrees = -rotationDegrees;
         rotateY();
         rotationDegrees = -rotationDegrees;
     }
 
-    if (keyPressedOnce(window, GLFW_KEY_E, ePressed))
+    if (keyHeldDown(window, GLFW_KEY_E))
     {
         rotateZ();
     }
-    if (keyPressedOnce(window, GLFW_KEY_Q, qPressed))
+    if (keyHeldDown(window, GLFW_KEY_Q))
     {
         rotationDegrees = -rotationDegrees;
         rotateZ();
@@ -79,43 +57,46 @@ void ControlManager::processInput()
     }
 
     // Translations
-    if (keyPressedOnce(window, GLFW_KEY_I, iPressed))
+    if (keyHeldDown(window, GLFW_KEY_I))
     {
         moveUp();
     }
-    if (keyPressedOnce(window, GLFW_KEY_K, kPressed))
+    if (keyHeldDown(window, GLFW_KEY_K))
     {
         moveDown();
     }
-    if (keyPressedOnce(window, GLFW_KEY_L, lPressed))
+    if (keyHeldDown(window, GLFW_KEY_L))
     {
         moveRight();
     }
-    if (keyPressedOnce(window, GLFW_KEY_J, jPressed))
+    if (keyHeldDown(window, GLFW_KEY_J))
     {
         moveLeft();
     }
-    if (keyPressedOnce(window, GLFW_KEY_O, oPressed))
+    if (keyHeldDown(window, GLFW_KEY_O))
     {
         moveForward();
     }
-    if (keyPressedOnce(window, GLFW_KEY_U, uPressed))
+    if (keyHeldDown(window, GLFW_KEY_U))
     {
         moveBackward();
     }
 
     // Rotor speed control
-    if (keyPressedOnce(window, GLFW_KEY_KP_ADD, plusPressed))
+    if (keyHeldDown(window, GLFW_KEY_KP_ADD))
     {
         arbitrarySpeed += 0.5f;
     }
-    if (keyPressedOnce(window, GLFW_KEY_KP_SUBTRACT, minusPressed))
+    if (keyHeldDown(window, GLFW_KEY_KP_SUBTRACT))
     {
         arbitrarySpeed = std::max(0.0f, arbitrarySpeed - 0.5f);
     }
 
     // Wireframe toggle with Enter
-    if (keyPressedOnce(window, GLFW_KEY_ENTER, enterPressed))
+    static bool enterWasDown = false;
+    bool enterIsDown = keyHeldDown(window, GLFW_KEY_ENTER);
+
+    if (enterIsDown && !enterWasDown)
     {
         if (wireframeActive)
         {
@@ -128,4 +109,6 @@ void ControlManager::processInput()
             wireframeActive = true;
         }
     }
+
+    enterWasDown = enterIsDown;
 }

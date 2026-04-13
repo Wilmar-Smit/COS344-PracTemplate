@@ -18,5 +18,6 @@
 complexSceneHolder *WindMillFan();
 complexSceneHolder *WindMillTower();
 complexSceneHolder *grounds();
+complexSceneHolder *Axes();
 complexSceneHolder *GolfCourse();
 #endif

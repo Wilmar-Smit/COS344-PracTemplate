@@ -346,3 +346,20 @@ complexSceneHolder *GolfCourse()
 
     return totalScene;
 }
+
+complexSceneHolder *Axes()
+{
+    complexSceneHolder *axisScene = new complexSceneHolder();
+
+    _3DShape *axisShape = new Cuboid(Square({0.0f, 0.0f, -1.5f}, 0.01f, 0.01f, Colour::Black), 3.0f, Colour::Black);
+    DrawerVisitor *axisVisitor = new DrawerVisitor(axisShape);
+    axisVisitor->RotateY(90);
+    axisScene->addScene(axisVisitor);
+
+    axisShape = new Cuboid(Square({0.0f, 0.0f, -1.5f}, 0.01f, 0.01f, Colour::Black), 3.0f, Colour::Black);
+    axisVisitor = new DrawerVisitor(axisShape);
+    axisVisitor->RotateX(90);
+    axisScene->addScene(axisVisitor);
+
+    return axisScene;
+}

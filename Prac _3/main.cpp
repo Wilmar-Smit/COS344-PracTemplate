@@ -10,12 +10,29 @@
 #include "assets.h"
 #include "controls/controlManager.h"
 
+static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
+{
+    if (glfwGetKey(window, key) == GLFW_PRESS)
+    {
+        if (!flag)
+        {
+            flag = true;
+            return true;
+        }
+    }
+    else
+    {
+        flag = false;
+    }
+    return false;
+}
+
 int main()
 {
 
-    Vector<3> eye = {0.0f, 0.0f, -2};   // camera position, away from origin
-    Vector<3> up = {0.0f, 1.0f, 0.0f};    // world up
-    Vector<3> gaze = {0.0f, 0.0f,1.0f}; // looking toward -Z
+    Vector<3> eye = {0.0f, 0.0f, -2};    // camera position, away from origin
+    Vector<3> up = {0.0f, 1.0f, 0.0f};   // world up
+    Vector<3> gaze = {0.0f, 0.0f, 1.0f}; // looking toward -Z
 
     Camera &cam = Camera::getInstance(eye, up, gaze);
 
@@ -65,29 +82,45 @@ int main()
 
     // Scene setup
     complexSceneHolder *golfCourse = GolfCourse();
+    complexSceneHolder *axisScene = Axes();
     golfCourse->Scale(0.5);
-  
+
     golfCourse->RotateY(270);
 
-
     ControlManager controls(window, golfCourse);
+    bool spacePressed = false;
+
+
 
     do
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glUseProgram(programID);
 
+        axisScene->draw();
         golfCourse->draw();
-
         golfCourse->getIndex(0)->RotateArbitrary(controls.getSpeed());
 
         glfwPollEvents();
         controls.processInput();
 
+        if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
+        {
+        delete golfCourse;
+        golfCourse = GolfCourse();
+        golfCourse->Scale(0.5);
+        golfCourse->RotateY(270);
+        controls.setScene(golfCourse);
+        }
+
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));
 
+
+             
+    delete golfCourse;
+                delete axisScene;
     glfwTerminate();
     return 0;
 }
