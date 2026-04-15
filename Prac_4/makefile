@@ -39,18 +39,18 @@ MATHLIB_SRCS = MathLibrary/LibraryTesting.cpp \
 			   MathLibrary/2D_shapes/Triangle.cpp \
 			   MathLibrary/2D_shapes/Square.cpp \
 			   MathLibrary/2D_shapes/circle.cpp
-BORDER_SRCS = borderClasses/borderStub.cpp borderClasses/borderShape.cpp borderClasses/borderContainer.cpp borderClasses/borderVisitor.cpp
-OBSERVER_SRCS = shapeObservers/borderObserver.cpp 
+
+
 # 3D shape source files (now compiled separately, no longer templates)
 SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
 # Scene class source files (now compiled separately)
 SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 # Source files (space-separated)
-SRCS = main.cpp shader.cpp assets.cpp glad.c camera/camera.cpp controls/controlManager.cpp  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+SRCS = main.cpp shader.cpp glad.c camera/camera.cpp controls/controlManager.cpp  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
 # Standalone test runner (no OpenGL – math library only)
 TEST_NAME = test_runner
-TEST_SRCS = test_main.cpp glad.c assets.cpp $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+TEST_SRCS = test_main.cpp glad.c assets.cpp $(MATHLIB_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
 TEST_OBJS := $(TEST_OBJS:.c=.o)
  

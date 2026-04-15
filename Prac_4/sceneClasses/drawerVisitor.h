@@ -6,11 +6,9 @@
 #include "../MathLibrary/2D_shapes/Shape.h"
 #include "../MathLibrary/Matrix.h"
 #include "../MathLibrary/3D_shapes/3D_Shape.h"
-#include "../MathLibrary/3D_shapes/Cone.h"
+
 #include "../MathLibrary/3D_shapes/Cuboid.h"
-#include "../MathLibrary/3D_shapes/Cylinder.h"
-#include "../MathLibrary/3D_shapes/SquarePyramid.h"
-#include "../MathLibrary/3D_shapes/TriangularPrism.h"
+
 #include "../MathLibrary/3D_shapes/Sphere.h"
 #include <vector>
 #include "Scene.h"
@@ -57,11 +55,8 @@ public:
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
     // Visitors
-    void Visit(Cone *cone);
+   
     void Visit(Cuboid *cuboid);
-    void Visit(Cylinder *cyl);
-    void Visit(SquarePyramid *squarePyramid);
-    void Visit(TriangularPrism *triangularPrism);
     void Visit(Sphere *sphere);
     void Visit(_3DShape *shape);
 

@@ -346,21 +346,13 @@ Matrix<4, 4> DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, Orient
         shapes[i]->applyMatrix(fullTransform);
     }
 
-    shape->notify();
     shape->getOrientation()->update(trans, toCenter, orient);
     reloadVertices();
 
     return fullTransform;
 }
 
-void DrawerVisitor::Visit(Cone *cone)
-{
-    registerShape(cone->base);
-    for (int i = 0; i < cone->sides.size(); i++)
-    {
-        registerShape(cone->sides[i]);
-    }
-}
+
 
 void DrawerVisitor::Visit(Cuboid *cuboid)
 {
@@ -372,33 +364,9 @@ void DrawerVisitor::Visit(Cuboid *cuboid)
     registerShape(cuboid->rightSide);
 }
 
-void DrawerVisitor::Visit(Cylinder *cyl)
-{
-    registerShape(cyl->base);
-    registerShape(cyl->top);
-    for (size_t i = 0; i < cyl->sides.size(); i++)
-    {
-        registerShape(cyl->sides[i]);
-    }
-}
 
-void DrawerVisitor::Visit(SquarePyramid *squarePyramid)
-{
-    registerShape(squarePyramid->base);
-    registerShape(squarePyramid->side1);
-    registerShape(squarePyramid->side2);
-    registerShape(squarePyramid->side3);
-    registerShape(squarePyramid->side4);
-}
 
-void DrawerVisitor::Visit(TriangularPrism *triangularPrism)
-{
-    registerShape(triangularPrism->base);
-    registerShape(triangularPrism->rightSide);
-    registerShape(triangularPrism->leftSide);
-    registerShape(triangularPrism->rightTop);
-    registerShape(triangularPrism->leftTop);
-}
+
 
 void DrawerVisitor::Visit(_3DShape *shape)
 {

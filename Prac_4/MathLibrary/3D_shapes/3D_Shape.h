@@ -6,8 +6,7 @@
 #include <vector>
 #include "../2D_shapes/Shape.h"
 #include "../2D_shapes/circle.h"
-#include "../shapeObservers/borderObserver.h"
-#include "../borderClasses/borderVisitor.h"
+
 class DrawerVisitor;
 class OrientationObject;
 class _3DShape : public Shape
@@ -16,7 +15,7 @@ protected:
     OrientationObject *orientation = nullptr;
 
 private:
-    borderObserver *observer = nullptr;
+ 
 
 public:
     Colour colour;
@@ -41,8 +40,7 @@ public:
 
     virtual ~_3DShape()
     {
-        if (observer)
-            delete observer;
+
         if (orientation)
             delete orientation;
     }
@@ -51,29 +49,13 @@ public:
 
     virtual void getBorders(Vector<3> &min, Vector<3> &max) = 0;
 
-    virtual void attach(borderObserver *obs)
-    {
-        if (this->observer)
-        {
-            delete obs;
-        }
-        this->observer = obs;
-    }
 
-    virtual void notify()
-    {
-        if (observer)
-            observer->notify();
-    }
 
     virtual OrientationObject *getOrientation()
     {
         return this->orientation;
     }
-    virtual void acceptVisitor(BorderVisitor *vis, borderStub *border)
-    {
-        vis->visitRun(this, border);
-    }
+
 };
 
 #endif /* THREE_DSHAPE_H */

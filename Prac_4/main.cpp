@@ -6,8 +6,7 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "shader.hpp"
-
-#include "assets.h"
+#include "camera/camera.h"
 #include "controls/controlManager.h"
 
 static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
@@ -80,14 +79,7 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-    // Scene setup
-    complexSceneHolder *golfCourse = GolfCourse();
-    complexSceneHolder *axisScene = Axes();
-    golfCourse->Scale(0.5);
-
-    golfCourse->RotateY(270);
-
-    ControlManager controls(window, golfCourse);
+    ControlManager controls(window, nullptr);
     bool spacePressed = false;
 
     do
@@ -95,28 +87,17 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glUseProgram(programID);
 
-        axisScene->draw();
-        golfCourse->draw();
-        golfCourse->getIndex(0)->RotateArbitrary(controls.getSpeed());
-
         glfwPollEvents();
         controls.processInput();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
-            delete golfCourse;
-            golfCourse = GolfCourse();
-            golfCourse->Scale(0.5);
-            golfCourse->RotateY(270);
-            controls.setScene(golfCourse);
         }
 
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));
 
-    delete golfCourse;
-    delete axisScene;
     glfwTerminate();
     return 0;
 }
