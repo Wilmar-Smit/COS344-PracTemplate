@@ -1,11 +1,20 @@
 #include "drawerVisitor.h"
 
-DrawerVisitor::DrawerVisitor(_3DShape *shape)
-    : shape(shape)
+void DrawerVisitor::rebuildGpuBuffers()
 {
-    Visit(this->shape);
+    if (!VBO.empty())
+    {
+        glDeleteBuffers((VBO.size()), VBO.data());
+    }
+    if (!VAO.empty())
+    {
+        glDeleteVertexArrays((VAO.size()), VAO.data());
+    }
 
-    this->orientation = shape->getOrientation();
+    VAO.clear();
+    VBO.clear();
+    vertexCounts.clear();
+
     VAO.resize(shapes.size());
     VBO.resize(shapes.size());
     vertexCounts.resize(shapes.size());
@@ -18,9 +27,17 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
         glGenBuffers(1, &VBO[i]);
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
 
-        Shape *currentShape = shapes[i];
-        vertexCounts[i] = (currentShape->getNumPoints() / VERTEX_DEPTH);
-        float *vertices = currentShape->exportValues();
+        float *vertices = nullptr;
+        if (type == GL_TRIANGLE_FAN)
+        {
+            vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
+            vertices = shapes[i]->exportValues();
+        }
+        else
+        {
+            vertexCounts[i] = shapes[i]->getWireframeVertexCount();
+            vertices = shapes[i]->exportWireframe();
+        }
 
         glBufferData(GL_ARRAY_BUFFER,
                      vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
@@ -29,17 +46,24 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
 
         delete[] vertices;
 
-        // position attribute (location 0)
-        glVertexAttribPointer(0, VERTEX_DEPTH, GL_FLOAT, GL_FALSE, (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), (const void *)0);
+        glVertexAttribPointer(0, VERTEX_DEPTH, GL_FLOAT, GL_FALSE,
+                              (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), (const void *)0);
         glEnableVertexAttribArray(0);
-
-        // colour attribute (location 1)
-        glVertexAttribPointer(1, COLOR_DEPTH, GL_FLOAT, GL_FALSE, (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), (const void *)(VERTEX_DEPTH * sizeof(GLfloat)));
+        glVertexAttribPointer(1, COLOR_DEPTH, GL_FLOAT, GL_FALSE,
+                              (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
+                              (const void *)(VERTEX_DEPTH * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
+}
+
+DrawerVisitor::DrawerVisitor(_3DShape *shape)
+    : shape(shape)
+{
+    shape->acceptVisitor(this);
+    this->orientation = shape->getOrientation();
 }
 
 DrawerVisitor::~DrawerVisitor()
@@ -72,6 +96,7 @@ void DrawerVisitor::draw()
 
 void DrawerVisitor::reloadVertices()
 {
+
     for (int i = 0; i < shapes.size(); i++)
     {
         if (type == GL_TRIANGLE_FAN)
@@ -352,8 +377,6 @@ Matrix<4, 4> DrawerVisitor::transform(Matrix<4, 4> &trans, bool toCenter, Orient
     return fullTransform;
 }
 
-
-
 void DrawerVisitor::Visit(Cuboid *cuboid)
 {
     registerShape(cuboid->base);
@@ -362,15 +385,23 @@ void DrawerVisitor::Visit(Cuboid *cuboid)
     registerShape(cuboid->front);
     registerShape(cuboid->leftSide);
     registerShape(cuboid->rightSide);
+    rebuildGpuBuffers();
 }
-
-
-
-
 
 void DrawerVisitor::Visit(_3DShape *shape)
 {
     shape->acceptVisitor(this);
+}
+
+void DrawerVisitor::Visit(MultiFacedSurface *shape)
+{
+    this->shapes.clear();
+    for (int i = 0; i < shape->squares.size(); i++)
+    {
+        registerShape(shape->squares[i]);
+    }
+    this->orientation = shape->getOrientation();
+    rebuildGpuBuffers();
 }
 
 void DrawerVisitor::Visit(Sphere *sphere)
@@ -380,10 +411,11 @@ void DrawerVisitor::Visit(Sphere *sphere)
     {
         registerShape(sphere->allSides[i]);
     }
+    rebuildGpuBuffers();
 }
 
 void DrawerVisitor::registerShape(Shape *s)
 {
-  
+
     this->shapes.push_back(s);
 }

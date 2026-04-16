@@ -8,7 +8,7 @@
 #include "../MathLibrary/3D_shapes/3D_Shape.h"
 
 #include "../MathLibrary/3D_shapes/Cuboid.h"
-
+#include "../MathLibrary/3D_shapes/multiFacedSurface.h"
 #include "../MathLibrary/3D_shapes/Sphere.h"
 #include <vector>
 #include "Scene.h"
@@ -25,6 +25,10 @@ protected:
 
     static const int COLOR_DEPTH = 4;
     static const int VERTEX_DEPTH = 3;
+
+private:
+    void collectChildShapes();
+    void rebuildGpuBuffers();
 
 public:
     DrawerVisitor(_3DShape *shape);
@@ -55,11 +59,11 @@ public:
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
     // Visitors
-   
+
     void Visit(Cuboid *cuboid);
     void Visit(Sphere *sphere);
     void Visit(_3DShape *shape);
-
+    void Visit(MultiFacedSurface *shape);
     void registerShape(Shape *shape);
 };
 

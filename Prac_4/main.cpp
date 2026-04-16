@@ -8,7 +8,7 @@
 #include "shader.hpp"
 #include "camera/camera.h"
 #include "controls/controlManager.h"
-
+#include "sceneClasses/drawerVisitor.h"
 static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
 {
     if (glfwGetKey(window, key) == GLFW_PRESS)
@@ -78,10 +78,11 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
-
-    ControlManager controls(window, nullptr);
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, 3, Colour::Red);
+    DrawerVisitor *dwr = new DrawerVisitor(mult);
+    ControlManager controls(window, dwr);
     bool spacePressed = false;
-
+    int numSides = 4;
     do
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -89,15 +90,21 @@ int main()
 
         glfwPollEvents();
         controls.processInput();
+        dwr->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
-        {
+        { 
+            // will need to reset everything
+            numSides++;
+            mult->setSides(numSides);
+            dwr->Visit(mult);
         }
 
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));
 
+    delete dwr;
     glfwTerminate();
     return 0;
 }

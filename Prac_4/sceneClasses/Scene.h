@@ -18,6 +18,7 @@ enum class Direction
 
 class OrientationObject
 {
+    friend class MultiFacedSurface;
 private:
     Vector<3> *OPstart;
     Vector<3> *OPend;
