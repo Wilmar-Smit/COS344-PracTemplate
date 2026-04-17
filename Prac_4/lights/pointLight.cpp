@@ -54,6 +54,6 @@ Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
 
     retVec[3] = base[3];
 
-    retVec.print();
+   
     return retVec;
 }

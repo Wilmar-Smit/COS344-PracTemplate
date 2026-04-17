@@ -81,7 +81,7 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 0.0f, -2}, 20.0f));
+    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1,0}, 20.0f));
 
     int numSides = 12;
     MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, numSides, Colour::Red);
@@ -90,7 +90,7 @@ int main()
     ControlManager controls(window, dwr);
     bool spacePressed = false;
 
-    // DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
+     DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
 
     do
     {
@@ -100,7 +100,7 @@ int main()
         glfwPollEvents();
         controls.processInput();
         dwr->draw();
-        //  lightDwr->draw();
+          lightDwr->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
