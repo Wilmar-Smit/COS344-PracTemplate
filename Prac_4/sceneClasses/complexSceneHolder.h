@@ -32,8 +32,7 @@ public:
     virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
-    virtual void select();
-    virtual void deselect();
+  
     virtual void setWireframeMode();
     virtual void setNormalMode();
     virtual Scene *selectNext();

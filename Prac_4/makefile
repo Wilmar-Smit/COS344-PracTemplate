@@ -1,16 +1,10 @@
-# Makefile for OpenGL projects
 
-# --- Configuration Variables ---
-
-# Name of the executable
 PROJECT_NAME = main
 
-# C++ Compiler
+
 CXX = g++
 
-# Compiler flags
-# -g: Include debugging information
-# -I<path>: Add directory to include search path
+
 CXXFLAGS = -g \
            -I./include \
 		   -I./MathLibrary \
@@ -18,22 +12,20 @@ CXXFLAGS = -g \
            -I./include/KHR \
            -I$(GLFW_INSTALL_DIR)/include
 
-# Linker flags
-# -L<path>: Add directory to library search path
-# -l<library>: Link with specified library
+
 LDFLAGS = -L$(GLFW_INSTALL_DIR)/lib
 
-# Libraries to link (e.g., glfw3, pthread, dl, GL)
+
 LIBS = -lglfw3 -pthread -ldl -lGL
 
-# Coverage flags
+
 COVERAGE_CXXFLAGS = -O0 --coverage -DCOVERAGE_RUN
 COVERAGE_LDFLAGS = --coverage
 COVERAGE_HTML_DIR = coverage
 COVERAGE_HTML_FILE = $(COVERAGE_HTML_DIR)/index.html
 COVERAGE_EXCLUDE = --exclude '(^|.*/)glad\.c$$'
 
-# Math library source files (non-template translation units only)
+
 MATHLIB_SRCS = MathLibrary/LibraryTesting.cpp \
 			   MathLibrary/2D_shapes/shape.cpp \
 			   MathLibrary/2D_shapes/Triangle.cpp \
@@ -41,14 +33,17 @@ MATHLIB_SRCS = MathLibrary/LibraryTesting.cpp \
 			   MathLibrary/2D_shapes/circle.cpp
 
 
-# 3D shape source files (now compiled separately, no longer templates)
-SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
-# Scene class source files (now compiled separately)
-SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
-# Source files (space-separated)
-SRCS = main.cpp shader.cpp glad.c camera/camera.cpp controls/controlManager.cpp  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
-# Standalone test runner (no OpenGL – math library only)
+SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
+
+SURFACES_SRCS := $(wildcard surfaces/*.cpp)
+
+
+SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
+
+SRCS = main.cpp shader.cpp glad.c camera/camera.cpp controls/controlManager.cpp $(SURFACES_SRCS)  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+
+
 TEST_NAME = test_runner
 TEST_SRCS = test_main.cpp glad.c assets.cpp $(MATHLIB_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 TEST_OBJS = $(TEST_SRCS:.cpp=.o)
@@ -90,37 +85,10 @@ test: $(TEST_NAME)
 clean c: coverage-clean
 	rm -f $(call quote,$(OBJS)) $(PROJECT_NAME) $(call quote,$(TEST_OBJS)) $(TEST_NAME)
 
-coverage-clean:
-	find . \( -name "*.gcda" -o -name "*.gcno" -o -name "*.gcov" \) -delete
-
-coverage: clean
-	$(MAKE) CXXFLAGS="$(CXXFLAGS) $(COVERAGE_CXXFLAGS)" LDFLAGS="$(LDFLAGS) $(COVERAGE_LDFLAGS)" test
-	./$(TEST_NAME)
-	@if command -v gcovr >/dev/null 2>&1; then \
-		gcovr -r . $(COVERAGE_EXCLUDE) --txt --txt-summary; \
-	else \
-		echo "gcovr not found, generating .gcov files with gcov."; \
-		for src in $(filter-out glad.c,$(SRCS)); do \
-			gcov -o "$$(dirname $$src)" "$$src" >/dev/null 2>&1 || true; \
-		done; \
-		echo "Generated .gcov files."; \
-	fi
-
-coverage-html: clean
-	$(MAKE) CXXFLAGS="$(CXXFLAGS) $(COVERAGE_CXXFLAGS)" LDFLAGS="$(LDFLAGS) $(COVERAGE_LDFLAGS)" test
-	./$(TEST_NAME)
-	@mkdir -p $(COVERAGE_HTML_DIR)
-	@if command -v gcovr >/dev/null 2>&1; then \
-		gcovr -r . $(COVERAGE_EXCLUDE) --html-details -o $(COVERAGE_HTML_FILE); \
-		echo "HTML coverage report: $(COVERAGE_HTML_FILE)"; \
-	else \
-		echo "gcovr not found. Install gcovr to generate HTML (e.g. pip install gcovr)."; \
-		exit 1; \
-	fi
 
 run r: $(PROJECT_NAME)
 	./$(PROJECT_NAME)
 
-# Run with Valgrind (library tests only – no OpenGL)
+
 valgrind v: $(TEST_NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(TEST_NAME)

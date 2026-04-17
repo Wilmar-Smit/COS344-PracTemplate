@@ -48,9 +48,6 @@ public:
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr);
     virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr);
 
-    // Scene management
-    virtual void select();
-    virtual void deselect();
     virtual void setWireframeMode();
     virtual void setNormalMode();
     virtual void setParent(DrawerVisitor *parent) {};
@@ -58,7 +55,7 @@ public:
     virtual DrawerVisitor *getIndex(int i);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
 
-    // Visitors
+  
 
     void Visit(Cuboid *cuboid);
     void Visit(Sphere *sphere);

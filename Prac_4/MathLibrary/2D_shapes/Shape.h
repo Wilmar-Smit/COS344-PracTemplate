@@ -61,7 +61,7 @@ public:
     };
     Vector<4> getColourVec(Colour col);
     Vector<4> getColourPas();
-    Vector<4> dePastel(Vector<4> pastelCol);
+ 
     Vector<4> getColourVec() { return this->surface.getBaseColor(); };
     Surface &getSurface() { return this->surface; }
     const Surface &getSurface() const { return this->surface; }

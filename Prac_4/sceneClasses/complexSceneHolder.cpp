@@ -100,30 +100,7 @@ Matrix<4, 4> complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, O
     return mat;
 }
 
-void complexSceneHolder::select()
-{
-    if (!this->selected)
-    {
-        this->selected = true;
-        for (int i = 0; i < visitors.size(); i++)
-        {
-            if (visitors[i])
-                visitors[i]->select();
-        }
-    }
-    else
-    {
-        this->selected = false;
-    }
-}
 
-void complexSceneHolder::deselect()
-{
-    if (this->selected)
-    {
-        this->select();
-    }
-}
 
 void complexSceneHolder::setWireframeMode()
 {

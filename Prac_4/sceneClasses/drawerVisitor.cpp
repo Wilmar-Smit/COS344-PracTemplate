@@ -275,30 +275,6 @@ void DrawerVisitor::Translation(Direction dir, float step, OrientationObject *or
     transform(translationMatrix, false, orient);
 }
 
-void DrawerVisitor::select()
-{
-    for (int i = 0; i < shapes.size(); i++)
-    {
-        if (!this->selected)
-        {
-            shapes[i]->setCoulourVec(shapes[i]->getColourPas());
-        }
-        else
-        {
-            shapes[i]->setCoulourVec(shapes[i]->dePastel(shapes[i]->getColourVec()));
-        }
-        this->selected = !this->selected;
-    }
-    reloadVertices();
-}
-
-void DrawerVisitor::deselect()
-{
-    if (this->selected)
-    {
-        this->select();
-    }
-}
 
 void DrawerVisitor::setWireframeMode()
 {

@@ -75,7 +75,6 @@ SurfaceBuilder &SurfaceBuilder::setShininess(float s)
 
 Surface SurfaceBuilder::build()
 {
-    // Return a copy of the surface object
     if (this->surface)
     {
         return *(this->surface);
@@ -84,154 +83,173 @@ Surface SurfaceBuilder::build()
     return Surface();
 }
 
-RedBuilder::RedBuilder() : SurfaceBuilder() {}
-Surface RedBuilder::build() { return this->setBaseColor(SurfaceBuilder::Red)
-                                  .setAmbient(0.2f)
-                                  .setDiffuse(0.7f)
-                                  .setSpecular(0.4f)
-                                  .setShininess(32.0f)
-                                  .build(); }
+RedBuilder::RedBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Red)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-GreenBuilder::GreenBuilder() : SurfaceBuilder() {}
-Surface GreenBuilder::build() { return this->setBaseColor(SurfaceBuilder::Green)
-                                    .setAmbient(0.2f)
-                                    .setDiffuse(0.7f)
-                                    .setSpecular(0.4f)
-                                    .setShininess(32.0f)
-                                    .build(); }
+GreenBuilder::GreenBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Green)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-BlueBuilder::BlueBuilder() : SurfaceBuilder() {}
-Surface BlueBuilder::build() { return this->setBaseColor(SurfaceBuilder::Blue)
-                                   .setAmbient(0.2f)
-                                   .setDiffuse(0.7f)
-                                   .setSpecular(0.4f)
-                                   .setShininess(32.0f)
-                                   .build(); }
+BlueBuilder::BlueBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Blue)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-YellowBuilder::YellowBuilder() : SurfaceBuilder() {}
-Surface YellowBuilder::build() { return this->setBaseColor(SurfaceBuilder::Yellow)
-                                     .setAmbient(0.2f)
-                                     .setDiffuse(0.7f)
-                                     .setSpecular(0.4f)
-                                     .setShininess(32.0f)
-                                     .build(); }
+YellowBuilder::YellowBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Yellow)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-CyanBuilder::CyanBuilder() : SurfaceBuilder() {}
-Surface CyanBuilder::build() { return this->setBaseColor(SurfaceBuilder::Cyan)
-                                   .setAmbient(0.2f)
-                                   .setDiffuse(0.7f)
-                                   .setSpecular(0.4f)
-                                   .setShininess(32.0f)
-                                   .build(); }
+CyanBuilder::CyanBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Cyan)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-MagentaBuilder::MagentaBuilder() : SurfaceBuilder() {}
-Surface MagentaBuilder::build() { return this->setBaseColor(SurfaceBuilder::Magenta)
-                                      .setAmbient(0.2f)
-                                      .setDiffuse(0.7f)
-                                      .setSpecular(0.4f)
-                                      .setShininess(32.0f)
-                                      .build(); }
+MagentaBuilder::MagentaBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Magenta)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-OrangeBuilder::OrangeBuilder() : SurfaceBuilder() {}
-Surface OrangeBuilder::build() { return this->setBaseColor(SurfaceBuilder::Orange)
-                                     .setAmbient(0.2f)
-                                     .setDiffuse(0.7f)
-                                     .setSpecular(0.4f)
-                                     .setShininess(32.0f)
-                                     .build(); }
+OrangeBuilder::OrangeBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Orange)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-PurpleBuilder::PurpleBuilder() : SurfaceBuilder() {}
-Surface PurpleBuilder::build() { return this->setBaseColor(SurfaceBuilder::Purple)
-                                     .setAmbient(0.2f)
-                                     .setDiffuse(0.7f)
-                                     .setSpecular(0.4f)
-                                     .setShininess(32.0f)
-                                     .build(); }
+PurpleBuilder::PurpleBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Purple)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-WhiteBuilder::WhiteBuilder() : SurfaceBuilder() {}
-Surface WhiteBuilder::build() { return this->setBaseColor(SurfaceBuilder::White)
-                                    .setAmbient(0.2f)
-                                    .setDiffuse(0.7f)
-                                    .setSpecular(0.4f)
-                                    .setShininess(32.0f)
-                                    .build(); }
+WhiteBuilder::WhiteBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::White)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-GreyBuilder::GreyBuilder() : SurfaceBuilder() {}
-Surface GreyBuilder::build() { return this->setBaseColor(SurfaceBuilder::Grey)
-                                   .setAmbient(0.2f)
-                                   .setDiffuse(0.7f)
-                                   .setSpecular(0.4f)
-                                   .setShininess(32.0f)
-                                   .build(); }
+GreyBuilder::GreyBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Grey)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-MaroonBuilder::MaroonBuilder() : SurfaceBuilder() {}
-Surface MaroonBuilder::build() { return this->setBaseColor(SurfaceBuilder::Maroon)
-                                     .setAmbient(0.2f)
-                                     .setDiffuse(0.7f)
-                                     .setSpecular(0.4f)
-                                     .setShininess(32.0f)
-                                     .build(); }
+MaroonBuilder::MaroonBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Maroon)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-PinkBuilder::PinkBuilder() : SurfaceBuilder() {}
-Surface PinkBuilder::build() { return this->setBaseColor(SurfaceBuilder::Pink)
-                                   .setAmbient(0.2f)
-                                   .setDiffuse(0.7f)
-                                   .setSpecular(0.4f)
-                                   .setShininess(32.0f)
-                                   .build(); }
+PinkBuilder::PinkBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Pink)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-PeachBuilder::PeachBuilder() : SurfaceBuilder() {}
-Surface PeachBuilder::build() { return this->setBaseColor(SurfaceBuilder::Peach)
-                                    .setAmbient(0.2f)
-                                    .setDiffuse(0.7f)
-                                    .setSpecular(0.4f)
-                                    .setShininess(32.0f)
-                                    .build(); }
+PeachBuilder::PeachBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Peach)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-BrownBuilder::BrownBuilder() : SurfaceBuilder() {}
-Surface BrownBuilder::build() { return this->setBaseColor(SurfaceBuilder::Brown)
-                                    .setAmbient(0.2f)
-                                    .setDiffuse(0.7f)
-                                    .setSpecular(0.4f)
-                                    .setShininess(32.0f)
-                                    .build(); }
+BrownBuilder::BrownBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Brown)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-DarkBrownBuilder::DarkBrownBuilder() : SurfaceBuilder() {}
-Surface DarkBrownBuilder::build() { return this->setBaseColor(SurfaceBuilder::DarkBrown)
-                                        .setAmbient(0.2f)
-                                        .setDiffuse(0.7f)
-                                        .setSpecular(0.4f)
-                                        .setShininess(32.0f)
-                                        .build(); }
+DarkBrownBuilder::DarkBrownBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::DarkBrown)
+        .setAmbient(0.2f)
+        .setDiffuse(0.7f)
+        .setSpecular(0.4f)
+        .setShininess(32.0f);
+}
 
-BlackBuilder::BlackBuilder() : SurfaceBuilder() {}
-Surface BlackBuilder::build() { return this->setBaseColor(SurfaceBuilder::Black)
-                                    .setAmbient(0.1f)
-                                    .setDiffuse(0.8f)
-                                    .setSpecular(0.2f)
-                                    .setShininess(10.0f)
-                                    .build(); }
+BlackBuilder::BlackBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Black)
+        .setAmbient(0.1f)
+        .setDiffuse(0.8f)
+        .setSpecular(0.2f)
+        .setShininess(10.0f);
+}
 
-ChromeBuilder::ChromeBuilder() : SurfaceBuilder() {}
-Surface ChromeBuilder::build() { return this->setBaseColor(SurfaceBuilder::Grey)
-                                     .setAmbient(0.1f)
-                                     .setDiffuse(0.3f)
-                                     .setSpecular(1.0f)
-                                     .setShininess(128.0f)
-                                     .build(); }
+ChromeBuilder::ChromeBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Grey)
+        .setAmbient(0.1f)
+        .setDiffuse(0.3f)
+        .setSpecular(1.0f)
+        .setShininess(128.0f);
+}
 
-MatteRubberBuilder::MatteRubberBuilder() : SurfaceBuilder() {}
-Surface MatteRubberBuilder::build() { return this->setBaseColor(SurfaceBuilder::Black)
-                                          .setAmbient(0.05f)
-                                          .setDiffuse(0.95f)
-                                          .setSpecular(0.05f)
-                                          .setShininess(2.0f)
-                                          .build(); }
+MatteRubberBuilder::MatteRubberBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Black)
+        .setAmbient(0.05f)
+        .setDiffuse(0.95f)
+        .setSpecular(0.05f)
+        .setShininess(2.0f);
+}
 
-PolishedGoldBuilder::PolishedGoldBuilder() : SurfaceBuilder() {}
-Surface PolishedGoldBuilder::build() { return this->setBaseColor(SurfaceBuilder::Yellow)
-                                           .setAmbient(0.3f)
-                                           .setDiffuse(0.5f)
-                                           .setSpecular(0.9f)
-                                           .setShininess(64.0f)
-                                           .build(); }
+PolishedGoldBuilder::PolishedGoldBuilder() : SurfaceBuilder()
+{
+    this->setBaseColor(SurfaceBuilder::Yellow)
+        .setAmbient(0.3f)
+        .setDiffuse(0.5f)
+        .setSpecular(0.9f)
+        .setShininess(64.0f);
+}

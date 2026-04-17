@@ -7,8 +7,11 @@ Surface Shape::buildSurfaceFromColour(Colour col)
     {
     case Colour::Red:
     {
+        std::cout << "I got here" << std::endl;
         RedBuilder builder;
+        std::cout << "I got here" << std::endl;
         return builder.build();
+        std::cout << "I got here" << std::endl;
     }
     case Colour::Green:
     {
@@ -215,7 +218,8 @@ Vector<4> Shape::getColourVec(Colour col)
 {
     return buildSurfaceFromColour(col).getBaseColor();
 }
-Shape::Shape() : surface(buildSurfaceFromColour(Colour::White)) {}
+Shape::Shape() : surface() {}
+
 Shape::Shape(Colour col)
 {
     this->surface = buildSurfaceFromColour(col);
@@ -236,17 +240,6 @@ Vector<4> Shape::getColourPas()
             ret[i] = baseColor[i];
         }
     }
-    return ret;
-}
-Vector<4> Shape::dePastel(Vector<4> pastelCol)
-{
-    Vector<4> ret;
-    float mixFactor = 0.3f;
-    for (int i = 0; i < 3; i++)
-    {
-        ret[i] = (pastelCol[i] - mixFactor) / (1.0f - mixFactor);
-    }
-    ret[3] = pastelCol[3];
     return ret;
 }
 

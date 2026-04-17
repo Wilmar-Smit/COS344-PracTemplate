@@ -100,8 +100,6 @@ public:
     virtual void Scale(float scale, OrientationObject *orient = nullptr) = 0;
     virtual void Translation(Direction dir, float step, OrientationObject *orient = nullptr) = 0;
     virtual Matrix<4, 4> transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient = nullptr) = 0;
-    virtual void select() = 0;
-    virtual void deselect() = 0;
     virtual void setWireframeMode() = 0;
     virtual void setNormalMode() = 0;
     virtual void setParent(Scene *parent) { (void)parent; };

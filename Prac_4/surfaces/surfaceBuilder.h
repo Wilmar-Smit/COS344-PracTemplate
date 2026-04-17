@@ -44,116 +44,97 @@ class RedBuilder : public SurfaceBuilder
 {
 public:
     RedBuilder();
-    virtual Surface build() override;
 };
 class GreenBuilder : public SurfaceBuilder
 {
 public:
     GreenBuilder();
-    virtual Surface build() override;
 };
 class BlueBuilder : public SurfaceBuilder
 {
 public:
     BlueBuilder();
-    virtual Surface build() override;
 };
 class YellowBuilder : public SurfaceBuilder
 {
 public:
     YellowBuilder();
-    virtual Surface build() override;
 };
 class CyanBuilder : public SurfaceBuilder
 {
 public:
     CyanBuilder();
-    virtual Surface build() override;
 };
 class MagentaBuilder : public SurfaceBuilder
 {
 public:
     MagentaBuilder();
-    virtual Surface build() override;
 };
 class OrangeBuilder : public SurfaceBuilder
 {
 public:
     OrangeBuilder();
-    virtual Surface build() override;
 };
 class PurpleBuilder : public SurfaceBuilder
 {
 public:
     PurpleBuilder();
-    virtual Surface build() override;
 };
 class WhiteBuilder : public SurfaceBuilder
 {
 public:
     WhiteBuilder();
-    virtual Surface build() override;
 };
 class GreyBuilder : public SurfaceBuilder
 {
 public:
     GreyBuilder();
-    virtual Surface build() override;
 };
 class MaroonBuilder : public SurfaceBuilder
 {
 public:
     MaroonBuilder();
-    virtual Surface build() override;
 };
 class PinkBuilder : public SurfaceBuilder
 {
 public:
     PinkBuilder();
-    virtual Surface build() override;
 };
 class PeachBuilder : public SurfaceBuilder
 {
 public:
     PeachBuilder();
-    virtual Surface build() override;
 };
 class BrownBuilder : public SurfaceBuilder
 {
 public:
     BrownBuilder();
-    virtual Surface build() override;
 };
 class DarkBrownBuilder : public SurfaceBuilder
 {
 public:
     DarkBrownBuilder();
-    virtual Surface build() override;
 };
 class BlackBuilder : public SurfaceBuilder
 {
 public:
     BlackBuilder();
-    virtual Surface build() override;
 };
 
 class ChromeBuilder : public SurfaceBuilder
 {
 public:
     ChromeBuilder();
-    virtual Surface build() override;
 };
 class MatteRubberBuilder : public SurfaceBuilder
 {
 public:
     MatteRubberBuilder();
-    virtual Surface build() override;
 };
 class PolishedGoldBuilder : public SurfaceBuilder
 {
 public:
     PolishedGoldBuilder();
-    virtual Surface build() override;
 };
 
 #endif
