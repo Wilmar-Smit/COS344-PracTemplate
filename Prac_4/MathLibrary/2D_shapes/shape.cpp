@@ -1,6 +1,106 @@
 #include "Shape.h"
 #include "../../camera/camera.h"
 
+Surface Shape::buildSurfaceFromColour(Colour col)
+{
+    switch (col)
+    {
+    case Colour::Red:
+    {
+        RedBuilder builder;
+        return builder.build();
+    }
+    case Colour::Green:
+    {
+        GreenBuilder builder;
+        return builder.build();
+    }
+    case Colour::Blue:
+    {
+        BlueBuilder builder;
+        return builder.build();
+    }
+    case Colour::Yellow:
+    {
+        YellowBuilder builder;
+        return builder.build();
+    }
+    case Colour::Cyan:
+    {
+        CyanBuilder builder;
+        return builder.build();
+    }
+    case Colour::Magenta:
+    {
+        MagentaBuilder builder;
+        return builder.build();
+    }
+    case Colour::Orange:
+    {
+        OrangeBuilder builder;
+        return builder.build();
+    }
+    case Colour::Purple:
+    {
+        PurpleBuilder builder;
+        return builder.build();
+    }
+    case Colour::White:
+    {
+        WhiteBuilder builder;
+        return builder.build();
+    }
+    case Colour::Grey:
+    {
+        GreyBuilder builder;
+        return builder.build();
+    }
+    case Colour::Maroon:
+    {
+        MaroonBuilder builder;
+        return builder.build();
+    }
+    case Colour::Pink:
+    {
+        PinkBuilder builder;
+        return builder.build();
+    }
+    case Colour::Peach:
+    {
+        PeachBuilder builder;
+        return builder.build();
+    }
+    case Colour::Brown:
+    {
+        BrownBuilder builder;
+        return builder.build();
+    }
+    case Colour::DarkBrown:
+    {
+        DarkBrownBuilder builder;
+        return builder.build();
+    }
+    case Colour::Black:
+    {
+        BlackBuilder builder;
+        return builder.build();
+    }
+    case Colour::Invisible:
+    {
+        SurfaceBuilder builder;
+        return builder.setBaseColor(SurfaceBuilder::invisible)
+            .setAmbient(0.0f)
+            .setDiffuse(0.0f)
+            .setSpecular(0.0f)
+            .setShininess(1.0f)
+            .build();
+    }
+    }
+
+    WhiteBuilder fallbackBuilder;
+    return fallbackBuilder.build();
+}
+
 float *Shape::exportValues()
 {
     int shapeSides = getNumPoints() / getN();
@@ -11,6 +111,7 @@ float *Shape::exportValues()
 
     int offset = 0;
     int count = 0;
+    Vector<4> baseColor = surface.getBaseColor();
 
     for (int row = 0; row < shapeSides; row++)
     {
@@ -26,7 +127,7 @@ float *Shape::exportValues()
 
         for (int i = 0; i < 4; i++) // 4 is for colour values
         {
-            retValues[offset++] = colour[i];
+            retValues[offset++] = baseColor[i];
         }
     }
 
@@ -46,6 +147,7 @@ float *Shape::exportWireframe()
 
     int offset = 0;
     int count = 0;
+    Vector<4> baseColor = surface.getBaseColor();
 
     for (int row = 0; row < shapeSides; row++)
     {
@@ -57,7 +159,7 @@ float *Shape::exportWireframe()
         for (int i = 0; i < getN(); i++)
             retValues[offset++] = (wStart != 0.0f) ? (startPoint[i] / wStart) : startPoint[i];
         for (int i = 0; i < 4; i++)
-            retValues[offset++] = colour[i];
+            retValues[offset++] = baseColor[i];
 
         // Next vertex
         int next = ((row + 1) % shapeSides) * getN();
@@ -68,7 +170,7 @@ float *Shape::exportWireframe()
         for (int i = 0; i < getN(); i++)
             retValues[offset++] = (wEnd != 0.0f) ? (endPoint[i] / wEnd) : endPoint[i];
         for (int i = 0; i < 4; i++)
-            retValues[offset++] = colour[i];
+            retValues[offset++] = baseColor[i];
 
         count += getN();
     }
@@ -86,7 +188,7 @@ float *Shape::exportWireframe()
         for (int i = 0; i < getN(); i++)
             retValues[offset++] = (wFirst != 0.0f) ? (firstPoint[i] / wFirst) : firstPoint[i];
         for (int i = 0; i < 4; i++)
-            retValues[offset++] = colour[i];
+            retValues[offset++] = baseColor[i];
 
         Vector<4> thirdPoint({ShapeCoords[third], ShapeCoords[third + 1], ShapeCoords[third + 2], 1.0f});
         thirdPoint = cameraMatrix * ((Matrix<4, 1>)thirdPoint);
@@ -95,7 +197,7 @@ float *Shape::exportWireframe()
         for (int i = 0; i < getN(); i++)
             retValues[offset++] = (wThird != 0.0f) ? (thirdPoint[i] / wThird) : thirdPoint[i];
         for (int i = 0; i < 4; i++)
-            retValues[offset++] = colour[i];
+            retValues[offset++] = baseColor[i];
     }
 
     delete[] ShapeCoords;
@@ -111,60 +213,27 @@ int Shape::getWireframeVertexCount() const
 
 Vector<4> Shape::getColourVec(Colour col)
 {
-    if (col == Colour::Red)
-        return this->Red;
-    else if (col == Colour::Green)
-        return this->Green;
-    else if (col == Colour::Blue)
-        return this->Blue;
-    else if (col == Colour::Yellow)
-        return this->Yellow;
-    else if (col == Colour::Cyan)
-        return this->Cyan;
-    else if (col == Colour::Magenta)
-        return this->Magenta;
-    else if (col == Colour::Orange)
-        return this->Orange;
-    else if (col == Colour::Purple)
-        return this->Purple;
-    else if (col == Colour::White)
-        return this->White;
-    else if (col == Colour::Grey)
-        return this->Grey;
-    else if (col == Colour::Maroon)
-        return this->Maroon;
-    else if (col == Colour::Pink)
-        return this->Pink;
-    else if (col == Colour::Peach)
-        return this->Peach;
-    else if (col == Colour::Brown)
-        return this->Brown;
-    else if (col == Colour::DarkBrown)
-        return this->DarkBrown;
-    else if (col == Colour::Black)
-        return this->Black;
-    else if (col == Colour::Invisible)
-        return this->invisible;
-    // Default fallback
-    return this->White;
+    return buildSurfaceFromColour(col).getBaseColor();
 }
+Shape::Shape() : surface(buildSurfaceFromColour(Colour::White)) {}
 Shape::Shape(Colour col)
 {
-    this->colour = getColourVec(col);
+    this->surface = buildSurfaceFromColour(col);
 }
 Vector<4> Shape::getColourPas()
 {
     Vector<4> ret;
     float mixFactor = 0.3f;
+    Vector<4> baseColor = this->surface.getBaseColor();
     for (int i = 0; i < 4; i++)
     {
         if (i < 3)
         {
-            ret[i] = (this->colour[i] * (1.0f - mixFactor)) + (1.0f * mixFactor);
+            ret[i] = (baseColor[i] * (1.0f - mixFactor)) + (1.0f * mixFactor);
         }
         else
         {
-            ret[i] = this->colour[i];
+            ret[i] = baseColor[i];
         }
     }
     return ret;

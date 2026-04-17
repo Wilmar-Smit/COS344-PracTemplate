@@ -10,13 +10,13 @@ Circle::Circle(const Vector<3> &c, float r, int vCount, Colour col)
     generateVertices();
 }
 Circle::Circle(const Circle &other)
-    : Shape(other),
+    : Shape(),
       numVertices(other.numVertices),
       vertices(other.vertices),
       center(vertices.front()),
       radius(other.radius)
 {
-    this->colour = other.colour;
+    this->setSurface(other.getSurface());
 }
 
 void Circle::generateVertices()

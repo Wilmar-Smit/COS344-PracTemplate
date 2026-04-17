@@ -87,8 +87,9 @@ Square::Square(const Vector<3> &tl, const Vector<3> &tr,
 }
 
 Square::Square(const Square &other)
+    : Shape(Colour::White)
 {
-    this->colour = other.colour;
+    this->setSurface(other.getSurface());
     this->tl = other.tl;
     this->bl = other.bl;
     this->tr = other.tr;
@@ -150,7 +151,7 @@ Square *Square::operator*(const Matrix<3, 3> &m) const
     }
 
     Square *newSquare = new Square(newTL, newTR, newBR, newBL);
-    newSquare->colour = this->colour;
+    newSquare->setSurface(this->getSurface());
     return newSquare;
 }
 

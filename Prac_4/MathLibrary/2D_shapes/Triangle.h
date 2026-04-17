@@ -48,7 +48,7 @@ public:
             this->p1 = other.p1;
             this->p2 = other.p2;
             this->p3 = other.p3;
-            this->colour = other.colour;
+            this->setSurface(other.getSurface());
         }
         return *this;
     }

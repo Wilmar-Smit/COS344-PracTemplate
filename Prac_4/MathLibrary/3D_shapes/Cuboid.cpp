@@ -11,42 +11,44 @@ Cuboid::Cuboid(Square baseParam, float height, Colour col) : _3DShape(col)
     top->br[2] += height;
     top->tl[2] += height;
 
-    this->col = col;
-
     this->orientation = new OrientationObject(new Vector<3>(base->getCenter()), new Vector<3>(top->getCenter()));
     generateSides();
 }
 
 void Cuboid::generateSides()
 {
-    this->front = new Square(col);
+    this->front = new Square(Colour::White);
+    this->front->setSurface(this->getSurface());
     front->tl = top->bl;
     front->tr = top->br;
     front->bl = base->bl;
     front->br = base->br;
 
-    this->back = new Square(col);
+    this->back = new Square(Colour::White);
+    this->back->setSurface(this->getSurface());
     back->tl = top->tl;
     back->tr = top->tr;
     back->bl = base->tl;
     back->br = base->tr;
 
-    this->leftSide = new Square(col);
+    this->leftSide = new Square(Colour::White);
+    this->leftSide->setSurface(this->getSurface());
     leftSide->tl = top->tl;
     leftSide->tr = top->bl;
     leftSide->bl = base->tl;
     leftSide->br = base->bl;
 
-    this->rightSide = new Square(col);
+    this->rightSide = new Square(Colour::White);
+    this->rightSide->setSurface(this->getSurface());
     rightSide->tl = top->tr;
     rightSide->tr = top->br;
     rightSide->bl = base->tr;
     rightSide->br = base->br;
 }
 
-Cuboid::Cuboid(const Cuboid &other) : _3DShape(other.colour)
+Cuboid::Cuboid(const Cuboid &other) : _3DShape(Colour::White)
 {
-    this->colour = other.colour;
+    this->setSurface(other.getSurface());
 }
 
 Vector<3> Cuboid::getCenter()

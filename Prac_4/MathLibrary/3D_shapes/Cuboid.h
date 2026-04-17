@@ -18,8 +18,6 @@ class Cuboid : public _3DShape
     Square *front;
     Square *back;
 
-    Colour col;
-
 public:
     Cuboid(Square base, float height, Colour col);
     Cuboid(const Cuboid &other);

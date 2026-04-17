@@ -36,7 +36,7 @@ public:
             this->vertices = other.vertices;
             this->center = this->vertices.front();
             this->radius = other.radius;
-            this->colour = other.colour;
+            this->setSurface(other.getSurface());
         }
 
         return *this;

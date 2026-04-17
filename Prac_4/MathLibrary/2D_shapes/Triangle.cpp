@@ -24,7 +24,7 @@ Triangle::Triangle(const Vector<3> &p1, const Vector<3> &p2, const Vector<3> &p3
 
 Triangle::Triangle(const Triangle &other) : Shape()
 {
-    this->colour = other.colour;
+    this->setSurface(other.getSurface());
     this->p1 = other.p1;
     this->p2 = other.p2;
     this->p3 = other.p3;
@@ -88,7 +88,7 @@ Triangle *Triangle::operator*(const Matrix<3, 3> &m) const
     }
 
     Triangle *newTriangle = new Triangle(newP1, newP2, newP3);
-    newTriangle->colour = this->colour;
+    newTriangle->setSurface(this->getSurface());
     return newTriangle;
 }
 

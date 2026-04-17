@@ -68,7 +68,9 @@ void MultiFacedSurface::YLoopEven(float X, bool Sign)
     {
         float Y = center[1] + (signVal) * ((i + 0.5f) * heightOfSquares);
 
-        this->squares.push_back(new Square({X, Y, center[2]}, heightOfSquares, widthOfSquares, this->colour));
+        Square *square = new Square({X, Y, center[2]}, heightOfSquares, widthOfSquares, Colour::White);
+        square->setSurface(this->getSurface());
+        this->squares.push_back(square);
     }
 }
 
@@ -98,7 +100,9 @@ void MultiFacedSurface::YLoopOdd(float X, bool Sign) // x just says along what l
     {
         float Y = center[1] + (signVal)*i * heightOfSquares;
 
-        this->squares.push_back(new Square({X, Y, center[2]}, heightOfSquares, widthOfSquares, this->colour));
+        Square *square = new Square({X, Y, center[2]}, heightOfSquares, widthOfSquares, Colour::White);
+        square->setSurface(this->getSurface());
+        this->squares.push_back(square);
     }
 }
 

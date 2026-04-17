@@ -37,7 +37,7 @@ public:
             this->tr = other.tr;
             this->br = other.br;
             this->bl = other.bl;
-            this->colour = other.colour;
+            this->setSurface(other.getSurface());
         }
         return *this;
     }

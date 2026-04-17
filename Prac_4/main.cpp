@@ -78,11 +78,12 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, 3, Colour::Red);
+    int numSides = 1;
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, numSides, Colour::Red);
     DrawerVisitor *dwr = new DrawerVisitor(mult);
     ControlManager controls(window, dwr);
     bool spacePressed = false;
-    int numSides = 4;
+
     do
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
@@ -93,7 +94,7 @@ int main()
         dwr->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
-        { 
+        {
             // will need to reset everything
             numSides++;
             mult->setSides(numSides);

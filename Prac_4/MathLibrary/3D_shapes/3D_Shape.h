@@ -18,14 +18,7 @@ private:
  
 
 public:
-    Colour colour;
-    Vector<4> colVec;
-
-    _3DShape(Colour col) : Shape(col)
-    {
-        this->colour = col;
-        this->colVec = Shape::getColourVec(col);
-    };
+    _3DShape(Colour col) : Shape(col) {};
 
     virtual _3DShape &operator*=(const Matrix<3, 3> &) override { return *this; }
     virtual _3DShape *operator*(const Matrix<3, 3> &) const override { return nullptr; }

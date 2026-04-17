@@ -27,7 +27,7 @@ Sphere::Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colou
 Sphere::Sphere(const Sphere &other)
     : _3DShape(Colour::White)
 {
-    (void)other;
+    this->setSurface(other.getSurface());
 }
 
 void Sphere::generateSides()
@@ -39,6 +39,7 @@ void Sphere::generateSides()
         Vector<3> tempCen = this->centerCircle->getCenter();
         tempCen[2] += heightUp;
         Circle *tempCircle = new Circle(tempCen, tempRad, numSectors, Colour::Invisible);
+        tempCircle->setSurface(this->getSurface());
 
         circlesTop.push_back(tempCircle);
     }
@@ -49,7 +50,7 @@ void Sphere::generateSides()
         Vector<3> tempCen = this->centerCircle->getCenter();
         tempCen[2] += heightDown;
         Circle *tempCircle = new Circle(tempCen, tempRad, numSectors, Colour::Invisible);
-        tempCircle->setCoulourVec(this->colVec);
+        tempCircle->setSurface(this->getSurface());
         circlesBottom.push_back(tempCircle);
     }
 
@@ -95,7 +96,9 @@ void Sphere::generateSides()
         Vector<3> topCurrent = topSides[1];
         Vector<3> topNext = topSides[topSides.size() - 2];
 
-        allSides.push_back(new Square(bottomCurrent, topCurrent, topNext, bottomNext, this->colour));
+        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        square->setSurface(this->getSurface());
+        allSides.push_back(square);
     }
     for (int i = 0; i < stacks; i++)
     {
@@ -113,7 +116,9 @@ void Sphere::generateSides()
         Vector<3> topCurrent = topSides[1];
         Vector<3> topNext = topSides[topSides.size() - 2];
 
-        allSides.push_back(new Square(bottomCurrent, topCurrent, topNext, bottomNext, this->colour));
+        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        square->setSurface(this->getSurface());
+        allSides.push_back(square);
     }
     std::vector<Vector<3>> topSides = circlesTop[circlesTop.size() - 1]->getVectors();
     for (int i = 1; i < numSectors; i++)
@@ -127,11 +132,15 @@ void Sphere::generateSides()
         Vector<3> bottomCurrent = topSides[i];
         Vector<3> bottomNext = topSides[next];
 
-        allSides.push_back(new Triangle(bottomCurrent, bottomNext, topCenter->getCenter(), this->colour));
+        Triangle *triangle = new Triangle(bottomCurrent, bottomNext, topCenter->getCenter(), Colour::White);
+        triangle->setSurface(this->getSurface());
+        allSides.push_back(triangle);
     }
     Vector<3> bottomCurrent = topSides[1];
     Vector<3> bottomNext = topSides[topSides.size() - 2];
-    allSides.push_back(new Triangle(bottomCurrent, bottomNext, topCenter->getCenter(), this->colour));
+    Triangle *topCap = new Triangle(bottomCurrent, bottomNext, topCenter->getCenter(), Colour::White);
+    topCap->setSurface(this->getSurface());
+    allSides.push_back(topCap);
 
     std::vector<Vector<3>> bottomSides = circlesBottom[circlesBottom.size() - 1]->getVectors();
     for (int i = 1; i < numSectors; i++)
@@ -145,11 +154,15 @@ void Sphere::generateSides()
         Vector<3> bottomCurrent = bottomSides[i];
         Vector<3> bottomNext = bottomSides[next];
 
-        allSides.push_back(new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), this->colour));
+        Triangle *triangle = new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), Colour::White);
+        triangle->setSurface(this->getSurface());
+        allSides.push_back(triangle);
     }
     bottomCurrent = bottomSides[1];
     bottomNext = bottomSides[topSides.size() - 2];
-    allSides.push_back(new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), this->colour));
+    Triangle *bottomCap = new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), Colour::White);
+    bottomCap->setSurface(this->getSurface());
+    allSides.push_back(bottomCap);
 }
 
 void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides)
@@ -167,7 +180,9 @@ void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> t
         Vector<3> topCurrent = topSides[j];
         Vector<3> topNext = topSides[next];
 
-        allSides.push_back(new Square(bottomCurrent, topCurrent, topNext, bottomNext, this->colour));
+        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        square->setSurface(this->getSurface());
+        allSides.push_back(square);
     }
 }
 
