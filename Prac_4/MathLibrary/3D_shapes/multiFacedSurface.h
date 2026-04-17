@@ -45,6 +45,14 @@ public:
             this->numSquaresPside = n;
 
         generateSides();
+
+
+        Vector<3> orientStart = this->center;
+        Vector<3> orientEnd = this->center;
+        orientStart[0] += width;
+        orientEnd[0] -= width;
+       
+      
     }
 };
 

@@ -6,27 +6,6 @@
 #include <iostream>
 #include "../../surfaces/surfaceBuilder.h"
 
-enum class Colour
-{
-    Red,
-    Green,
-    Blue,
-    Yellow,
-    Cyan,
-    Magenta,
-    Orange,
-    Purple,
-    White,
-    Grey,
-    Maroon,
-    Pink,
-    Peach,
-    Brown,
-    DarkBrown,
-    Black,
-    Invisible
-};
-
 class Shape
 {
 protected:

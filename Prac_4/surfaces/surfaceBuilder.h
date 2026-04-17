@@ -4,6 +4,27 @@
 #include "surface.h"
 #include "Vector.h"
 
+enum class Colour
+{
+    Red,
+    Green,
+    Blue,
+    Yellow,
+    Cyan,
+    Magenta,
+    Orange,
+    Purple,
+    White,
+    Grey,
+    Maroon,
+    Pink,
+    Peach,
+    Brown,
+    DarkBrown,
+    Black,
+    Invisible
+};
+
 class SurfaceBuilder
 {
 protected:
@@ -27,6 +48,8 @@ public:
     static const Vector<4> DarkBrown;
     static const Vector<4> Black;
     static const Vector<4> invisible;
+
+    static Vector<4> buildColour(Colour col);
 
     SurfaceBuilder();
     virtual ~SurfaceBuilder();

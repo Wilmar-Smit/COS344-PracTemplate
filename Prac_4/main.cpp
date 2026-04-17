@@ -9,6 +9,8 @@
 #include "camera/camera.h"
 #include "controls/controlManager.h"
 #include "sceneClasses/drawerVisitor.h"
+#include "lights/globalLights.h"
+#include "lights/pointLight.h"
 static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
 {
     if (glfwGetKey(window, key) == GLFW_PRESS)
@@ -78,11 +80,17 @@ int main()
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
-    int numSides = 1;
+
+    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 0.0f, -2}, 20.0f));
+
+    int numSides = 12;
     MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, numSides, Colour::Red);
     DrawerVisitor *dwr = new DrawerVisitor(mult);
+
     ControlManager controls(window, dwr);
     bool spacePressed = false;
+
+    // DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
 
     do
     {
@@ -92,6 +100,7 @@ int main()
         glfwPollEvents();
         controls.processInput();
         dwr->draw();
+        //  lightDwr->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {

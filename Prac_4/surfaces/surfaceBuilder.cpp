@@ -1,6 +1,6 @@
 #include "surfaceBuilder.h"
 
-const Vector<4> SurfaceBuilder::Red{0.65f, 0.18f, 0.18f, 1.0f};
+const Vector<4> SurfaceBuilder::Red{1, 0, 0, 1.0f};
 const Vector<4> SurfaceBuilder::Green{0.168f, 0.56f, 0.168f, 1.0f}; // 0.24 * 0.7 approx
 const Vector<4> SurfaceBuilder::Blue{0.12f, 0.24f, 0.7f, 1.0f};
 const Vector<4> SurfaceBuilder::Yellow{0.72f, 0.65f, 0.20f, 1.0f};
@@ -8,7 +8,7 @@ const Vector<4> SurfaceBuilder::Cyan{0.18f, 0.45f, 0.45f, 1.0f};
 const Vector<4> SurfaceBuilder::Magenta{0.48f, 0.20f, 0.48f, 1.0f};
 const Vector<4> SurfaceBuilder::Orange{0.68f, 0.40f, 0.16f, 1.0f};
 const Vector<4> SurfaceBuilder::Purple{0.32f, 0.20f, 0.42f, 1.0f};
-const Vector<4> SurfaceBuilder::White{0.90f, 0.90f, 0.86f, 1.0f};
+const Vector<4> SurfaceBuilder::White{1, 1, 1, 1.0f};
 const Vector<4> SurfaceBuilder::Grey{0.38f, 0.38f, 0.38f, 1.0f};
 const Vector<4> SurfaceBuilder::Maroon{0.38f, 0.10f, 0.10f, 1.0f};
 const Vector<4> SurfaceBuilder::Pink{0.68f, 0.50f, 0.54f, 1.0f};
@@ -16,7 +16,83 @@ const Vector<4> SurfaceBuilder::Peach{0.79f, 0.72f, 0.62f, 1.0f};
 const Vector<4> SurfaceBuilder::Brown{0.40f, 0.25f, 0.12f, 1.0f};
 const Vector<4> SurfaceBuilder::DarkBrown{0.25f, 0.16f, 0.08f, 1.0f};
 const Vector<4> SurfaceBuilder::Black{0.05f, 0.05f, 0.05f, 1.0f};
-const Vector<4> SurfaceBuilder::invisible{0.90f, 0.90f, 0.86f, 0.0f};
+const Vector<4> SurfaceBuilder::invisible{0.90f, 0.90f, 0.86f, 0.2f};
+
+Vector<4> SurfaceBuilder::buildColour(Colour col)
+{
+    switch (col)
+    {
+    case Colour::Red:
+    {
+        return Red;
+    }
+    case Colour::Green:
+    {
+        return Green;
+    }
+    case Colour::Blue:
+    {
+        return Blue;
+    }
+    case Colour::Yellow:
+    {
+        return Yellow;
+    }
+    case Colour::Cyan:
+    {
+        return Cyan;
+    }
+    case Colour::Magenta:
+    {
+        return Magenta;
+    }
+    case Colour::Orange:
+    {
+        return Orange;
+    }
+    case Colour::Purple:
+    {
+        return Purple;
+    }
+    case Colour::White:
+    {
+        return White;
+    }
+    case Colour::Grey:
+    {
+        return Grey;
+    }
+
+    case Colour::Maroon:
+    {
+        return Maroon;
+    }
+    case Colour::Pink:
+    {
+        return Pink;
+    }
+    case Colour::Peach:
+    {
+        return Peach;
+    }
+    case Colour::Brown:
+    {
+        return Brown;
+    }
+    case Colour::DarkBrown:
+    {
+        return DarkBrown;
+    }
+    case Colour::Black:
+    {
+        return Black;
+    }
+    case Colour::Invisible:
+    {
+        return invisible;
+    }
+    }
+}
 
 SurfaceBuilder::SurfaceBuilder()
 {
@@ -86,8 +162,8 @@ Surface SurfaceBuilder::build()
 RedBuilder::RedBuilder() : SurfaceBuilder()
 {
     this->setBaseColor(SurfaceBuilder::Red)
-        .setAmbient(0.2f)
-        .setDiffuse(0.7f)
+    .setAmbient(0.15f)
+    .setDiffuse(0.85f)
         .setSpecular(0.4f)
         .setShininess(32.0f);
 }

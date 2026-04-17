@@ -12,6 +12,7 @@ MultiFacedSurface::MultiFacedSurface(Vector<3> center, float width, float height
     {
         throw "cannot have width or height of 0";
     }
+    
     this->orientation = nullptr;
     generateSides();
     Vector<3> orientStart = this->center;

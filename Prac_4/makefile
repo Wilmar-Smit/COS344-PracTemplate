@@ -38,10 +38,11 @@ SHAPE3D_SRCS := $(wildcard MathLibrary/3D_shapes/*.cpp)
 
 SURFACES_SRCS := $(wildcard surfaces/*.cpp)
 
+LIGHT_SRCS := $(wildcard lights/*.cpp)
 
 SCENE_SRCS = sceneClasses/drawerVisitor.cpp sceneClasses/complexSceneHolder.cpp
 
-SRCS = main.cpp shader.cpp glad.c camera/camera.cpp controls/controlManager.cpp $(SURFACES_SRCS)  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
+SRCS = main.cpp shader.cpp glad.c camera/camera.cpp controls/controlManager.cpp $(SURFACES_SRCS) $(LIGHT_SRCS)  $(MATHLIB_SRCS) $(BORDER_SRCS) $(OBSERVER_SRCS) $(SHAPE3D_SRCS) $(SCENE_SRCS)
 
 
 TEST_NAME = test_runner

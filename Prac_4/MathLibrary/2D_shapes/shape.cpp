@@ -1,5 +1,6 @@
 #include "Shape.h"
 #include "../../camera/camera.h"
+#include "../../lights/globalLights.h"
 
 Surface Shape::buildSurfaceFromColour(Colour col)
 {
@@ -7,11 +8,10 @@ Surface Shape::buildSurfaceFromColour(Colour col)
     {
     case Colour::Red:
     {
-        std::cout << "I got here" << std::endl;
+
         RedBuilder builder;
-        std::cout << "I got here" << std::endl;
+
         return builder.build();
-        std::cout << "I got here" << std::endl;
     }
     case Colour::Green:
     {
@@ -112,13 +112,50 @@ float *Shape::exportValues()
     float *ShapeCoords = getPoints();
     const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
 
+    std::vector<Vector<3>> points;
+    points.reserve(shapeSides);
+    for (int i = 0; i < shapeSides; i++)
+    {
+        int base = i * getN();
+        points.push_back(Vector<3>({ShapeCoords[base], ShapeCoords[base + 1], ShapeCoords[base + 2]}));
+    }
+
+    Surface litSurface = this->surface;
+    if (points.size() >= 3)
+    {
+        litSurface.calculateNormal(points[0], points[1], points[2]);
+    }
+
+    std::vector<Vector<4>> pointColours;
+    pointColours.reserve(points.size());
+
+    const auto &lights = GlobalLights::getInstance().getLights();
+    for (int i = 0; i < points.size(); i++)
+    {
+        if (lights.empty())
+        {
+            pointColours.push_back(litSurface.getBaseColor());
+            continue;
+        }
+
+        Vector<4> litColour({0.0f, 0.0f, 0.0f, litSurface.getBaseColor()[3]});
+        for (Light *light : lights)
+        {
+            Vector<4> lightContribution = light->calculateIlluminations(points[i], litSurface);
+            for (int c = 0; c < 3; c++)
+            {
+                litColour[c] += lightContribution[c];
+            }
+        }
+        pointColours.push_back(litColour);
+    }
+
     int offset = 0;
-    int count = 0;
-    Vector<4> baseColor = surface.getBaseColor();
 
     for (int row = 0; row < shapeSides; row++)
     {
-        Vector<4> homogeneousPoint({ShapeCoords[count], ShapeCoords[count + 1], ShapeCoords[count + 2], 1.0f});
+        Vector<3> point = points[row];
+        Vector<4> homogeneousPoint({point[0], point[1], point[2], 1.0f});
         homogeneousPoint = cameraMatrix * ((Matrix<4, 1>)homogeneousPoint);
 
         float w = homogeneousPoint[3];
@@ -126,11 +163,10 @@ float *Shape::exportValues()
         {
             retValues[offset++] = (w != 0.0f) ? (homogeneousPoint[i] / w) : homogeneousPoint[i];
         }
-        count += getN();
 
-        for (int i = 0; i < 4; i++) // 4 is for colour values
+        for (int i = 0; i < 4; i++)
         {
-            retValues[offset++] = baseColor[i];
+            retValues[offset++] = pointColours[row][i];
         }
     }
 
