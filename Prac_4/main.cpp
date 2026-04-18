@@ -83,8 +83,8 @@ int main()
 
     GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1,0}, 20.0f));
 
-    int numSides = 12;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 1, 1, numSides, Colour::Red);
+    int numSides = 1;
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2,2, numSides, Colour::Red);
     DrawerVisitor *dwr = new DrawerVisitor(mult);
 
     ControlManager controls(window, dwr);
@@ -104,7 +104,7 @@ int main()
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
-            // will need to reset everything
+
             numSides++;
             mult->setSides(numSides);
             dwr->Visit(mult);

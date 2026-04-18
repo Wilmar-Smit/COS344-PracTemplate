@@ -6,7 +6,7 @@ PointLight::PointLight(Colour col, Vector<3> position, float intensity) : Light(
     this->position = position;
     this->intensity = intensity;
 
-    this->sphere = new Sphere(position, 0.2, 10, 5, Colour::Invisible);
+    this->sphere = new Sphere(position, 0.05, 10, 5, Colour::White);
 }
 
 // Return position
