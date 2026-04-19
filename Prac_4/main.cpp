@@ -11,6 +11,10 @@
 #include "sceneClasses/drawerVisitor.h"
 #include "lights/globalLights.h"
 #include "lights/pointLight.h"
+
+#define STB_IMAGE_IMPLEMENTATION
+#include <stb/stb_image.h>
+
 static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
 {
     if (glfwGetKey(window, key) == GLFW_PRESS)
@@ -28,10 +32,49 @@ static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
     return false;
 }
 
+// Helper to load a texture and return its OpenGL ID
+GLuint loadTexture(const char *filename)
+{
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
+    if (!data)
+    {
+        std::cerr << "Failed to load texture: " << filename << std::endl;
+        return 0;
+    }
+
+    GLuint texID;
+    glGenTextures(1, &texID);
+    glBindTexture(GL_TEXTURE_2D, texID);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
+    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
+                 format, GL_UNSIGNED_BYTE, data);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(data);
+    return texID;
+}
+
+/*
+
+
+GLuint colorTex = loadTexture("golfball_color.png");
+GLuint dispTex  = loadTexture("golfball_displacement.png");
+GLuint alphaTex = loadTexture("golfball_alpha.png");
+
+
+*/
+
 int main()
 {
 
-    Vector<3> eye = {0.0f, 0.0f, -2};    // camera position, away from origin
+    Vector<3> eye = {0.0f, 0.0f, -3};    // camera position, away from origin
     Vector<3> up = {0.0f, 1.0f, 0.0f};   // world up
     Vector<3> gaze = {0.0f, 0.0f, 1.0f}; // looking toward -Z
 
@@ -83,12 +126,17 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1, 0}, 5.0f));
+    GLuint colorTex = loadTexture("Adocs/ColTex.png");
+    GLuint dispTex = loadTexture("Adocs/DispTex.png");
+    GLuint alphaTex = loadTexture("Adocs/alpha.png");
 
-    int numSides = 20;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Gold);
+    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {-1, 1, 1}, 5.0f));
+    GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
+
+    int numSides = 2;
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Chrome);
     mult->setLightAffected(true);
-    
+
     DrawerVisitor *dwr = new DrawerVisitor(mult);
     dwr->RotateX(70);
     dwr->Translation(Direction::down, 1);
@@ -97,6 +145,7 @@ int main()
     bool spacePressed = false;
 
     DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
+    DrawerVisitor *lightDwr2 = new DrawerVisitor(GlobalLights::getInstance().getLights()[1]->getShape());
 
     do
     {
@@ -120,6 +169,7 @@ int main()
         controls.processInput();
         dwr->draw();
         lightDwr->draw();
+        lightDwr2->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
