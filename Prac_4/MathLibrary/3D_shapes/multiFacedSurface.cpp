@@ -12,14 +12,9 @@ MultiFacedSurface::MultiFacedSurface(Vector<3> center, float width, float height
     {
         throw "cannot have width or height of 0";
     }
-    
+
     this->orientation = nullptr;
     generateSides();
-    Vector<3> orientStart = this->center;
-    Vector<3> orientEnd = this->center;
-    orientStart[0] += width;
-    orientEnd[0] -= width;
-    this->orientation = new OrientationObject(new Vector<3>(orientStart), new Vector<3>(orientEnd));
 }
 void MultiFacedSurface::generateSides()
 {
@@ -42,6 +37,12 @@ void MultiFacedSurface::generateSides()
         XLoopEven(true);
         XLoopEven(false);
     }
+
+    Vector<3> orientStart = this->center;
+    Vector<3> orientEnd = this->center;
+    orientStart[0] += width;
+    orientEnd[0] -= width;
+    this->orientation = new OrientationObject(new Vector<3>(orientStart), new Vector<3>(orientEnd));
 }
 void MultiFacedSurface::XLoopEven(bool Sign)
 {

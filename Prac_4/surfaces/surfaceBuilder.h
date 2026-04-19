@@ -22,7 +22,8 @@ enum class Colour
     Brown,
     DarkBrown,
     Black,
-    Invisible
+    Invisible,
+    Chrome,
 };
 
 class SurfaceBuilder

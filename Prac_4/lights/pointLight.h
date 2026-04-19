@@ -3,6 +3,7 @@
 
 #include "light.h"
 #include "../MathLibrary/3D_shapes/Sphere.h"
+#include "../camera/camera.h"
 class PointLight : public Light // template method
 {
 private:

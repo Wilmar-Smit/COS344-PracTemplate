@@ -26,7 +26,6 @@ Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
         r = 0.0001f;
     }
 
-
     Vector<3> L = dis * (1.0f / r);
     Vector<3> n = surface.getNormal();
     float nDotL = n * L;
@@ -40,7 +39,16 @@ Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
     {
         float ambient = base[i] * surface.getAmbientK();
         float diffuse = base[i] * surface.getDiffuseK() * this->colour[i] * diffuseFactor * attenuation;
-        retVec[i] = ambient + diffuse;
+
+        Vector<3> eye = Camera::getInstance().getEye();
+        Vector<3> v = (eye - X).unitVector();
+        Vector<3> h = (L + v).unitVector();
+
+        float nDotH = std::max(0.0f, n * h);
+        float specular = surface.getSpecularK() * this->colour[i] *
+                         pow(nDotH, surface.getShininess()) * attenuation;
+
+        retVec[i] = ambient + diffuse + specular;
 
         if (retVec[i] > 1.0f)
         {
@@ -54,6 +62,5 @@ Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
 
     retVec[3] = base[3];
 
-   
     return retVec;
 }

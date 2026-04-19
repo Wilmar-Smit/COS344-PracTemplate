@@ -52,6 +52,8 @@ int main()
     const int windowWidth = 1200;
     const int windowHeight = 800;
     GLFWwindow *window = glfwCreateWindow(windowWidth, windowHeight, baseWindowTitle, NULL, NULL);
+    double lastFpsTime = glfwGetTime();
+    int frameCount = 0;
 
     if (!window)
     {
@@ -81,26 +83,41 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1,0}, 20.0f));
+    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1, 0}, 5.0f));
 
-    int numSides = 1;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2,2, numSides, Colour::Red);
+    int numSides = 20;
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Chrome);
     DrawerVisitor *dwr = new DrawerVisitor(mult);
+    dwr->RotateX(70);
+    dwr->Translation(Direction::down,1);
 
     ControlManager controls(window, dwr);
     bool spacePressed = false;
 
-     DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
+    DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
 
     do
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
         glUseProgram(programID);
 
+        frameCount++;
+        double currentTime = glfwGetTime();
+        double elapsedTime = currentTime - lastFpsTime;
+        if (elapsedTime >= 1.0)
+        {
+            int fps = static_cast<int>(frameCount / elapsedTime);
+            char windowTitle[64];
+            snprintf(windowTitle, sizeof(windowTitle), "%s | FPS: %d", baseWindowTitle, fps);
+            glfwSetWindowTitle(window, windowTitle);
+            frameCount = 0;
+            lastFpsTime = currentTime;
+        }
+
         glfwPollEvents();
         controls.processInput();
         dwr->draw();
-          lightDwr->draw();
+        lightDwr->draw();
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
@@ -108,6 +125,8 @@ int main()
             numSides++;
             mult->setSides(numSides);
             dwr->Visit(mult);
+            dwr->RotateX(70);
+            dwr->Translation(Direction::down,1);
         }
 
         glfwSwapBuffers(window);

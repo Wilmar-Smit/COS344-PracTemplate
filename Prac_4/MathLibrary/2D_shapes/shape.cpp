@@ -98,6 +98,11 @@ Surface Shape::buildSurfaceFromColour(Colour col)
             .setShininess(1.0f)
             .build();
     }
+    case Colour::Chrome:
+    {
+        ChromeBuilder builder;
+        return builder.build();
+    }
     }
 
     WhiteBuilder fallbackBuilder;

@@ -12,7 +12,8 @@ private:
     float specularK;     // Ks: Specular coefficient
     float shininess;     // n: Specular exponent (Phong)
 
-    Vector<3> normal; 
+    Vector<3> normal;
+    bool affectedByLight = false;
 
 public:
     Surface();
@@ -21,7 +22,7 @@ public:
     Vector<3> calculateNormal(
         const Vector<3> &v1,
         const Vector<3> &v2,
-        const Vector<3> &v3) ;
+        const Vector<3> &v3);
 
     Vector<4> getBaseColor() const { return baseColor; }
     float getAmbientK() const { return ambientK; }

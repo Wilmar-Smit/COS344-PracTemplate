@@ -17,7 +17,7 @@ private:
     const float left = -1.0f;
     const float right = 1.0f;
     const float top = 1.0f;
-    const float bottom =-1.0f;
+    const float bottom = -1.0f;
 
     Camera(Vector<3> e, Vector<3> top, Vector<3> gaze);
 
@@ -31,8 +31,7 @@ private:
 public:
     static Camera &getInstance(Vector<3> e = {0, 0, 0}, Vector<3> top = {0, 0, 0}, Vector<3> gaze = {0, 0, 0});
 
-    const Matrix<4, 4> &
-    getMcam() const
+    const Matrix<4, 4> &getMcam() const
     {
         return Mcam;
     }
@@ -44,6 +43,10 @@ public:
     const Matrix<4, 4> &getMatrix() const
     {
         return Mtotal;
+    }
+    const Vector<3> getEye()
+    {
+        return this->e;
     }
 };
 
