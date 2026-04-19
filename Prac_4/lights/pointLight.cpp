@@ -6,7 +6,7 @@ PointLight::PointLight(Colour col, Vector<3> position, float intensity) : Light(
     this->position = position;
     this->intensity = intensity;
 
-    this->sphere = new Sphere(position, 0.05, 10, 5, Colour::White);
+    this->sphere = new Sphere(position, 0.05, 10, 5, col);
 }
 
 // Return position
@@ -19,48 +19,55 @@ Vector<3> PointLight::getPosition()
 Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
 {
     // x is the v3 in exportValues
-    Vector<3> dis = this->position - X;
-    float r = dis.magnitude();
-    if (r < 0.0001f)
+    if (surface.getAffectedLight())
     {
-        r = 0.0001f;
+        Vector<3> dis = this->position - X;
+        float r = dis.magnitude();
+        if (r < 0.0001f)
+        {
+            r = 0.0001f;
+        }
+
+        Vector<3> L = dis * (1.0f / r);
+        Vector<3> n = surface.getNormal();
+        float nDotL = n * L;
+        float diffuseFactor = std::max(0.0f, nDotL);
+
+        Vector<4> retVec;
+        Vector<4> base = surface.getBaseColor();
+        float attenuation = intensity / (r * r);
+
+        for (int i = 0; i < 3; i++)
+        {
+            float ambient = base[i] * surface.getAmbientK();
+            float diffuse = base[i] * surface.getDiffuseK() * this->colour[i] * diffuseFactor * attenuation;
+
+            Vector<3> eye = Camera::getInstance().getEye();
+            Vector<3> v = (eye - X).unitVector();
+            Vector<3> h = (L + v).unitVector();
+
+            float nDotH = std::max(0.0f, n * h);
+            float specular = surface.getSpecularK() * this->colour[i] *
+                             pow(nDotH, surface.getShininess()) * attenuation;
+
+            retVec[i] = ambient + diffuse + specular;
+
+            if (retVec[i] > 1.0f)
+            {
+                retVec[i] = 1.0f;
+            }
+            if (retVec[i] < 0.0f)
+            {
+                retVec[i] = 0.0f;
+            }
+        }
+
+        retVec[3] = base[3];
+
+        return retVec;
     }
-
-    Vector<3> L = dis * (1.0f / r);
-    Vector<3> n = surface.getNormal();
-    float nDotL = n * L;
-    float diffuseFactor = std::max(0.0f, nDotL);
-
-    Vector<4> retVec;
-    Vector<4> base = surface.getBaseColor();
-    float attenuation = intensity / (r * r);
-
-    for (int i = 0; i < 3; i++)
+    else
     {
-        float ambient = base[i] * surface.getAmbientK();
-        float diffuse = base[i] * surface.getDiffuseK() * this->colour[i] * diffuseFactor * attenuation;
-
-        Vector<3> eye = Camera::getInstance().getEye();
-        Vector<3> v = (eye - X).unitVector();
-        Vector<3> h = (L + v).unitVector();
-
-        float nDotH = std::max(0.0f, n * h);
-        float specular = surface.getSpecularK() * this->colour[i] *
-                         pow(nDotH, surface.getShininess()) * attenuation;
-
-        retVec[i] = ambient + diffuse + specular;
-
-        if (retVec[i] > 1.0f)
-        {
-            retVec[i] = 1.0f;
-        }
-        if (retVec[i] < 0.0f)
-        {
-            retVec[i] = 0.0f;
-        }
+        return surface.getBaseColor();
     }
-
-    retVec[3] = base[3];
-
-    return retVec;
 }

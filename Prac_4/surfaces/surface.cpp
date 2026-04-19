@@ -18,6 +18,7 @@ Surface::Surface(const Surface &other)
     this->shininess = other.shininess;
     this->specularK = other.specularK;
     this->normal = other.normal;
+    this->affectedByLight = other.affectedByLight;
 }
 
 Vector<3> Surface::calculateNormal(

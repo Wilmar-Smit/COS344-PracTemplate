@@ -103,6 +103,11 @@ Surface Shape::buildSurfaceFromColour(Colour col)
         ChromeBuilder builder;
         return builder.build();
     }
+    case Colour::Gold:
+    {
+        PolishedGoldBuilder builder;
+        return builder.build();
+    }
     }
 
     WhiteBuilder fallbackBuilder;

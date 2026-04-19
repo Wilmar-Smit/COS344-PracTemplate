@@ -86,10 +86,12 @@ int main()
     GlobalLights::getInstance().addLight(new PointLight(Colour::White, {0.0f, 1, 0}, 5.0f));
 
     int numSides = 20;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Chrome);
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Gold);
+    mult->setLightAffected(true);
+    
     DrawerVisitor *dwr = new DrawerVisitor(mult);
     dwr->RotateX(70);
-    dwr->Translation(Direction::down,1);
+    dwr->Translation(Direction::down, 1);
 
     ControlManager controls(window, dwr);
     bool spacePressed = false;
@@ -126,7 +128,7 @@ int main()
             mult->setSides(numSides);
             dwr->Visit(mult);
             dwr->RotateX(70);
-            dwr->Translation(Direction::down,1);
+            dwr->Translation(Direction::down, 1);
         }
 
         glfwSwapBuffers(window);

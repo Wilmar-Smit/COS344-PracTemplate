@@ -30,12 +30,14 @@ public:
     float getSpecularK() const { return specularK; }
     float getShininess() const { return shininess; }
     Vector<3> getNormal() const { return normal; }
+    bool getAffectedLight() { return this->affectedByLight; }
 
     void setBaseColor(const Vector<4> &color) { baseColor = color; }
     void setAmbientK(float k) { ambientK = k; }
     void setDiffuseK(float k) { diffuseK = k; }
     void setSpecularK(float k) { specularK = k; }
     void setShininess(float s) { shininess = s; }
+    void setAffectedLight(bool val) { this->affectedByLight = val; }
 };
 
 #endif

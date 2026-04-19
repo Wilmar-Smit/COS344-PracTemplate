@@ -275,7 +275,6 @@ void DrawerVisitor::Translation(Direction dir, float step, OrientationObject *or
     transform(translationMatrix, false, orient);
 }
 
-
 void DrawerVisitor::setWireframeMode()
 {
     for (int i = 0; i < shapes.size(); i++)
@@ -393,5 +392,7 @@ void DrawerVisitor::Visit(Sphere *sphere)
 void DrawerVisitor::registerShape(Shape *s)
 {
 
+    bool affected = this->shape->getSurface().getAffectedLight();
+    s->setLightAffected(affected);
     this->shapes.push_back(s);
 }

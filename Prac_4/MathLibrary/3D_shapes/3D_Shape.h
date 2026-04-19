@@ -15,8 +15,6 @@ protected:
     OrientationObject *orientation = nullptr;
 
 private:
- 
-
 public:
     _3DShape(Colour col) : Shape(col) {};
 
@@ -42,13 +40,12 @@ public:
 
     virtual void getBorders(Vector<3> &min, Vector<3> &max) = 0;
 
-
+    void setLightAffected(bool val) { this->surface.setAffectedLight(val); }
 
     virtual OrientationObject *getOrientation()
     {
         return this->orientation;
     }
-
 };
 
 #endif /* THREE_DSHAPE_H */

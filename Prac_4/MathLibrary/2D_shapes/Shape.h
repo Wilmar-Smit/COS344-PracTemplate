@@ -28,8 +28,6 @@ public:
     virtual ~Shape() = default;
     int getN() const { return n; };
 
-
-
     virtual float *exportValues();
     float *exportWireframe();
     int getWireframeVertexCount() const;
@@ -40,7 +38,7 @@ public:
     };
     Vector<4> getColourVec(Colour col);
     Vector<4> getColourPas();
- 
+
     Vector<4> getColourVec() { return this->surface.getBaseColor(); };
     Surface &getSurface() { return this->surface; }
     const Surface &getSurface() const { return this->surface; }
@@ -53,5 +51,7 @@ public:
 
     virtual std::vector<Vector<4>> getHomogeneousVectors();
     void applyMatrix(const Matrix<4, 4> &transformationMatrix, bool per = false);
+
+    void setLightAffected(bool val) { this->surface.setAffectedLight(val); }
 };
 #endif

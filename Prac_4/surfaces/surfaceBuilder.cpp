@@ -11,7 +11,7 @@ const Vector<4> SurfaceBuilder::Purple{0.32f, 0.20f, 0.42f, 1.0f};
 const Vector<4> SurfaceBuilder::White{1, 1, 1, 1.0f};
 const Vector<4> SurfaceBuilder::Grey{0.38f, 0.38f, 0.38f, 1.0f};
 const Vector<4> SurfaceBuilder::Maroon{0.38f, 0.10f, 0.10f, 1.0f};
-const Vector<4> SurfaceBuilder::Pink{0.68f, 0.50f, 0.54f, 1.0f};
+const Vector<4> SurfaceBuilder::Pink{1.0f, 0.41f, 0.71f, 1.0f};
 const Vector<4> SurfaceBuilder::Peach{0.79f, 0.72f, 0.62f, 1.0f};
 const Vector<4> SurfaceBuilder::Brown{0.40f, 0.25f, 0.12f, 1.0f};
 const Vector<4> SurfaceBuilder::DarkBrown{0.25f, 0.16f, 0.08f, 1.0f};

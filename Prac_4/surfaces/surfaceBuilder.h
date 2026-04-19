@@ -24,6 +24,7 @@ enum class Colour
     Black,
     Invisible,
     Chrome,
+    Gold,
 };
 
 class SurfaceBuilder
