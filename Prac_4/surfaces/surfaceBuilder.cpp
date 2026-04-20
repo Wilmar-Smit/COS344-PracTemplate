@@ -1,8 +1,8 @@
 #include "surfaceBuilder.h"
 
 const Vector<4> SurfaceBuilder::Red{1, 0, 0, 1.0f};
-const Vector<4> SurfaceBuilder::Green{0.168f, 0.56f, 0.168f, 1.0f}; // 0.24 * 0.7 approx
-const Vector<4> SurfaceBuilder::Blue{0.12f, 0.24f, 0.7f, 1.0f};
+const Vector<4> SurfaceBuilder::Green{0, 1, 0, 1.0f}; 
+const Vector<4> SurfaceBuilder::Blue{0, 0, 1, 1.0f};
 const Vector<4> SurfaceBuilder::Yellow{0.72f, 0.65f, 0.20f, 1.0f};
 const Vector<4> SurfaceBuilder::Cyan{0.18f, 0.45f, 0.45f, 1.0f};
 const Vector<4> SurfaceBuilder::Magenta{0.48f, 0.20f, 0.48f, 1.0f};

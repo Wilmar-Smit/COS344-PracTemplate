@@ -38,44 +38,6 @@ static void framebufferSizeCallback(GLFWwindow *window, int width, int height)
     Camera::getInstance().setViewportSize(width, height);
 }
 
-// Helper to load a texture and return its OpenGL ID
-GLuint loadTexture(const char *filename)
-{
-    int width, height, nrChannels;
-    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
-    if (!data)
-    {
-        std::cerr << "Failed to load texture: " << filename << std::endl;
-        return 0;
-    }
-
-    GLuint texID;
-    glGenTextures(1, &texID);
-    glBindTexture(GL_TEXTURE_2D, texID);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    GLenum format = (nrChannels == 4) ? GL_RGBA : GL_RGB;
-    glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
-                 format, GL_UNSIGNED_BYTE, data);
-    glGenerateMipmap(GL_TEXTURE_2D);
-
-    stbi_image_free(data);
-    return texID;
-}
-
-/*
-
-
-GLuint colorTex = loadTexture("golfball_color.png");
-GLuint dispTex  = loadTexture("golfball_displacement.png");
-GLuint alphaTex = loadTexture("golfball_alpha.png");
-
-
-*/
 
 int main()
 {
@@ -134,28 +96,23 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-    GLuint colorTex = loadTexture("Adocs/ColTex.png");
-    GLuint dispTex = loadTexture("Adocs/DispTex.png");
-    GLuint alphaTex = loadTexture("Adocs/alpha.png");
 
-    GlobalLights::getInstance().addLight(new PointLight(Colour::White, {-1, 1, 1}, 5.0f));
+    GlobalLights::getInstance().addLight(new PointLight(Colour::Red, {-1, 1, 1}, 10.0f));
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
-    int numSides = 10;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0},3, 3, numSides, Colour::Chrome);
+    int numSides = 4;
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 3, 3, numSides, Colour::Chrome);
     mult->setLightAffected(true);
-    
-
-    Sphere *sph = new Sphere({0, 0, 0}, 0.5, 10, 10, Colour::White);
-    sph->getSurface().setAlphaTexture(alphaTex);
-    sph->getSurface().setColorTexture(colorTex);
-    sph->getSurface().setDisplacementTexture(colorTex);
-    
-    DrawerVisitor *dwrGolfBall = new DrawerVisitor(sph);
 
     DrawerVisitor *dwr = new DrawerVisitor(mult);
     dwr->RotateX(70);
     dwr->Translation(Direction::down, 1);
+
+    MultiFacedSurface *multLeft = new MultiFacedSurface({0, 1, 3.5}, 3, 3, 50, Colour::Chrome);
+    multLeft->setLightAffected(true);
+    DrawerVisitor dwr2(multLeft);
+    dwr2.RotateX(360);
+
 
     ControlManager controls(window, dwr);
     bool spacePressed = false;
@@ -184,6 +141,7 @@ int main()
         glfwPollEvents();
         controls.processInput();
         dwr->draw();
+        dwr2.draw();
         lightDwr->draw();
         lightDwr2->draw();
 
