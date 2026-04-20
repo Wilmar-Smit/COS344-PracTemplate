@@ -19,6 +19,13 @@ Surface::Surface(const Surface &other)
     this->specularK = other.specularK;
     this->normal = other.normal;
     this->affectedByLight = other.affectedByLight;
+
+    colorTexID = other.colorTexID;
+    displacementTexID = other.displacementTexID;
+    alphaTexID = other.alphaTexID;
+    useColorTex = other.useAlphaTex;
+    useDisplacementTex = other.useDisplacementTex;
+    useAlphaTex = other.useAlphaTex;
 }
 
 Vector<3> Surface::calculateNormal(

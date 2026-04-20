@@ -18,12 +18,12 @@ private:
     Vector<3> normal;
     bool affectedByLight = false;
 
-    // Texture IDs
+
     GLuint colorTexID = 0;
     GLuint displacementTexID = 0;
     GLuint alphaTexID = 0;
 
-    // Flags
+
     bool useColorTex = false;
     bool useDisplacementTex = false;
     bool useAlphaTex = false;

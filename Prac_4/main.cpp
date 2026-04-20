@@ -134,8 +134,16 @@ int main()
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
     int numSides = 2;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 2, 2, numSides, Colour::Chrome);
+    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0},3, 3, numSides, Colour::Chrome);
     mult->setLightAffected(true);
+    
+
+    Sphere *sph = new Sphere({0, 0, 0}, 0.5, 10, 10, Colour::White);
+    sph->getSurface().setAlphaTexture(alphaTex);
+    sph->getSurface().setColorTexture(colorTex);
+    sph->getSurface().setDisplacementTexture(colorTex);
+    
+    DrawerVisitor *dwrGolfBall = new DrawerVisitor(sph);
 
     DrawerVisitor *dwr = new DrawerVisitor(mult);
     dwr->RotateX(70);
