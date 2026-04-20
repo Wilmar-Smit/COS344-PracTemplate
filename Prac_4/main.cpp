@@ -32,6 +32,12 @@ static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
     return false;
 }
 
+static void framebufferSizeCallback(GLFWwindow *window, int width, int height)
+{
+    glViewport(0, 0, width, height);
+    Camera::getInstance().setViewportSize(width, height);
+}
+
 // Helper to load a texture and return its OpenGL ID
 GLuint loadTexture(const char *filename)
 {
@@ -116,6 +122,8 @@ int main()
     int nx, ny;
     glfwGetFramebufferSize(window, &nx, &ny);
     glViewport(0, 0, nx, ny);
+    cam.setViewportSize(nx, ny);
+    glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
 
     glClearColor(0.53f, 0.81f, 0.92f, 1.0f);
 
@@ -133,7 +141,7 @@ int main()
     GlobalLights::getInstance().addLight(new PointLight(Colour::White, {-1, 1, 1}, 5.0f));
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
-    int numSides = 2;
+    int numSides = 10;
     MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0},3, 3, numSides, Colour::Chrome);
     mult->setLightAffected(true);
     

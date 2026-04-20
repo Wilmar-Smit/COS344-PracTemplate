@@ -74,3 +74,20 @@ Camera &Camera::getInstance(Vector<3> e, Vector<3> top, Vector<3> gaze)
     static Camera instance(e, top, gaze);
     return instance;
 }
+
+void Camera::setViewportSize(int nx, int ny)
+{
+    if (nx <= 0 || ny <= 0)
+    {
+        return;
+    }
+
+    const float aspect = nx / ny;
+
+    // Keep top/bottom fixed and adapt horizontal bounds to match framebuffer ratio.
+    right = top * aspect;
+    left = -right;
+
+    constructMper();
+    constructTotalM();
+}

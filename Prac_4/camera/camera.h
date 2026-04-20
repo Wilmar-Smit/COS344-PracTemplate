@@ -14,10 +14,10 @@ private:
 
     const float near = 1;
     const float far = 10.0f;
-    const float left = -1.0f;
-    const float right = 1.0f;
-    const float top = 1.0f;
-    const float bottom = -1.0f;
+    float left = -1.0f;
+    float right = 1.0f;
+    float top = 1.0f;
+    float bottom = -1.0f;
 
     Camera(Vector<3> e, Vector<3> top, Vector<3> gaze);
 
@@ -30,6 +30,8 @@ private:
 
 public:
     static Camera &getInstance(Vector<3> e = {0, 0, 0}, Vector<3> top = {0, 0, 0}, Vector<3> gaze = {0, 0, 0});
+
+    void setViewportSize(int nx, int ny);
 
     const Matrix<4, 4> &getMcam() const
     {
