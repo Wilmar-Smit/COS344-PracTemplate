@@ -113,14 +113,16 @@ Surface Shape::buildSurfaceFromColour(Colour col)
     WhiteBuilder fallbackBuilder;
     return fallbackBuilder.build();
 }
-
 float *Shape::exportValues()
 {
     int shapeSides = getNumPoints() / getN();
-    int totalValues = shapeSides * (getN() + 4);
+    // +2 for UVs
+    int totalValues = shapeSides * (getN() + 4 + 2);
     float *retValues = new float[totalValues];
     float *ShapeCoords = getPoints();
     const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
+
+    const std::vector<Vector<2>> uvs = this->calculateUV();
 
     std::vector<Vector<3>> points;
     points.reserve(shapeSides);
@@ -178,11 +180,23 @@ float *Shape::exportValues()
         {
             retValues[offset++] = pointColours[row][i];
         }
+
+        if (this->surface.isColorTextureEnabled())
+        {
+            retValues[offset++] = uvs[row][0];
+            retValues[offset++] = uvs[row][1];
+        }
+        else
+        {
+            retValues[offset++] = 0;
+            retValues[offset++] = 0;
+        }
     }
 
     delete[] ShapeCoords;
     return retValues;
 }
+
 float *Shape::exportWireframe()
 {
     int shapeSides = getNumPoints() / getN();

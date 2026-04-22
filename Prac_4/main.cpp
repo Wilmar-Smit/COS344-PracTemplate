@@ -31,13 +31,41 @@ static bool keyPressedOnce(GLFWwindow *window, int key, bool &flag)
     }
     return false;
 }
+GLuint loadTexture(const char *filename)
+{
+    GLuint textureID;
+    glGenTextures(1, &textureID);
+    glBindTexture(GL_TEXTURE_2D, textureID);
+
+    // Set wrapping/filtering options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    int width, height, nrChannels;
+    unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
+    if (data)
+    {
+        GLenum format = (nrChannels == 3) ? GL_RGB : GL_RGBA;
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
+                     format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    else
+    {
+        std::cerr << "Failed to load texture: " << filename << std::endl;
+    }
+    stbi_image_free(data);
+
+    return textureID;
+}
 
 static void framebufferSizeCallback(GLFWwindow *window, int width, int height)
 {
     glViewport(0, 0, width, height);
     Camera::getInstance().setViewportSize(width, height);
 }
-
 
 int main()
 {
@@ -96,7 +124,6 @@ int main()
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glEnable(GL_STENCIL_TEST);
 
-
     GlobalLights::getInstance().addLight(new PointLight(Colour::Red, {-1, 1, 1}, 10.0f));
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
@@ -113,8 +140,18 @@ int main()
     DrawerVisitor dwr2(multLeft);
     dwr2.RotateX(360);
 
+    Sphere *sphere = new Sphere({0, 0, 0}, 1, 10, 10, Colour::Red);
 
-    ControlManager controls(window, dwr);
+    // Load texture
+    GLuint sphereTex = loadTexture("textures/ColTex.png");
+
+    
+    sphere->getSurface().setColorTexture(sphereTex);
+
+    // Register with DrawerVisitor
+    DrawerVisitor dwrSphere(sphere);
+
+    ControlManager controls(window, &dwrSphere);
     bool spacePressed = false;
 
     DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
@@ -130,7 +167,7 @@ int main()
         double elapsedTime = currentTime - lastFpsTime;
         if (elapsedTime >= 1.0)
         {
-            int fps = static_cast<int>(frameCount / elapsedTime);
+            int fps = (frameCount / elapsedTime);
             char windowTitle[64];
             snprintf(windowTitle, sizeof(windowTitle), "%s | FPS: %d", baseWindowTitle, fps);
             glfwSetWindowTitle(window, windowTitle);
@@ -140,11 +177,11 @@ int main()
 
         glfwPollEvents();
         controls.processInput();
-        dwr->draw();
-        dwr2.draw();
-        lightDwr->draw();
-        lightDwr2->draw();
-
+        //  dwr->draw();
+        // dwr2.draw();
+        // lightDwr->draw();
+        // lightDwr2->draw();
+        dwrSphere.draw();
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
 

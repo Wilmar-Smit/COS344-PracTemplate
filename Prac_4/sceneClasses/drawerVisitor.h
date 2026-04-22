@@ -25,6 +25,7 @@ protected:
 
     static const int COLOR_DEPTH = 4;
     static const int VERTEX_DEPTH = 3;
+    static const int UV_DEPTH = 2;
 
 private:
     void collectChildShapes();
@@ -54,8 +55,6 @@ public:
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
-
-  
 
     void Visit(Cuboid *cuboid);
     void Visit(Sphere *sphere);

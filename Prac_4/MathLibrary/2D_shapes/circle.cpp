@@ -83,3 +83,15 @@ void Circle::setVectors(std::vector<Vector<3>> v)
 void Circle::print() const
 {
 }
+
+std::vector<Vector<2>> Circle::calculateUV()
+{
+    std::vector<Vector<2>> uvs;
+    for (Vector<3> vertex : vertices)
+    {
+        float u = (vertex[0] - center[0]) / (2 * this->radius) + 0.5;
+        float v = (vertex[1] - center[1]) / (2 * this->radius) + 0.5;
+        uvs.push_back({u, v});
+    }
+    return uvs;
+}

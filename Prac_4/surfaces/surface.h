@@ -18,11 +18,9 @@ private:
     Vector<3> normal;
     bool affectedByLight = false;
 
-
     GLuint colorTexID = 0;
     GLuint displacementTexID = 0;
     GLuint alphaTexID = 0;
-
 
     bool useColorTex = false;
     bool useDisplacementTex = false;
@@ -37,7 +35,6 @@ public:
         const Vector<3> &v2,
         const Vector<3> &v3);
 
-    
     Vector<4> getBaseColor() const { return baseColor; }
     float getAmbientK() const { return ambientK; }
     float getDiffuseK() const { return diffuseK; }
@@ -46,7 +43,6 @@ public:
     Vector<3> getNormal() const { return normal; }
     bool getAffectedLight() { return this->affectedByLight; }
 
- 
     void setBaseColor(const Vector<4> &color) { baseColor = color; }
     void setAmbientK(float k) { ambientK = k; }
     void setDiffuseK(float k) { diffuseK = k; }
@@ -54,15 +50,17 @@ public:
     void setShininess(float s) { shininess = s; }
     void setAffectedLight(bool val) { this->affectedByLight = val; }
 
-    void setColorTexture(GLuint tex) { colorTexID = tex; }
+    void setColorTexture(GLuint tex)
+    {
+        colorTexID = tex;
+        this->enableColorTexture(true);
+    }
     void setDisplacementTexture(GLuint tex) { displacementTexID = tex; }
     void setAlphaTexture(GLuint tex) { alphaTexID = tex; }
-
 
     GLuint getColorTexture() const { return colorTexID; }
     GLuint getDisplacementTexture() const { return displacementTexID; }
     GLuint getAlphaTexture() const { return alphaTexID; }
-
 
     void enableColorTexture(bool enable) { useColorTex = enable; }
     void enableDisplacementTexture(bool enable) { useDisplacementTex = enable; }

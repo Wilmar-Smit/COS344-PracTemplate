@@ -70,7 +70,7 @@ Square::Square(const Vector<3> &center, float height, float width, Colour col) :
 }
 
 Square::Square(const Vector<3> &tl, const Vector<3> &tr,
-                  const Vector<3> &br, const Vector<3> &bl) : Shape()
+               const Vector<3> &br, const Vector<3> &bl) : Shape()
 {
     this->tl = tl;
     this->bl = bl;
@@ -78,7 +78,7 @@ Square::Square(const Vector<3> &tl, const Vector<3> &tr,
     this->br = br;
 }
 Square::Square(const Vector<3> &tl, const Vector<3> &tr,
-                  const Vector<3> &br, const Vector<3> &bl, Colour col) : Shape(col)
+               const Vector<3> &br, const Vector<3> &bl, Colour col) : Shape(col)
 {
     this->tl = tl;
     this->bl = bl;
@@ -162,7 +162,7 @@ float *Square::getPoints() const
 
     for (int i = 0; i < this->n; i++)
     {
-        arr[i] = tl[i];         // top-left
+        arr[i] = tl[i];               // top-left
         arr[i + this->n] = tr[i];     // top-right
         arr[i + 2 * this->n] = br[i]; // bottom-right
         arr[i + 3 * this->n] = bl[i]; // bottom-left
@@ -207,4 +207,9 @@ void Square::setVectors(std::vector<Vector<3>> vec)
     tr = vec[1];
     bl = vec[2];
     br = vec[3];
+}
+
+std::vector<Vector<2>> Square::calculateUV()
+{
+    return {{0, 1}, {1, 1}, {1, 0}, {0, 0}};
 }

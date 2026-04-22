@@ -27,7 +27,7 @@ public:
 
     virtual std::vector<Vector<3>> getVectors() override { return vertices; }
     virtual void setVectors(std::vector<Vector<3>> v) override;
-
+    virtual std::vector<Vector<2>> calculateUV();
     Circle operator=(const Circle &other)
     {
         if (this != &other)

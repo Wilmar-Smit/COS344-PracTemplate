@@ -20,8 +20,6 @@ Triangle::Triangle(const Vector<3> &p1, const Vector<3> &p2, const Vector<3> &p3
     this->p3 = p3;
 }
 
-
-
 Triangle::Triangle(const Triangle &other) : Shape()
 {
     this->setSurface(other.getSurface());
@@ -160,4 +158,9 @@ void Triangle::setVectors(std::vector<Vector<3>> vec)
     p1 = vec[0];
     p2 = vec[1];
     p3 = vec[2];
+}
+
+std::vector<Vector<2>> Triangle::calculateUV()
+{
+    return {{0.5, 1}, {0, 0}, {1, 1}};
 }

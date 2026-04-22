@@ -10,6 +10,7 @@ class Shape
 {
 protected:
     int n = 3;
+    virtual std::vector<Vector<2>> calculateUV() = 0;
 
 private:
     static Surface buildSurfaceFromColour(Colour col);
@@ -53,5 +54,7 @@ public:
     void applyMatrix(const Matrix<4, 4> &transformationMatrix, bool per = false);
 
     void setLightAffected(bool val) { this->surface.setAffectedLight(val); }
+
+    
 };
 #endif

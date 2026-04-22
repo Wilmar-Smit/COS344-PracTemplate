@@ -52,6 +52,8 @@ public:
         }
         return *this;
     }
+
+    virtual std::vector<Vector<2>> calculateUV();
 };
 inline std::string tri_to_str(Triangle tri)
 {

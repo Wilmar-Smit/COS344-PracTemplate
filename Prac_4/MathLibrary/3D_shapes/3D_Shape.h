@@ -13,6 +13,7 @@ class _3DShape : public Shape
 {
 protected:
     OrientationObject *orientation = nullptr;
+    virtual std::vector<Vector<2>> calculateUV() { return {}; }
 
 private:
 public:

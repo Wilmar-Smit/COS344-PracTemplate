@@ -1,5 +1,4 @@
 #include "drawerVisitor.h"
-
 void DrawerVisitor::rebuildGpuBuffers()
 {
     if (!VBO.empty())
@@ -28,68 +27,49 @@ void DrawerVisitor::rebuildGpuBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
 
         float *vertices = nullptr;
-        if (type == GL_TRIANGLE_FAN)
+        int stride = 0;
+
+        if (type == GL_TRIANGLE_FAN) // normal mode (filled, textured)
         {
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             vertices = shapes[i]->exportValues();
+            stride = VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH;
         }
-        else
+        else // wireframe mode (no UVs)
         {
             vertexCounts[i] = shapes[i]->getWireframeVertexCount();
             vertices = shapes[i]->exportWireframe();
+            stride = VERTEX_DEPTH + COLOR_DEPTH;
         }
 
         glBufferData(GL_ARRAY_BUFFER,
-                     vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
+                     vertexCounts[i] * stride * sizeof(GLfloat),
                      vertices,
                      GL_STATIC_DRAW);
 
         delete[] vertices;
 
+        // Position attribute
         glVertexAttribPointer(0, VERTEX_DEPTH, GL_FLOAT, GL_FALSE,
-                              (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), (const void *)0);
+                              stride * sizeof(GLfloat), (const void *)0);
         glEnableVertexAttribArray(0);
+
+        // Color attribute
         glVertexAttribPointer(1, COLOR_DEPTH, GL_FLOAT, GL_FALSE,
-                              (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat),
+                              stride * sizeof(GLfloat),
                               (const void *)(VERTEX_DEPTH * sizeof(GLfloat)));
         glEnableVertexAttribArray(1);
 
+        // UV attribute only in normal mode
+        if (type == GL_TRIANGLE_FAN)
+        {
+            glVertexAttribPointer(2, UV_DEPTH, GL_FLOAT, GL_FALSE,
+                                  stride * sizeof(GLfloat),
+                                  (const void *)((VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat)));
+            glEnableVertexAttribArray(2);
+        }
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glBindVertexArray(0);
-    }
-}
-
-DrawerVisitor::DrawerVisitor(_3DShape *shape)
-    : shape(shape)
-{
-    shape->acceptVisitor(this);
-    this->orientation = shape->getOrientation();
-}
-
-DrawerVisitor::~DrawerVisitor()
-{
-    if (!VBO.empty())
-    {
-        glDeleteBuffers((VBO.size()), VBO.data());
-    }
-
-    if (!VAO.empty())
-    {
-        glDeleteVertexArrays((VAO.size()), VAO.data());
-    }
-
-    VBO.clear();
-    VAO.clear();
-
-    delete shape;
-}
-
-void DrawerVisitor::draw()
-{
-    for (size_t i = 0; i < shapes.size(); i++)
-    {
-        glBindVertexArray(VAO[i]);
-        glDrawArrays(type, 0, vertexCounts[i]);
         glBindVertexArray(0);
     }
 }
@@ -105,7 +85,7 @@ void DrawerVisitor::reloadVertices()
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             float *vertices = shapes[i]->exportValues();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
-                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(float),
+                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH) * sizeof(float),
                             vertices);
             delete[] vertices;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -299,7 +279,7 @@ void DrawerVisitor::setNormalMode()
         type = GL_TRIANGLE_FAN;
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
         delete[] vertices;
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
@@ -395,4 +375,41 @@ void DrawerVisitor::registerShape(Shape *s)
     bool affected = this->shape->getSurface().getAffectedLight();
     s->setLightAffected(affected);
     this->shapes.push_back(s);
+}
+DrawerVisitor::DrawerVisitor(_3DShape *shape)
+    : shape(shape)
+{
+    shape->acceptVisitor(this);
+    this->orientation = shape->getOrientation();
+}
+
+
+DrawerVisitor::~DrawerVisitor()
+{
+    // Delete GPU buffers
+    if (!VBO.empty())
+    {
+        glDeleteBuffers(static_cast<GLsizei>(VBO.size()), VBO.data());
+        VBO.clear();
+    }
+
+    if (!VAO.empty())
+    {
+        glDeleteVertexArrays(static_cast<GLsizei>(VAO.size()), VAO.data());
+        VAO.clear();
+    }
+
+    vertexCounts.clear();
+
+    delete shape;
+    shape = nullptr;
+}
+void DrawerVisitor::draw()
+{
+    for (size_t i = 0; i < shapes.size(); i++)
+    {
+        glBindVertexArray(VAO[i]);
+        glDrawArrays(type, 0, vertexCounts[i]);
+        glBindVertexArray(0);
+    }
 }

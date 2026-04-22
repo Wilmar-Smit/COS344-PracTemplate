@@ -29,6 +29,7 @@ public:
     virtual ~Square() {}
     std::vector<Vector<3>> getVectors();
     virtual void setVectors(std::vector<Vector<3>>);
+    virtual std::vector<Vector<2>> calculateUV();
     Square operator=(const Square &other)
     {
         if (this != &other)
@@ -66,8 +67,8 @@ inline std::string sqr_to_str(Square sqr)
     delete[] arr;
     return str.str();
 }
-inline Square::Square(Colour col ) : Shape(col) {
-
+inline Square::Square(Colour col) : Shape(col)
+{
 }
 
 #endif /*SQUARE_H*/
