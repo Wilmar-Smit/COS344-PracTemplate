@@ -15,9 +15,11 @@ private:
 
     // builds the surface out of squares.
     std::vector<Shape *> squares;
+    std::vector<Vector<2>> cachedUVs;
     Vector<3> center;
 
     void generateSides();
+    void rebuildCachedUVs();
     // the + will draw the center line squares  (if false will check if center == calcCenter)
     void XLoopOdd(bool Sign); // true == + : false == -
     void YLoopOdd(float X, bool Sign);
@@ -30,6 +32,9 @@ public:
     // the width is total width and is constant
     // heaght is the shapes total height and is constant
     MultiFacedSurface(Vector<3> center, float width, float height, int numSquares = 1, Colour col = Colour::Black);
+    MultiFacedSurface(const Vector<3> &tl, const Vector<3> &tr,
+                      const Vector<3> &br, const Vector<3> &bl,
+                      int numSquares = 1, Colour col = Colour::White);
 
 
     virtual float *getPoints() const override;

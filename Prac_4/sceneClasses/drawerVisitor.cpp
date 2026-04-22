@@ -398,6 +398,8 @@ void DrawerVisitor::draw()
     GLint displacementStrengthLoc = -1;
     GLint alphaTexLoc = -1;
     GLint useAlphaLoc = -1;
+    GLint shapeCenterLoc = -1;
+    GLint displaceTowardCenterLoc = -1;
 
     if (currentProgram != 0)
     {
@@ -408,11 +410,23 @@ void DrawerVisitor::draw()
         displacementStrengthLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displacementStrength");
         alphaTexLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "alphaTex");
         useAlphaLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useAlpha");
+        shapeCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "shapeCenter");
+        displaceTowardCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displaceTowardCenter");
     }
 
     for (size_t i = 0; i < shapes.size(); i++)
     {
         const Surface &surface = shapes[i]->getSurface();
+        if (shapeCenterLoc >= 0)
+        {
+            Vector<3> center = shapes[i]->getCenter();
+            glUniform3f(shapeCenterLoc, center[0], center[1], center[2]);
+        }
+        if (displaceTowardCenterLoc >= 0)
+        {
+            // Set true for inward displacement, false for outward displacement.
+            glUniform1i(displaceTowardCenterLoc, 0);
+        }
         const bool useTexture =
             (type != GL_LINES) && surface.isColorTextureEnabled() && surface.getColorTexture() != 0;
         const bool useDisplacement =
@@ -444,7 +458,7 @@ void DrawerVisitor::draw()
             glUniform1i(displacementTexLoc, 1);
             if (displacementStrengthLoc >= 0)
             {
-                glUniform1f(displacementStrengthLoc, 0.5); // adjustable strength
+                glUniform1f(displacementStrengthLoc, 0.1); // adjustable strength
             }
         }
 

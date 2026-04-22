@@ -1,5 +1,6 @@
 #include "Sphere.h"
 #include "../../../sceneClasses/drawerVisitor.h"
+#include "multiFacedSurface.h"
 #include <algorithm>
 
 Sphere::Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colour col)
@@ -101,7 +102,7 @@ void Sphere::generateSides()
         Vector<3> topCurrent = topSides[1];
         Vector<3> topNext = topSides[topSides.size() - 2];
 
-        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        MultiFacedSurface *square = new MultiFacedSurface(bottomCurrent, topCurrent, topNext, bottomNext, 10, Colour::White);
         square->setSurface(this->getSurface());
         allSides.push_back(square);
     }
@@ -121,7 +122,7 @@ void Sphere::generateSides()
         Vector<3> topCurrent = topSides[1];
         Vector<3> topNext = topSides[topSides.size() - 2];
 
-        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        MultiFacedSurface *square = new MultiFacedSurface(bottomCurrent, topCurrent, topNext, bottomNext, 10, Colour::White);
         square->setSurface(this->getSurface());
         allSides.push_back(square);
     }
@@ -185,7 +186,7 @@ void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> t
         Vector<3> topCurrent = topSides[j];
         Vector<3> topNext = topSides[next];
 
-        Square *square = new Square(bottomCurrent, topCurrent, topNext, bottomNext, Colour::White);
+        MultiFacedSurface *square = new MultiFacedSurface(bottomCurrent, topCurrent, topNext, bottomNext, 10, Colour::White);
         square->setSurface(this->getSurface());
         allSides.push_back(square);
     }

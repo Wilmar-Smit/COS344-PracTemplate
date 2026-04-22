@@ -1,6 +1,24 @@
 #include "multiFacedSurface.h"
 #include "../../sceneClasses/drawerVisitor.h"
 
+namespace
+{
+Vector<3> bilerpQuad(const Vector<3> &tl, const Vector<3> &tr,
+                     const Vector<3> &br, const Vector<3> &bl,
+                     float u, float v)
+{
+    Vector<3> p;
+    for (int i = 0; i < 3; i++)
+    {
+        p[i] = tl[i] * ((1.0f - u) * v) +
+               tr[i] * (u * v) +
+               bl[i] * ((1.0f - u) * (1.0f - v)) +
+               br[i] * (u * (1.0f - v));
+    }
+    return p;
+}
+}
+
 float *MultiFacedSurface::getPoints() const
 {
     int totalFloats = getNumPoints();
@@ -109,8 +127,17 @@ void MultiFacedSurface::setVectors(std::vector<Vector<3>> vec)
 
 std::vector<Vector<2>> MultiFacedSurface::calculateUV()
 {
-    std::vector<Vector<2>> uvs;
-    uvs.reserve(getNumPoints() / 3);
+    if (cachedUVs.empty())
+    {
+        rebuildCachedUVs();
+    }
+    return cachedUVs;
+}
+
+void MultiFacedSurface::rebuildCachedUVs()
+{
+    cachedUVs.clear();
+    cachedUVs.reserve(getNumPoints() / 3);
 
     const float minX = center[0] - width / 2.0f;
     const float minY = center[1] - height / 2.0f;
@@ -118,8 +145,8 @@ std::vector<Vector<2>> MultiFacedSurface::calculateUV()
     for (Shape *squareShape : squares)
     {
         float *squarePoints = squareShape->getPoints();
-
         int numVerts = squareShape->getNumPoints() / 3;
+
         for (int i = 0; i < numVerts; i++)
         {
             const float x = squarePoints[i * 3 + 0];
@@ -128,13 +155,11 @@ std::vector<Vector<2>> MultiFacedSurface::calculateUV()
             const float u = (width != 0.0f) ? ((x - minX) / width) : 0.0f;
             const float v = (height != 0.0f) ? ((y - minY) / height) : 0.0f;
 
-            uvs.push_back(Vector<2>({u, v}));
+            cachedUVs.push_back(Vector<2>({u, v}));
         }
 
         delete[] squarePoints;
     }
-
-    return uvs;
 }
 
 MultiFacedSurface::MultiFacedSurface(Vector<3> center, float width, float height, int numSquares, Colour col)
@@ -152,6 +177,57 @@ MultiFacedSurface::MultiFacedSurface(Vector<3> center, float width, float height
     this->orientation = nullptr;
     generateSides();
 }
+
+MultiFacedSurface::MultiFacedSurface(const Vector<3> &tl, const Vector<3> &tr,
+                                     const Vector<3> &br, const Vector<3> &bl,
+                                     int numSquares, Colour col)
+    : _3DShape(col), numSquaresPside(numSquares)
+{
+    if (numSquares <= 0)
+    {
+        throw "Cannot have 0 sqrs";
+    }
+
+    for (int i = 0; i < 3; i++)
+    {
+        this->center[i] = (tl[i] + tr[i] + br[i] + bl[i]) / 4.0f;
+    }
+
+    this->width = ((tr - tl).magnitude() + (br - bl).magnitude()) * 0.5f;
+    this->height = ((tl - bl).magnitude() + (tr - br).magnitude()) * 0.5f;
+
+    if (this->width <= 0 || this->height <= 0)
+    {
+        throw "cannot have width or height of 0";
+    }
+
+    this->orientation = nullptr;
+    generateSides();
+
+    const float minX = this->center[0] - this->width / 2.0f;
+    const float minY = this->center[1] - this->height / 2.0f;
+
+    for (Shape *squareShape : squares)
+    {
+        std::vector<Vector<3>> vecs = squareShape->getVectors();
+        std::vector<Vector<3>> warped(4);
+
+        for (int i = 0; i < 4; i++)
+        {
+            const float x = vecs[i][0];
+            const float y = vecs[i][1];
+
+            const float u = (this->width != 0.0f) ? ((x - minX) / this->width) : 0.0f;
+            const float v = (this->height != 0.0f) ? ((y - minY) / this->height) : 0.0f;
+
+            warped[i] = bilerpQuad(tl, tr, br, bl, u, v);
+        }
+
+        // Preserve Square::setVectors ordering: tl, tr, bl, br
+        squareShape->setVectors(warped);
+    }
+}
+
 void MultiFacedSurface::generateSides()
 {
     // if odd numSides then center shares a center with a sqr
@@ -162,6 +238,7 @@ void MultiFacedSurface::generateSides()
         delete square;
     }
     squares.clear();
+    cachedUVs.clear();
 
     if (this->numSquaresPside % 2 != 0)
     {
@@ -173,6 +250,9 @@ void MultiFacedSurface::generateSides()
         XLoopEven(true);
         XLoopEven(false);
     }
+
+    // Build UVs from the local generated grid before any constructor-specific warping.
+    rebuildCachedUVs();
 
     if (this->orientation)
         delete this->orientation;

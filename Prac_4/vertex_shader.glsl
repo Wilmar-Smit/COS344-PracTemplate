@@ -13,6 +13,8 @@ out vec2 TexCoord;
 uniform sampler2D displacementTex;
 uniform bool useDisplacement;
 uniform float displacementStrength;
+uniform vec3 shapeCenter;
+uniform bool displaceTowardCenter;
 
 void main() {
     vec3 position = in_Position;
@@ -23,8 +25,10 @@ void main() {
         float displacement = texture(displacementTex, in_TexCoord).r;
       
         displacement = (displacement - 0.5) * displacementStrength;
-        
-        position.z -= displacement;
+
+        vec3 radialDir = normalize(position - shapeCenter);
+        float directionSign = displaceTowardCenter ? -1.0 : 1.0;
+        position -= radialDir * displacement * directionSign;
     }
     
     gl_Position = vec4(position, 1.0);
