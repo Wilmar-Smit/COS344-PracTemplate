@@ -28,7 +28,7 @@ void main() {
 
         vec3 radialDir = normalize(position - shapeCenter);
         float directionSign = displaceTowardCenter ? -1.0 : 1.0;
-        position -= radialDir * displacement * directionSign;
+        position += radialDir * displacement * directionSign;
     }
     
     gl_Position = vec4(position, 1.0);
