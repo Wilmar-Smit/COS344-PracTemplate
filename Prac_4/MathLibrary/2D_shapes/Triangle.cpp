@@ -162,5 +162,5 @@ void Triangle::setVectors(std::vector<Vector<3>> vec)
 
 std::vector<Vector<2>> Triangle::calculateUV()
 {
-    return {{0.5, 1}, {0, 0}, {1, 1}};
+    return { {0, 0},{0.5,1},{1,1}};
 }

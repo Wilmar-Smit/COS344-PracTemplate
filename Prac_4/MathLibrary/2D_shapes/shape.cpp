@@ -115,6 +115,8 @@ Surface Shape::buildSurfaceFromColour(Colour col)
 }
 float *Shape::exportValues()
 {
+   
+    
     int shapeSides = getNumPoints() / getN();
     // +2 for UVs
     int totalValues = shapeSides * (getN() + 4 + 2);
@@ -203,9 +205,8 @@ float *Shape::exportWireframe()
     float *ShapeCoords = getPoints();
     const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
 
-    // Each side contributes 2 vertices (start + end). For quads, add one diagonal.
-    int extraSegmentVertices = (shapeSides == 4) ? 2 : 0;
-    int totalValues = (shapeSides * 2 + extraSegmentVertices) * (getN() + 4);
+    // Each side contributes 2 vertices (start + end).
+    int totalValues = (shapeSides * 2) * (getN() + 4);
     float *retValues = new float[totalValues];
 
     int offset = 0;
@@ -238,31 +239,6 @@ float *Shape::exportWireframe()
         count += getN();
     }
 
-    // For rectangles/squares, add a diagonal (first to third vertex) to form two triangles.
-    if (shapeSides == 4)
-    {
-        int first = 0;
-        int third = 2 * getN();
-
-        Vector<4> firstPoint({ShapeCoords[first], ShapeCoords[first + 1], ShapeCoords[first + 2], 1.0f});
-        firstPoint = cameraMatrix * ((Matrix<4, 1>)firstPoint);
-        float wFirst = firstPoint[3];
-
-        for (int i = 0; i < getN(); i++)
-            retValues[offset++] = (wFirst != 0.0f) ? (firstPoint[i] / wFirst) : firstPoint[i];
-        for (int i = 0; i < 4; i++)
-            retValues[offset++] = baseColor[i];
-
-        Vector<4> thirdPoint({ShapeCoords[third], ShapeCoords[third + 1], ShapeCoords[third + 2], 1.0f});
-        thirdPoint = cameraMatrix * ((Matrix<4, 1>)thirdPoint);
-        float wThird = thirdPoint[3];
-
-        for (int i = 0; i < getN(); i++)
-            retValues[offset++] = (wThird != 0.0f) ? (thirdPoint[i] / wThird) : thirdPoint[i];
-        for (int i = 0; i < 4; i++)
-            retValues[offset++] = baseColor[i];
-    }
-
     delete[] ShapeCoords;
     return retValues;
 }
@@ -270,8 +246,7 @@ float *Shape::exportWireframe()
 int Shape::getWireframeVertexCount() const
 {
     int shapeSides = getNumPoints() / getN();
-    int extraSegmentVertices = (shapeSides == 4) ? 2 : 0;
-    return shapeSides * 2 + extraSegmentVertices;
+    return shapeSides * 2;
 }
 
 Vector<4> Shape::getColourVec(Colour col)

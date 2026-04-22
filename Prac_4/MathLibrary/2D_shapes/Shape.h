@@ -30,8 +30,8 @@ public:
     int getN() const { return n; };
 
     virtual float *exportValues();
-    float *exportWireframe();
-    int getWireframeVertexCount() const;
+    virtual float *exportWireframe();
+    virtual int getWireframeVertexCount() const;
 
     void setCoulourVec(Vector<4> col)
     {

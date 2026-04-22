@@ -1,6 +1,6 @@
 #include "controlManager.h"
 #include "../sceneClasses/Scene.h"
-#include <algorithm>
+
 
 // helper: returns true while the key is held down
 static bool keyHeldDown(GLFWwindow *window, int key)

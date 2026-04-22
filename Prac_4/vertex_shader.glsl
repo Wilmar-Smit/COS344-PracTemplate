@@ -9,8 +9,25 @@ layout(location = 2) in vec2 in_TexCoord;   // UV coordinates
 out vec4 fragColor;
 out vec2 TexCoord;
 
+// Displacement mapping uniforms
+uniform sampler2D displacementTex;
+uniform bool useDisplacement;
+uniform float displacementStrength;
+
 void main() {
-    gl_Position = vec4(in_Position, 1.0);
+    vec3 position = in_Position;
+    
+   
+    if (useDisplacement)
+    {
+        float displacement = texture(displacementTex, in_TexCoord).r;
+      
+        displacement = (displacement - 0.5) * displacementStrength;
+        
+        position.z -= displacement;
+    }
+    
+    gl_Position = vec4(position, 1.0);
     fragColor = in_Color;
-    TexCoord = in_TexCoord;  // pass UVs forward
+    TexCoord = in_TexCoord;  
 }

@@ -1,14 +1,19 @@
 #include "Sphere.h"
 #include "../../../sceneClasses/drawerVisitor.h"
+#include <algorithm>
 
 Sphere::Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colour col)
     : _3DShape(col)
 {
     this->radius = rad;
-    this->numSectors = numSectors;
-    this->stacks = stacks;
+    this->stacks = std::max(2, stacks);
+    this->numSectors = std::max(3, numSectors);
 
-    this->centerCircle = new Circle(centerVec, rad, numSectors, col);
+    // Keep quads closer to square by ensuring enough horizontal slices for the
+    // chosen vertical stack count. This increases side density around the sphere.
+    this->numSectors = std::max(this->numSectors, this->stacks * 4);
+
+    this->centerCircle = new Circle(centerVec, rad, this->numSectors, col);
 
     Vector<3> topVec = centerVec;
     topVec[2] += rad;

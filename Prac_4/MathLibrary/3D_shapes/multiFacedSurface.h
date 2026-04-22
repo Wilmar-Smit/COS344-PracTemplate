@@ -31,6 +31,17 @@ public:
     // heaght is the shapes total height and is constant
     MultiFacedSurface(Vector<3> center, float width, float height, int numSquares = 1, Colour col = Colour::Black);
 
+
+    virtual float *getPoints() const override;
+    virtual float *exportWireframe() override;
+    
+    virtual int getNumPoints() const override;
+    virtual int getWireframeVertexCount() const override;
+    virtual int getNumSides() const override;
+    virtual void print() const override;
+    virtual std::vector<Vector<3>> getVectors() override;
+    virtual void setVectors(std::vector<Vector<3>>) override;
+
     virtual Vector<3> getCenter() override;
 
     virtual void acceptVisitor(DrawerVisitor *vis) override;
@@ -46,14 +57,15 @@ public:
 
         generateSides();
 
-
         Vector<3> orientStart = this->center;
         Vector<3> orientEnd = this->center;
         orientStart[0] += width;
         orientEnd[0] -= width;
        
-      
     }
+
+protected:
+    virtual std::vector<Vector<2>> calculateUV() override;
 };
 
 #endif

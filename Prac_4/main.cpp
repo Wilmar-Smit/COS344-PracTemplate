@@ -47,7 +47,14 @@ GLuint loadTexture(const char *filename)
     unsigned char *data = stbi_load(filename, &width, &height, &nrChannels, 0);
     if (data)
     {
-        GLenum format = (nrChannels == 3) ? GL_RGB : GL_RGBA;
+        GLenum format;
+        if (nrChannels == 1)
+            format = GL_RED;
+        else if (nrChannels == 3)
+            format = GL_RGB;
+        else
+            format = GL_RGBA;
+
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0,
                      format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
@@ -127,7 +134,7 @@ int main()
     GlobalLights::getInstance().addLight(new PointLight(Colour::Red, {-1, 1, 1}, 10.0f));
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
-    int numSides = 4;
+    int numSides = 1;
     MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 3, 3, numSides, Colour::Chrome);
     mult->setLightAffected(true);
 
@@ -140,18 +147,22 @@ int main()
     DrawerVisitor dwr2(multLeft);
     dwr2.RotateX(360);
 
-    Sphere *sphere = new Sphere({0, 0, 0}, 1, 10, 10, Colour::Red);
+    Sphere *sphere = new Sphere({0, 0, 0}, 2, 3, 3, Colour::Red);
 
-    // Load texture
+    // Load color texture
     GLuint sphereTex = loadTexture("textures/ColTex.png");
-
-    
     sphere->getSurface().setColorTexture(sphereTex);
 
+    // Load displacement texture
+
+    GLuint displacementTex = loadTexture("textures/Displacement.png");
+
+    sphere->getSurface().setDisplacementTexture(displacementTex);
+    sphere->getSurface().enableDisplacementTexture(true);
     // Register with DrawerVisitor
     DrawerVisitor dwrSphere(sphere);
 
-    ControlManager controls(window, &dwrSphere);
+    ControlManager controls(window, dwr);
     bool spacePressed = false;
 
     DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
@@ -177,11 +188,11 @@ int main()
 
         glfwPollEvents();
         controls.processInput();
-        //  dwr->draw();
-        // dwr2.draw();
-        // lightDwr->draw();
-        // lightDwr2->draw();
-        dwrSphere.draw();
+        dwr->draw();
+        dwr2.draw();
+        lightDwr->draw();
+        lightDwr2->draw();
+       // dwrSphere.draw();
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
 

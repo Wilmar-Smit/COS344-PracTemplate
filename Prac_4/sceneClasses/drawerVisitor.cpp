@@ -29,7 +29,7 @@ void DrawerVisitor::rebuildGpuBuffers()
         float *vertices = nullptr;
         int stride = 0;
 
-        if (type == GL_TRIANGLE_FAN) // normal mode (filled, textured)
+        if (type != GL_LINES) // normal mode (filled, textured)
         {
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             vertices = shapes[i]->exportValues();
@@ -61,7 +61,7 @@ void DrawerVisitor::rebuildGpuBuffers()
         glEnableVertexAttribArray(1);
 
         // UV attribute only in normal mode
-        if (type == GL_TRIANGLE_FAN)
+        if (type != GL_LINES)
         {
             glVertexAttribPointer(2, UV_DEPTH, GL_FLOAT, GL_FALSE,
                                   stride * sizeof(GLfloat),
@@ -79,7 +79,7 @@ void DrawerVisitor::reloadVertices()
 
     for (int i = 0; i < shapes.size(); i++)
     {
-        if (type == GL_TRIANGLE_FAN)
+        if (type != GL_LINES)
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
@@ -257,32 +257,17 @@ void DrawerVisitor::Translation(Direction dir, float step, OrientationObject *or
 
 void DrawerVisitor::setWireframeMode()
 {
-    for (int i = 0; i < shapes.size(); i++)
-    {
-        float *vertices = shapes[i]->exportWireframe();
-        vertexCounts[i] = shapes[i]->getWireframeVertexCount();
-        type = GL_LINES;
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-        delete[] vertices;
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
+    type = GL_LINES;
+    rebuildGpuBuffers();
 }
 
 void DrawerVisitor::setNormalMode()
 {
-    for (int i = 0; i < shapes.size(); i++)
-    {
-        float *vertices = shapes[i]->exportValues();
-        vertexCounts[i] = static_cast<int>(shapes[i]->getNumPoints() / VERTEX_DEPTH);
+    if (dynamic_cast<MultiFacedSurface *>(shape) != nullptr)
         type = GL_TRIANGLE_FAN;
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
-        glBufferData(GL_ARRAY_BUFFER, vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH) * sizeof(GLfloat), vertices, GL_STATIC_DRAW);
-        delete[] vertices;
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
+    else
+        type = GL_TRIANGLE_FAN;
+    rebuildGpuBuffers();
 }
 
 DrawerVisitor *DrawerVisitor::selectNext() { return nullptr; }
@@ -351,10 +336,8 @@ void DrawerVisitor::Visit(_3DShape *shape)
 void DrawerVisitor::Visit(MultiFacedSurface *shape)
 {
     this->shapes.clear();
-    for (int i = 0; i < shape->squares.size(); i++)
-    {
-        registerShape(shape->squares[i]);
-    }
+    this->type = GL_TRIANGLE_FAN;
+    registerShape(shape);
     this->orientation = shape->getOrientation();
     rebuildGpuBuffers();
 }
@@ -371,7 +354,7 @@ void DrawerVisitor::Visit(Sphere *sphere)
 
 void DrawerVisitor::registerShape(Shape *s)
 {
-
+    s->setSurface(this->shape->getSurface());
     bool affected = this->shape->getSurface().getAffectedLight();
     s->setLightAffected(affected);
     this->shapes.push_back(s);
@@ -382,7 +365,6 @@ DrawerVisitor::DrawerVisitor(_3DShape *shape)
     shape->acceptVisitor(this);
     this->orientation = shape->getOrientation();
 }
-
 
 DrawerVisitor::~DrawerVisitor()
 {
@@ -406,10 +388,106 @@ DrawerVisitor::~DrawerVisitor()
 }
 void DrawerVisitor::draw()
 {
+    GLint currentProgram = 0;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
+
+    GLint texSamplerLoc = -1;
+    GLint useTextureLoc = -1;
+    GLint displacementTexLoc = -1;
+    GLint useDisplacementLoc = -1;
+    GLint displacementStrengthLoc = -1;
+    GLint alphaTexLoc = -1;
+    GLint useAlphaLoc = -1;
+
+    if (currentProgram != 0)
+    {
+        texSamplerLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "tex");
+        useTextureLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useTexture");
+        displacementTexLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displacementTex");
+        useDisplacementLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useDisplacement");
+        displacementStrengthLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displacementStrength");
+        alphaTexLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "alphaTex");
+        useAlphaLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useAlpha");
+    }
+
     for (size_t i = 0; i < shapes.size(); i++)
     {
+        const Surface &surface = shapes[i]->getSurface();
+        const bool useTexture =
+            (type != GL_LINES) && surface.isColorTextureEnabled() && surface.getColorTexture() != 0;
+        const bool useDisplacement =
+            (type != GL_LINES) && surface.isDisplacementTextureEnabled() && surface.getDisplacementTexture() != 0;
+        const bool useAlpha =
+            (type != GL_LINES) && surface.isAlphaTextureEnabled() && surface.getAlphaTexture() != 0;
+
+        // Color texture
+        if (useTextureLoc >= 0)
+        {
+            glUniform1i(useTextureLoc, useTexture ? 1 : 0);
+        }
+        if (useTexture && texSamplerLoc >= 0)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, surface.getColorTexture());
+            glUniform1i(texSamplerLoc, 0);
+        }
+
+        // Displacement texture
+        if (useDisplacementLoc >= 0)
+        {
+            glUniform1i(useDisplacementLoc, useDisplacement ? 1 : 0);
+        }
+        if (useDisplacement && displacementTexLoc >= 0)
+        {
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, surface.getDisplacementTexture());
+            glUniform1i(displacementTexLoc, 1);
+            if (displacementStrengthLoc >= 0)
+            {
+                glUniform1f(displacementStrengthLoc, 0.5); // adjustable strength
+            }
+        }
+
+        // Alpha texture
+        if (useAlphaLoc >= 0)
+        {
+            glUniform1i(useAlphaLoc, useAlpha ? 1 : 0);
+        }
+        if (useAlpha && alphaTexLoc >= 0)
+        {
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, surface.getAlphaTexture());
+            glUniform1i(alphaTexLoc, 2);
+        }
+
         glBindVertexArray(VAO[i]);
-        glDrawArrays(type, 0, vertexCounts[i]);
+        MultiFacedSurface *multi = dynamic_cast<MultiFacedSurface *>(shapes[i]);
+        if (multi != nullptr && type == GL_TRIANGLE_FAN)
+        {
+            // Draw each square as its own 4-vertex fan, matching old per-square behavior.
+            const int vertsPerSquare = 4;
+            const int squareCount = static_cast<int>(multi->squares.size());
+            for (int s = 0; s < squareCount; s++)
+            {
+                glDrawArrays(GL_TRIANGLE_FAN, s * vertsPerSquare, vertsPerSquare);
+            }
+        }
+        else
+        {
+            glDrawArrays(type, 0, vertexCounts[i]);
+        }
         glBindVertexArray(0);
+
+        // Unbind textures
+        if (useTexture || useDisplacement || useAlpha)
+        {
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glActiveTexture(GL_TEXTURE1);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glActiveTexture(GL_TEXTURE2);
+            glBindTexture(GL_TEXTURE_2D, 0);
+            glActiveTexture(GL_TEXTURE0);
+        }
     }
 }

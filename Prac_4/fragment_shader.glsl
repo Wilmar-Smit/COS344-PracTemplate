@@ -1,17 +1,41 @@
 #version 330 core
 
-in vec4 fragColor;      // interpolated vertex color
-in vec2 TexCoord;       // UV coordinates from vertex shader
+in vec4 fragColor;      
+in vec2 TexCoord;       
 
-out vec4 FragColor;     // final pixel colour
+out vec4 FragColor;    
 
-uniform sampler2D tex;  // texture sampler
-uniform bool useTexture; // toggle between texture and color
+
+uniform sampler2D tex;
+uniform bool useTexture; 
+
+
+uniform sampler2D displacementTex; 
+uniform bool useDisplacement; 
+
+// Alpha texture
+uniform sampler2D alphaTex; 
+uniform bool useAlpha; 
 
 void main()
 {
+    vec4 finalColor = fragColor;
+    
+
     if (useTexture)
-        FragColor = texture(tex, TexCoord);
-    else
-        FragColor = fragColor;
+    {
+        vec4 sampled = texture(tex, TexCoord);
+        // Keep alpha from incoming color; texture only provides RGB.
+        finalColor = vec4(sampled.rgb, fragColor.a);
+    }
+    
+  
+    if (useAlpha)
+    {
+        vec4 alphaSampled = texture(alphaTex, TexCoord);
+  
+        finalColor.a *= alphaSampled.r; 
+    }
+    
+    FragColor = finalColor;
 }

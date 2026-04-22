@@ -23,7 +23,7 @@ Surface::Surface(const Surface &other)
     colorTexID = other.colorTexID;
     displacementTexID = other.displacementTexID;
     alphaTexID = other.alphaTexID;
-    useColorTex = other.useAlphaTex;
+    useColorTex = other.useColorTex;
     useDisplacementTex = other.useDisplacementTex;
     useAlphaTex = other.useAlphaTex;
 }

@@ -21,11 +21,15 @@ public:
 
     virtual _3DShape &operator*=(const Matrix<3, 3> &) override { return *this; }
     virtual _3DShape *operator*(const Matrix<3, 3> &) const override { return nullptr; }
-    virtual float *getPoints() const override { return nullptr; }
+    virtual float *getPoints() const override
+    {
+        std::cout << "I ran 3d SHape" << std::endl;
+        return nullptr;
+    }
     virtual int getNumPoints() const override { return 0; }
     virtual int getNumSides() const override { return 0; }
     virtual void print() const override {}
-    virtual float *exportValues() override { return nullptr; }
+    virtual float *exportValues() override {return Shape::exportValues(); }
     virtual Vector<3> getCenter() = 0;
     virtual std::vector<Vector<3>> getVectors() override { return {}; }
     virtual void setVectors(std::vector<Vector<3>>) override {}
