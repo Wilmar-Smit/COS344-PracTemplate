@@ -56,6 +56,7 @@ public:
     virtual DrawerVisitor *selectNext();
     virtual DrawerVisitor *getIndex(int i);
     virtual void RotateArbitrary(float degrees, OrientationObject *orient = nullptr);
+    void setShape(_3DShape *s) { this->shape = s; this->Visit(s); }
 
     void Visit(Cuboid *cuboid);
     void Visit(Sphere *sphere);

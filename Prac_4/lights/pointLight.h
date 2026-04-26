@@ -15,6 +15,7 @@ public:
     PointLight(Colour col, Vector<3> position, float intensity); // for light colour use the static builder function
     virtual Vector<4> calculateIlluminations(Vector<3> X, Surface Surface);
     virtual Vector<3> getPosition();
+    virtual void setPosition(Vector<3> pos);
     virtual Vector<4> getColour() { return this->colour; };
     virtual Sphere* getShape() { return sphere; }
 };

@@ -35,6 +35,12 @@ public:
         const Vector<3> &v2,
         const Vector<3> &v3);
 
+    Vector<3> calculateNormal(
+        const Vector<3> &v1,
+        const Vector<3> &v2,
+        const Vector<3> &v3,
+        const Vector<3> &center);
+
     Vector<4> getBaseColor() const { return baseColor; }
     float getAmbientK() const { return ambientK; }
     float getDiffuseK() const { return diffuseK; }

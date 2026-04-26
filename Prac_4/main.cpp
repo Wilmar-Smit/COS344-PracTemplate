@@ -11,6 +11,7 @@
 #include "sceneClasses/drawerVisitor.h"
 #include "lights/globalLights.h"
 #include "lights/pointLight.h"
+#include "assets/assets.h"
 
 #define STB_IMAGE_IMPLEMENTATION
 #include <stb/stb_image.h>
@@ -134,38 +135,45 @@ int main()
     GlobalLights::getInstance().addLight(new PointLight(Colour::Red, {-1, 1, 1}, 10.0f));
     GlobalLights::getInstance().addLight(new PointLight(Colour::Blue, {1, 1, 1}, 10.0f));
 
-    int numSides = 1;
-    MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 3, 3, numSides, Colour::Chrome);
-    mult->setLightAffected(true);
+    // Initial scene setup parameters
+    Colour squareCol = Colour::Chrome;
+    Colour sphereCol = Colour::Red;
+    bool texEnabled = true;
+    bool dispEnabled = true;
+    bool alphaTexEnabled = false;
+    float alphaValue = 1.0f;
+    int squareRes = 1;
+    int sphereRes = 5;
 
-    DrawerVisitor *dwr = new DrawerVisitor(mult);
-    dwr->RotateX(70);
-    dwr->Translation(Direction::down, 1);
+    complexSceneHolder* mainScene = nullptr;
 
-    MultiFacedSurface *multLeft = new MultiFacedSurface({0, 1, 3.5}, 3, 3, 50, Colour::Chrome);
-    multLeft->setLightAffected(true);
-    DrawerVisitor dwr2(multLeft);
-    dwr2.RotateX(360);
+    auto resetScene = [&]() {
+        if (mainScene) delete mainScene;
+        mainScene = setupScene(squareCol, sphereCol, texEnabled, dispEnabled, alphaTexEnabled, alphaValue, squareRes, sphereRes);
+    };
 
-    Sphere *sphere = new Sphere({0, 0, 0}, 0.5, 5, 5, Colour::Red,4);
+    auto nextColour = [](Colour current) {
+        int val = static_cast<int>(current);
+        val = (val + 1) % 19; 
+        return static_cast<Colour>(val);
+    };
 
-    // Load color texture
-    GLuint sphereTex = loadTexture("textures/ColTex.png");
-    sphere->getSurface().setColorTexture(sphereTex);
+    auto prevColour = [](Colour current) {
+        int val = static_cast<int>(current);
+        val = (val - 1 + 19) % 19;
+        return static_cast<Colour>(val);
+    };
 
-    // Load displacement texture
+    resetScene();
 
-    GLuint displacementTex = loadTexture("textures/Displacement.png");
-    sphere->getSurface().setDisplacementTexture(displacementTex);
-    sphere->getSurface().enableDisplacementTexture(true);
-
-    DrawerVisitor dwrSphere(sphere);
-
-    ControlManager controls(window, &dwrSphere);
+    ControlManager controls(window, mainScene);
     bool spacePressed = false;
-
-    DrawerVisitor *lightDwr = new DrawerVisitor(GlobalLights::getInstance().getLights()[0]->getShape());
-    DrawerVisitor *lightDwr2 = new DrawerVisitor(GlobalLights::getInstance().getLights()[1]->getShape());
+    bool bPressed = false;
+    bool nPressed = false;
+    bool mPressed = false;
+    bool plusPressed = false;
+    bool minusPressed = false;
+    bool k1=false, k2=false, k3=false, k4=false, k5=false, k6=false, k7=false, k8=false;
 
     do
     {
@@ -187,26 +195,103 @@ int main()
 
         glfwPollEvents();
         controls.processInput();
-        //dwr->draw();
-        //dwr2.draw();
-        //lightDwr->draw();
-        //lightDwr2->draw();
-        dwrSphere.draw();
+
+        mainScene->draw();
+
+        // Draw lights from GlobalLights managed visitors
+        for (auto* visitor : GlobalLights::getInstance().getVisitors())
+        {
+            visitor->draw();
+        }
+
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
+            squareRes++;
+            resetScene();
+            controls.setScene(mainScene);
+        }
 
-            numSides++;
-            mult->setSides(numSides);
-            dwr->Visit(mult);
-            dwr->RotateX(70);
-            dwr->Translation(Direction::down, 1);
+        if (keyPressedOnce(window, GLFW_KEY_1, k1)) {
+            squareRes++;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_2, k2)) {
+            if (squareRes > 1) squareRes--;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_3, k3)) {
+            sphereRes++;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_4, k4)) {
+            if (sphereRes > 3) sphereRes--;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_5, k5)) {
+            squareCol = nextColour(squareCol);
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_6, k6)) {
+            squareCol = prevColour(squareCol);
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_7, k7)) {
+            sphereCol = nextColour(sphereCol);
+            resetScene();
+            controls.setScene(mainScene);
+        }
+        if (keyPressedOnce(window, GLFW_KEY_8, k8)) {
+            sphereCol = prevColour(sphereCol);
+            resetScene();
+            controls.setScene(mainScene);
+        }
+
+        if (keyPressedOnce(window, GLFW_KEY_B, bPressed))
+        {
+            texEnabled = !texEnabled;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+
+        if (keyPressedOnce(window, GLFW_KEY_N, nPressed))
+        {
+            dispEnabled = !dispEnabled;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+
+        if (keyPressedOnce(window, GLFW_KEY_M, mPressed))
+        {
+            alphaTexEnabled = !alphaTexEnabled;
+            resetScene();
+            controls.setScene(mainScene);
+        }
+
+        if (keyPressedOnce(window, GLFW_KEY_EQUAL, plusPressed))
+        {
+            alphaValue = std::min(1.0f, alphaValue + 0.1f);
+            resetScene();
+            controls.setScene(mainScene);
+        }
+
+        if (keyPressedOnce(window, GLFW_KEY_MINUS, minusPressed))
+        {
+            alphaValue = std::max(0.0f, alphaValue - 0.1f);
+            resetScene();
+            controls.setScene(mainScene);
         }
 
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));
 
-    delete dwr;
+    delete mainScene;
     glfwTerminate();
     return 0;
 }

@@ -36,11 +36,13 @@ Shape *complexSceneHolder::getShape() const { return nullptr; }
 void complexSceneHolder::addScene(Scene *scene)
 {
     visitors.push_back(scene);
+    scene->SetMyOrientation(this->orientation);
 }
 
 void complexSceneHolder::Rotate(float degrees, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->Rotate(degrees, orient);
@@ -48,7 +50,8 @@ void complexSceneHolder::Rotate(float degrees, OrientationObject *orient)
 
 void complexSceneHolder::RotateX(float degrees, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->RotateX(degrees, orient);
@@ -56,7 +59,8 @@ void complexSceneHolder::RotateX(float degrees, OrientationObject *orient)
 
 void complexSceneHolder::RotateY(float degrees, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->RotateY(degrees, orient);
@@ -64,7 +68,8 @@ void complexSceneHolder::RotateY(float degrees, OrientationObject *orient)
 
 void complexSceneHolder::RotateZ(float degrees, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->RotateZ(degrees, orient);
@@ -72,7 +77,8 @@ void complexSceneHolder::RotateZ(float degrees, OrientationObject *orient)
 
 void complexSceneHolder::Scale(float scale, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->Scale(scale, orient);
@@ -80,7 +86,8 @@ void complexSceneHolder::Scale(float scale, OrientationObject *orient)
 
 void complexSceneHolder::Translation(Direction dir, float step, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->Translation(dir, step, orient);
@@ -88,7 +95,8 @@ void complexSceneHolder::Translation(Direction dir, float step, OrientationObjec
 
 Matrix<4, 4> complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     Matrix<4, 4> mat;
     for (auto *visitor : visitors)
@@ -99,8 +107,6 @@ Matrix<4, 4> complexSceneHolder::transform(Matrix<4, 4> &trans, bool toCenter, O
 
     return mat;
 }
-
-
 
 void complexSceneHolder::setWireframeMode()
 {
@@ -125,7 +131,8 @@ Scene *complexSceneHolder::getIndex(int i) { return this->visitors[i]; }
 
 void complexSceneHolder::RotateArbitrary(float degrees, OrientationObject *orient)
 {
-    if (!orient) orient = this->orientation;
+    if (!orient)
+        orient = this->orientation;
 
     for (auto *visitor : visitors)
         visitor->RotateArbitrary(degrees, orient);

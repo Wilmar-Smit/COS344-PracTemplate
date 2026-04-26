@@ -18,6 +18,8 @@ void DrawerVisitor::rebuildGpuBuffers()
     VBO.resize(shapes.size());
     vertexCounts.resize(shapes.size());
 
+    Vector<3> center = this->shape->getCenter();
+
     for (size_t i = 0; i < shapes.size(); i++)
     {
         glGenVertexArrays(1, &VAO[i]);
@@ -32,7 +34,7 @@ void DrawerVisitor::rebuildGpuBuffers()
         if (type != GL_LINES) // normal mode (filled, textured)
         {
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
-            vertices = shapes[i]->exportValues();
+            vertices = shapes[i]->exportValues(&center);
             stride = VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH;
         }
         else // wireframe mode (no UVs, no Normals)
@@ -82,6 +84,7 @@ void DrawerVisitor::rebuildGpuBuffers()
 
 void DrawerVisitor::reloadVertices()
 {
+    Vector<3> center = this->shape->getCenter();
 
     for (int i = 0; i < shapes.size(); i++)
     {
@@ -89,7 +92,7 @@ void DrawerVisitor::reloadVertices()
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
-            float *vertices = shapes[i]->exportValues();
+            float *vertices = shapes[i]->exportValues(&center);
             glBufferSubData(GL_ARRAY_BUFFER, 0,
                             vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH) * sizeof(float),
                             vertices);
@@ -401,6 +404,7 @@ void DrawerVisitor::draw()
     GLint displacementStrengthLoc = -1;
     GLint alphaTexLoc = -1;
     GLint useAlphaLoc = -1;
+    GLint alphaValueLoc = -1;
     GLint shapeCenterLoc = -1;
     GLint displaceTowardCenterLoc = -1;
     GLint cameraMatrixLoc = -1;
@@ -414,6 +418,7 @@ void DrawerVisitor::draw()
         displacementStrengthLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displacementStrength");
         alphaTexLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "alphaTex");
         useAlphaLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useAlpha");
+        alphaValueLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "alphaValue");
         shapeCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "shapeCenter");
         displaceTowardCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displaceTowardCenter");
         cameraMatrixLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "cameraMatrix");
@@ -481,6 +486,10 @@ void DrawerVisitor::draw()
         if (useAlphaLoc >= 0)
         {
             glUniform1i(useAlphaLoc, useAlpha ? 1 : 0);
+        }
+        if (alphaValueLoc >= 0)
+        {
+            glUniform1f(alphaValueLoc, surface.getBaseColor()[3]);
         }
         if (useAlpha && alphaTexLoc >= 0)
         {

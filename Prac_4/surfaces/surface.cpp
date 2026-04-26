@@ -37,3 +37,23 @@ Vector<3> Surface::calculateNormal(
     this->normal = (dir.unitVector());
     return this->normal;
 }
+
+Vector<3> Surface::calculateNormal(
+    const Vector<3> &A,
+    const Vector<3> &B,
+    const Vector<3> &C,
+    const Vector<3> &center)
+{
+    Vector<3> dir = (B - A).crossProduct(C - A);
+    Vector<3> unitNormal = dir.unitVector();
+
+    // Ensure normal points away from center
+    Vector<3> toPoint = A - center;
+    if (toPoint * unitNormal < 0)
+    {
+        unitNormal = unitNormal * -1.0f;
+    }
+
+    this->normal = unitNormal;
+    return this->normal;
+}

@@ -15,6 +15,13 @@ Vector<3> PointLight::getPosition()
     return this->position;
 }
 
+void PointLight::setPosition(Vector<3> pos)
+{
+    this->position = pos;
+    // Ownership of the previous sphere was handled by the DrawerVisitor.
+    this->sphere = new Sphere(pos, 0.05, 10, 5, this->colEnum);
+}
+
 // Calculate illumination at collision point X for a given surface
 Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
 {

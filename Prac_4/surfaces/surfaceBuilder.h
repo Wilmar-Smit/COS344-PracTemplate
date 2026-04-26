@@ -50,6 +50,8 @@ public:
     static const Vector<4> DarkBrown;
     static const Vector<4> Black;
     static const Vector<4> invisible;
+    static const Vector<4> Chrome;
+    static const Vector<4> Gold;
 
     static Vector<4> buildColour(Colour col);
 

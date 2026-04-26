@@ -17,80 +17,53 @@ const Vector<4> SurfaceBuilder::Brown{0.40f, 0.25f, 0.12f, 1.0f};
 const Vector<4> SurfaceBuilder::DarkBrown{0.25f, 0.16f, 0.08f, 1.0f};
 const Vector<4> SurfaceBuilder::Black{0.05f, 0.05f, 0.05f, 1.0f};
 const Vector<4> SurfaceBuilder::invisible{0.90f, 0.90f, 0.86f, 0.2f};
+const Vector<4> SurfaceBuilder::Chrome{0.38f, 0.38f, 0.38f, 1.0f}; // Same as Grey
+const Vector<4> SurfaceBuilder::Gold{0.72f, 0.65f, 0.20f, 1.0f};   // Same as Yellow
 
 Vector<4> SurfaceBuilder::buildColour(Colour col)
 {
     switch (col)
     {
     case Colour::Red:
-    {
         return Red;
-    }
     case Colour::Green:
-    {
         return Green;
-    }
     case Colour::Blue:
-    {
         return Blue;
-    }
     case Colour::Yellow:
-    {
         return Yellow;
-    }
     case Colour::Cyan:
-    {
         return Cyan;
-    }
     case Colour::Magenta:
-    {
         return Magenta;
-    }
     case Colour::Orange:
-    {
         return Orange;
-    }
     case Colour::Purple:
-    {
         return Purple;
-    }
     case Colour::White:
-    {
         return White;
-    }
     case Colour::Grey:
-    {
         return Grey;
-    }
-
     case Colour::Maroon:
-    {
         return Maroon;
-    }
     case Colour::Pink:
-    {
         return Pink;
-    }
     case Colour::Peach:
-    {
         return Peach;
-    }
     case Colour::Brown:
-    {
         return Brown;
-    }
     case Colour::DarkBrown:
-    {
         return DarkBrown;
-    }
     case Colour::Black:
-    {
         return Black;
-    }
     case Colour::Invisible:
-    {
         return invisible;
-    }
+    case Colour::Chrome:
+        return Chrome;
+    case Colour::Gold:
+        return Gold;
+    default:
+        return White;
     }
 }
 

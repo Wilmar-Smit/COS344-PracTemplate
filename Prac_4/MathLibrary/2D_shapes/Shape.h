@@ -29,7 +29,7 @@ public:
     virtual ~Shape() = default;
     int getN() const { return n; };
 
-    virtual float *exportValues();
+    virtual float *exportValues(Vector<3> *threeDCenter = nullptr);
     virtual float *exportWireframe();
     virtual int getWireframeVertexCount() const;
 

@@ -113,7 +113,7 @@ Surface Shape::buildSurfaceFromColour(Colour col)
     WhiteBuilder fallbackBuilder;
     return fallbackBuilder.build();
 }
-float *Shape::exportValues()
+float *Shape::exportValues(Vector<3> *threeDCenter)
 {
     int shapeSides = getNumPoints() / getN();
     // +2 for UVs, +3 for Normals
@@ -135,7 +135,10 @@ float *Shape::exportValues()
     Surface litSurface = this->surface;
     if (points.size() >= 3)
     {
-        litSurface.calculateNormal(points[0], points[1], points[2]);
+        if (threeDCenter)
+            litSurface.calculateNormal(points[0], points[1], points[2], *threeDCenter);
+        else
+            litSurface.calculateNormal(points[0], points[1], points[2]);
     }
 
     Vector<3> normal = litSurface.getNormal();
@@ -191,7 +194,9 @@ float *Shape::exportValues()
             retValues[offset++] = pointColours[row][i];
         }
 
-        if (this->surface.isColorTextureEnabled())
+        if (this->surface.isColorTextureEnabled() || 
+            this->surface.isDisplacementTextureEnabled() || 
+            this->surface.isAlphaTextureEnabled())
         {
             retValues[offset++] = uvs[row][0];
             retValues[offset++] = uvs[row][1];

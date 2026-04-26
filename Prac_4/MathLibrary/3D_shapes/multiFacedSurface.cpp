@@ -221,11 +221,11 @@ void MultiFacedSurface::generateSides()
 
     if (this->orientation)
         delete this->orientation;
-    Vector<3> orientStart = this->center;
-    Vector<3> orientEnd = this->center;
-    orientStart[0] += width;
-    orientEnd[0] -= width;
+
+    Vector<3> orientStart = this->boundary.tl;
+    Vector<3> orientEnd = this->boundary.br;
     this->orientation = new OrientationObject(new Vector<3>(orientStart), new Vector<3>(orientEnd));
+
 }
 
 MultiFacedSurface::~MultiFacedSurface()

@@ -1,6 +1,6 @@
 #include "controlManager.h"
 #include "../sceneClasses/Scene.h"
-
+#include "../lights/globalLights.h"
 
 // helper: returns true while the key is held down
 static bool keyHeldDown(GLFWwindow *window, int key)
@@ -80,6 +80,34 @@ void ControlManager::processInput()
     if (keyHeldDown(window, GLFW_KEY_U))
     {
         moveBackward();
+    }
+
+    // Light Translation Controls
+    float lightStep = 0.1f;
+    Vector<3> lightDelta({0, 0, 0});
+    bool lightMoved = false;
+
+    if (keyHeldDown(window, GLFW_KEY_UP)) { lightDelta[1] += lightStep; lightMoved = true; }
+    if (keyHeldDown(window, GLFW_KEY_DOWN)) { lightDelta[1] -= lightStep; lightMoved = true; }
+    if (keyHeldDown(window, GLFW_KEY_LEFT)) { lightDelta[0] += lightStep; lightMoved = true; }
+    if (keyHeldDown(window, GLFW_KEY_RIGHT)) { lightDelta[0] -= lightStep; lightMoved = true; }
+    if (keyHeldDown(window, GLFW_KEY_PERIOD)) { lightDelta[2] += lightStep; lightMoved = true; } // > key (usually .)
+    if (keyHeldDown(window, GLFW_KEY_COMMA)) { lightDelta[2] -= lightStep; lightMoved = true; }  // < key (usually ,)
+
+    if (lightMoved)
+    {
+        const auto &lights = GlobalLights::getInstance().getLights();
+        for (size_t i = 0; i < lights.size(); i++)
+        {
+            Vector<3> pos = lights[i]->getPosition();
+            lights[i]->setPosition(pos + lightDelta);
+            // Delete the old visitor and make a new one for the new sphere position
+            GlobalLights::getInstance().replaceVisitor(i, new DrawerVisitor(lights[i]->getShape()));
+        }
+        if (this->scene)
+        {
+            this->scene->reloadVertices();
+        }
     }
 
     // Rotor speed control
