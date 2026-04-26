@@ -1,8 +1,7 @@
 #include "multiFacedSurface.h"
 #include "../../sceneClasses/drawerVisitor.h"
 
-namespace
-{
+
 Vector<3> bilerpQuad(const Vector<3> &tl, const Vector<3> &tr,
                      const Vector<3> &br, const Vector<3> &bl,
                      float u, float v)
@@ -17,7 +16,7 @@ Vector<3> bilerpQuad(const Vector<3> &tl, const Vector<3> &tr,
     }
     return p;
 }
-}
+
 
 float *MultiFacedSurface::getPoints() const
 {

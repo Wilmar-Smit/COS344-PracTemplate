@@ -147,7 +147,7 @@ int main()
     DrawerVisitor dwr2(multLeft);
     dwr2.RotateX(360);
 
-    Sphere *sphere = new Sphere({0, 0, 0}, 0.5, 5, 3, Colour::Red);
+    Sphere *sphere = new Sphere({0, 0, 0}, 0.5, 5, 5, Colour::Red);
 
     // Load color texture
     GLuint sphereTex = loadTexture("textures/ColTex.png");
@@ -158,7 +158,7 @@ int main()
     GLuint displacementTex = loadTexture("textures/Displacement.png");
     sphere->getSurface().setDisplacementTexture(displacementTex);
     sphere->getSurface().enableDisplacementTexture(true);
-    // Register with DrawerVisitor
+
     DrawerVisitor dwrSphere(sphere);
 
     ControlManager controls(window, &dwrSphere);
@@ -187,10 +187,10 @@ int main()
 
         glfwPollEvents();
         controls.processInput();
-       // dwr->draw();
-       // dwr2.draw();
-       // lightDwr->draw();
-       // lightDwr2->draw();
+        //dwr->draw();
+        //dwr2.draw();
+        //lightDwr->draw();
+        //lightDwr2->draw();
         dwrSphere.draw();
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {

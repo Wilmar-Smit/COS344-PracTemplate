@@ -35,7 +35,7 @@ public:
         this->window = window;
         this->scene = scene;
         this->TransAmount = 0.1f; // sensible defaults
-        this->rotationDegrees = 0.6f;
+        this->rotationDegrees = 1.5f;
         this->arbitrarySpeed = 0.0f;
     };
     float getSpeed() { return this->arbitrarySpeed; };

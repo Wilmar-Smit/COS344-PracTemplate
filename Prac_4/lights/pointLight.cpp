@@ -23,10 +23,7 @@ Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
     {
         Vector<3> dis = this->position - X;
         float r = dis.magnitude();
-        if (r < 0.0001f)
-        {
-            r = 0.0001f;
-        }
+
 
         Vector<3> L = dis * (1.0f / r);
         Vector<3> n = surface.getNormal();
