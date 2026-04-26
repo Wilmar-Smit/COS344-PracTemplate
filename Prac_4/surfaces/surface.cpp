@@ -27,6 +27,7 @@ Surface::Surface(const Surface &other)
     useColorTex = other.useColorTex;
     useDisplacementTex = other.useDisplacementTex;
     useAlphaTex = other.useAlphaTex;
+    useCenter = other.useCenter;
 }
 
 Vector<3> Surface::calculateNormal(
@@ -36,8 +37,9 @@ Vector<3> Surface::calculateNormal(
 {
     Vector<3> dir = (B - A).crossProduct(C - A);
     float mag = dir.magnitude();
-    if (mag < 1e-6f) {
-        return this->normal; 
+    if (mag < 1e-6f)
+    {
+        return this->normal;
     }
     this->normal = dir * (1.0f / mag);
     if (this->flipNormal)

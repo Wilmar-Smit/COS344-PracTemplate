@@ -57,7 +57,7 @@ complexSceneHolder *setupScene(Colour squareColor, Colour sphereColor, bool enab
 
     // 2. Sphere
     Sphere *sphere = new Sphere({0, 0, 0}, 1, sphereResolution, sphereResolution, sphereColor, 4);
-    sphere->setLightAffected(false);
+    sphere->setLightAffected(true);
 
     Vector<4> baseCol = SurfaceBuilder::buildColour(sphereColor);
     baseCol[3] = alphaValue;

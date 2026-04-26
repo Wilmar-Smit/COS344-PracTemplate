@@ -149,6 +149,8 @@ void Sphere::generateSides()
     topCap->setSurface(this->getSurface());
     allSides.push_back(topCap);
 
+    
+
     std::vector<Vector<3>> bottomSides = circlesBottom[circlesBottom.size() - 1]->getVectors();
     for (int i = 1; i < numSectors; i++)
     {
@@ -173,6 +175,7 @@ void Sphere::generateSides()
     bottomCap->setSurface(this->getSurface());
     bottomCap->getSurface().setFlipNormal(true);
     allSides.push_back(bottomCap);
+    
 }
 
 void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides, bool flipNormals)

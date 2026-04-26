@@ -28,6 +28,7 @@ private:
     bool useAlphaTex = false;
 
 public:
+    bool useCenter = true;
     Surface();
     Surface(const Surface &other);
 

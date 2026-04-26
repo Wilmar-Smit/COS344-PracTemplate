@@ -34,7 +34,10 @@ void DrawerVisitor::rebuildGpuBuffers()
         if (type != GL_LINES) // normal mode (filled, textured)
         {
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
-            vertices = shapes[i]->exportValues(&center);
+            if (shape->getSurface().useCenter)
+                vertices = shapes[i]->exportValues(&center);
+            else
+                vertices = shapes[i]->exportValues(nullptr);
             stride = VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH;
         }
         else // wireframe mode (no UVs, no Normals)
@@ -92,7 +95,12 @@ void DrawerVisitor::reloadVertices()
         {
             glBindBuffer(GL_ARRAY_BUFFER, VBO[i]);
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
-            float *vertices = shapes[i]->exportValues(&center);
+            float *vertices;
+            if (shape->getSurface().useCenter)
+                vertices = shapes[i]->exportValues(&center);
+            else
+                vertices = shapes[i]->exportValues(nullptr);
+
             glBufferSubData(GL_ARRAY_BUFFER, 0,
                             vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH) * sizeof(float),
                             vertices);
@@ -345,16 +353,20 @@ void DrawerVisitor::Visit(MultiFacedSurface *shape)
     this->type = GL_TRIANGLES;
     registerShape(shape);
     this->orientation = shape->getOrientation();
+    shape->getSurface().useCenter = false;
     rebuildGpuBuffers();
 }
 
 void DrawerVisitor::Visit(Sphere *sphere)
 {
+
     registerShape(sphere->centerCircle);
+
     for (int i = 0; i < sphere->allSides.size(); i++)
     {
         registerShape(sphere->allSides[i]);
     }
+
     rebuildGpuBuffers();
 }
 
