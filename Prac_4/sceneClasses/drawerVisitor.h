@@ -21,11 +21,12 @@ protected:
     std::vector<int> vertexCounts;
 
     std::vector<GLuint> VAO, VBO;
-    GLenum type = GL_TRIANGLE_FAN;
+    GLenum type = GL_TRIANGLES;
 
     static const int COLOR_DEPTH = 4;
     static const int VERTEX_DEPTH = 3;
     static const int UV_DEPTH = 2;
+    static const int NORMAL_DEPTH = 3;
 
 private:
     void collectChildShapes();

@@ -54,6 +54,7 @@ public:
     int getN() const;
     void identity();
     float determinant() const;
+    float *flatten() const;
 };
 
 template <int n, int m, int a>

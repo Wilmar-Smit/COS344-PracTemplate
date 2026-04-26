@@ -115,11 +115,9 @@ Surface Shape::buildSurfaceFromColour(Colour col)
 }
 float *Shape::exportValues()
 {
-   
-    
     int shapeSides = getNumPoints() / getN();
-    // +2 for UVs
-    int totalValues = shapeSides * (getN() + 4 + 2);
+    // +2 for UVs, +3 for Normals
+    int totalValues = shapeSides * (getN() + 4 + 2 + 3);
     float *retValues = new float[totalValues];
     float *ShapeCoords = getPoints();
     const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
@@ -139,6 +137,8 @@ float *Shape::exportValues()
     {
         litSurface.calculateNormal(points[0], points[1], points[2]);
     }
+
+    Vector<3> normal = litSurface.getNormal();
 
     std::vector<Vector<4>> pointColours;
     pointColours.reserve(points.size());
@@ -170,12 +170,20 @@ float *Shape::exportValues()
     {
         Vector<3> point = points[row];
         Vector<4> homogeneousPoint({point[0], point[1], point[2], 1.0f});
-        homogeneousPoint = cameraMatrix * ((Matrix<4, 1>)homogeneousPoint);
+        
+        if (!this->surface.isDisplacementTextureEnabled()) {
+            homogeneousPoint = cameraMatrix * ((Matrix<4, 1>)homogeneousPoint);
 
-        float w = homogeneousPoint[3];
-        for (int i = 0; i < getN(); i++)
-        {
-            retValues[offset++] = (w != 0.0f) ? (homogeneousPoint[i] / w) : homogeneousPoint[i];
+            float w = homogeneousPoint[3];
+            for (int i = 0; i < getN(); i++)
+            {
+                retValues[offset++] = (w != 0.0f) ? (homogeneousPoint[i] / w) : homogeneousPoint[i];
+            }
+        } else {
+            for (int i = 0; i < getN(); i++)
+            {
+                retValues[offset++] = homogeneousPoint[i];
+            }
         }
 
         for (int i = 0; i < 4; i++)
@@ -193,6 +201,11 @@ float *Shape::exportValues()
             retValues[offset++] = 0;
             retValues[offset++] = 0;
         }
+
+        // Add normal
+        retValues[offset++] = normal[0];
+        retValues[offset++] = normal[1];
+        retValues[offset++] = normal[2];
     }
 
     delete[] ShapeCoords;

@@ -3,6 +3,7 @@
 
 #include "3D_Shape.h"
 #include "2D_shapes/Square.h"
+
 class MultiFacedSurface : public _3DShape
 {
     friend class DrawerVisitor;
@@ -10,22 +11,17 @@ class MultiFacedSurface : public _3DShape
 private:
     float width = 0;
     float height = 0;
-    // used to change the number of squares in the shape initially 0
+    // used to change the number of segments in the shape initially 0
     int numSquaresPside = 0;
 
-    // builds the surface out of squares.
-    std::vector<Shape *> squares;
+    // builds the surface out of a vertex grid.
+    Square boundary;
+    std::vector<Vector<3>> grid;
     std::vector<Vector<2>> cachedUVs;
     Vector<3> center;
 
     void generateSides();
     void rebuildCachedUVs();
-    // the + will draw the center line squares  (if false will check if center == calcCenter)
-    void XLoopOdd(bool Sign); // true == + : false == -
-    void YLoopOdd(float X, bool Sign);
-
-    void XLoopEven(bool Sign); // true == + : false == -
-    void YLoopEven(float X, bool Sign);
 
 public:
     // center is constant,
@@ -61,13 +57,9 @@ public:
             this->numSquaresPside = n;
 
         generateSides();
-
-        Vector<3> orientStart = this->center;
-        Vector<3> orientEnd = this->center;
-        orientStart[0] += width;
-        orientEnd[0] -= width;
-       
     }
+
+    int getNSquaresPside() const { return numSquaresPside; }
 
 protected:
     virtual std::vector<Vector<2>> calculateUV() override;

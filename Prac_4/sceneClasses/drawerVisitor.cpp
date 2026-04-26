@@ -33,9 +33,9 @@ void DrawerVisitor::rebuildGpuBuffers()
         {
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             vertices = shapes[i]->exportValues();
-            stride = VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH;
+            stride = VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH;
         }
-        else // wireframe mode (no UVs)
+        else // wireframe mode (no UVs, no Normals)
         {
             vertexCounts[i] = shapes[i]->getWireframeVertexCount();
             vertices = shapes[i]->exportWireframe();
@@ -67,6 +67,12 @@ void DrawerVisitor::rebuildGpuBuffers()
                                   stride * sizeof(GLfloat),
                                   (const void *)((VERTEX_DEPTH + COLOR_DEPTH) * sizeof(GLfloat)));
             glEnableVertexAttribArray(2);
+
+            // Normal attribute
+            glVertexAttribPointer(3, NORMAL_DEPTH, GL_FLOAT, GL_FALSE,
+                                  stride * sizeof(GLfloat),
+                                  (const void *)((VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH) * sizeof(GLfloat)));
+            glEnableVertexAttribArray(3);
         }
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -85,7 +91,7 @@ void DrawerVisitor::reloadVertices()
             vertexCounts[i] = (shapes[i]->getNumPoints() / VERTEX_DEPTH);
             float *vertices = shapes[i]->exportValues();
             glBufferSubData(GL_ARRAY_BUFFER, 0,
-                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH) * sizeof(float),
+                            vertexCounts[i] * (VERTEX_DEPTH + COLOR_DEPTH + UV_DEPTH + NORMAL_DEPTH) * sizeof(float),
                             vertices);
             delete[] vertices;
             glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -263,10 +269,7 @@ void DrawerVisitor::setWireframeMode()
 
 void DrawerVisitor::setNormalMode()
 {
-    if (dynamic_cast<MultiFacedSurface *>(shape) != nullptr)
-        type = GL_TRIANGLE_FAN;
-    else
-        type = GL_TRIANGLE_FAN;
+    type = GL_TRIANGLES;
     rebuildGpuBuffers();
 }
 
@@ -336,7 +339,7 @@ void DrawerVisitor::Visit(_3DShape *shape)
 void DrawerVisitor::Visit(MultiFacedSurface *shape)
 {
     this->shapes.clear();
-    this->type = GL_TRIANGLE_FAN;
+    this->type = GL_TRIANGLES;
     registerShape(shape);
     this->orientation = shape->getOrientation();
     rebuildGpuBuffers();
@@ -400,6 +403,7 @@ void DrawerVisitor::draw()
     GLint useAlphaLoc = -1;
     GLint shapeCenterLoc = -1;
     GLint displaceTowardCenterLoc = -1;
+    GLint cameraMatrixLoc = -1;
 
     if (currentProgram != 0)
     {
@@ -412,6 +416,17 @@ void DrawerVisitor::draw()
         useAlphaLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "useAlpha");
         shapeCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "shapeCenter");
         displaceTowardCenterLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "displaceTowardCenter");
+        cameraMatrixLoc = glGetUniformLocation(static_cast<GLuint>(currentProgram), "cameraMatrix");
+    }
+
+    if (cameraMatrixLoc >= 0)
+    {
+        const Matrix<4, 4> &cameraMatrix = Camera::getInstance().getMatrix();
+        float *flatMatrix = cameraMatrix.flatten();
+        // OpenGL expects column-major by default. If your matrix is row-major, set GL_TRUE.
+        // Based on multiplyHelper, it looks like standard row-major indexing.
+        glUniformMatrix4fv(cameraMatrixLoc, 1, GL_TRUE, flatMatrix);
+        delete[] flatMatrix;
     }
 
     for (size_t i = 0; i < shapes.size(); i++)
@@ -475,21 +490,7 @@ void DrawerVisitor::draw()
         }
 
         glBindVertexArray(VAO[i]);
-        MultiFacedSurface *multi = dynamic_cast<MultiFacedSurface *>(shapes[i]);
-        if (multi != nullptr && type == GL_TRIANGLE_FAN)
-        {
-            // Draw each square as its own 4-vertex fan, matching old per-square behavior.
-            const int vertsPerSquare = 4;
-            const int squareCount = static_cast<int>(multi->squares.size());
-            for (int s = 0; s < squareCount; s++)
-            {
-                glDrawArrays(GL_TRIANGLE_FAN, s * vertsPerSquare, vertsPerSquare);
-            }
-        }
-        else
-        {
-            glDrawArrays(type, 0, vertexCounts[i]);
-        }
+        glDrawArrays(type, 0, vertexCounts[i]);
         glBindVertexArray(0);
 
         // Unbind textures

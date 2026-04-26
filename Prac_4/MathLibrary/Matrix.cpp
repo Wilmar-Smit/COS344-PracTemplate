@@ -258,3 +258,16 @@ void Matrix<n, m>::identity()
         }
     }
 }
+template <int n, int m>
+float *Matrix<n, m>::flatten() const
+{
+    float *ret = new float[n * m];
+    for (int i = 0; i < n; i++)
+    {
+        for (int j = 0; j < m; j++)
+        {
+            ret[i * m + j] = arr[i][j];
+        }
+    }
+    return ret;
+}

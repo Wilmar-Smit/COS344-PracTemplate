@@ -147,7 +147,7 @@ int main()
     DrawerVisitor dwr2(multLeft);
     dwr2.RotateX(360);
 
-    Sphere *sphere = new Sphere({0, 0, 0}, 0.5, 5, 5, Colour::Red);
+    Sphere *sphere = new Sphere({0, 0, 0}, 0.5, 5, 5, Colour::Red,4);
 
     // Load color texture
     GLuint sphereTex = loadTexture("textures/ColTex.png");

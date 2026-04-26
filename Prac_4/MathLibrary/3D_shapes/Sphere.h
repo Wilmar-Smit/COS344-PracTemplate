@@ -18,6 +18,7 @@ private:
     int stacks;
     float radius;
     float DeltaY;
+    const int numSquaresPerSurface;
     std::vector<Shape *> allSides;
     std::vector<Shape *> circlesTop;
     std::vector<Shape *> circlesBottom;
@@ -38,7 +39,7 @@ private:
     }
 
 public:
-    Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colour col);
+    Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colour col, int numSquaresPerSurface = 1);
     Sphere(const Sphere &other);
     virtual Vector<3> getCenter() override;
     virtual void getBorders(Vector<3> &min, Vector<3> &max) override;
