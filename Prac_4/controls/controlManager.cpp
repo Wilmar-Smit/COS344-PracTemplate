@@ -22,6 +22,9 @@ void ControlManager::rotateZ() { scene->RotateZ(rotationDegrees); }
 
 void ControlManager::processInput()
 {
+    static bool nineWasDown = false;
+    static bool zeroWasDown = false;
+
     // Rotations
     if (keyHeldDown(window, GLFW_KEY_W))
     {
@@ -109,6 +112,26 @@ void ControlManager::processInput()
             this->scene->reloadVertices();
         }
     }
+
+    bool nineIsDown = keyHeldDown(window, GLFW_KEY_9);
+    bool zeroIsDown = keyHeldDown(window, GLFW_KEY_0);
+
+    if (nineIsDown && !nineWasDown)
+    {
+        GlobalLights::getInstance().cycleLightColours(true);
+        if (this->scene)
+            this->scene->reloadVertices();
+    }
+
+    if (zeroIsDown && !zeroWasDown)
+    {
+        GlobalLights::getInstance().cycleLightColours(false);
+        if (this->scene)
+            this->scene->reloadVertices();
+    }
+
+    nineWasDown = nineIsDown;
+    zeroWasDown = zeroIsDown;
 
     // Rotor speed control
     if (keyHeldDown(window, GLFW_KEY_KP_ADD))

@@ -17,6 +17,7 @@ private:
 
     Vector<3> normal;
     bool affectedByLight = false;
+    bool flipNormal = false;
 
     GLuint colorTexID = 0;
     GLuint displacementTexID = 0;
@@ -55,6 +56,8 @@ public:
     void setSpecularK(float k) { specularK = k; }
     void setShininess(float s) { shininess = s; }
     void setAffectedLight(bool val) { this->affectedByLight = val; }
+    void setFlipNormal(bool val) { this->flipNormal = val; }
+    bool getFlipNormal() const { return this->flipNormal; }
 
     void setColorTexture(GLuint tex)
     {

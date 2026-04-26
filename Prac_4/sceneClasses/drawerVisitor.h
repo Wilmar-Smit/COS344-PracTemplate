@@ -29,7 +29,7 @@ protected:
     static const int NORMAL_DEPTH = 3;
 
 private:
-    void collectChildShapes();
+
     void rebuildGpuBuffers();
 
 public:

@@ -27,7 +27,7 @@ private:
     Circle *centerCircle;
     void generateSides();
 
-    void addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides);
+    void addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides, bool flipNormals = false);
 
     float radY(float y)
     {

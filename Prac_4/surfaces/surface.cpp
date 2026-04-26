@@ -19,6 +19,7 @@ Surface::Surface(const Surface &other)
     this->specularK = other.specularK;
     this->normal = other.normal;
     this->affectedByLight = other.affectedByLight;
+    this->flipNormal = other.flipNormal;
 
     colorTexID = other.colorTexID;
     displacementTexID = other.displacementTexID;
@@ -34,7 +35,13 @@ Vector<3> Surface::calculateNormal(
     const Vector<3> &C)
 {
     Vector<3> dir = (B - A).crossProduct(C - A);
-    this->normal = (dir.unitVector());
+    float mag = dir.magnitude();
+    if (mag < 1e-6f) {
+        return this->normal; 
+    }
+    this->normal = dir * (1.0f / mag);
+    if (this->flipNormal)
+        this->normal = this->normal * -1.0f;
     return this->normal;
 }
 
@@ -45,15 +52,24 @@ Vector<3> Surface::calculateNormal(
     const Vector<3> &center)
 {
     Vector<3> dir = (B - A).crossProduct(C - A);
-    Vector<3> unitNormal = dir.unitVector();
-
-    // Ensure normal points away from center
-    Vector<3> toPoint = A - center;
-    if (toPoint * unitNormal < 0)
+    float mag = dir.magnitude();
+    if (mag < 1e-6f)
     {
-        unitNormal = unitNormal * -1.0f;
+        return this->normal;
     }
 
-    this->normal = unitNormal;
+    Vector<3> n = dir * (1.0f / mag);
+    Vector<3> faceCenter = (A + B + C) * (1.0f / 3.0f);
+    Vector<3> outward = faceCenter - center;
+
+    if (outward.magnitude() > 1e-6f && (n * outward) < 0.0f)
+    {
+        n = n * -1.0f;
+    }
+
+    if (this->flipNormal)
+        n = n * -1.0f;
+
+    this->normal = n;
     return this->normal;
 }

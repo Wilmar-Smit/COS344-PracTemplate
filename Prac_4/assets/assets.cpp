@@ -44,21 +44,23 @@ complexSceneHolder *setupScene(Colour squareColor, Colour sphereColor, bool enab
 {
     complexSceneHolder *scene = new complexSceneHolder();
 
+    // 1. Bottom Square
     MultiFacedSurface *mult = new MultiFacedSurface({0, 0, 0}, 3, 3, squareResolution, squareColor);
     mult->setLightAffected(true);
-    OrientationObject *obj = mult->getOrientation();
-    scene->SetMyOrientation(obj);
 
     DrawerVisitor *squareDwr = new DrawerVisitor(mult);
-    squareDwr->RotateX(70);
+    squareDwr->RotateX(90);
     squareDwr->Translation(Direction::down, 1);
+    scene->SetMyOrientation( squareDwr->getMyOrientation());
 
     scene->addScene(squareDwr);
 
+    // 2. Sphere
     Sphere *sphere = new Sphere({0, 0, 0}, 1, sphereResolution, sphereResolution, sphereColor, 4);
-    sphere->setLightAffected(true);
+    sphere->setLightAffected(false);
+
     Vector<4> baseCol = SurfaceBuilder::buildColour(sphereColor);
-    baseCol[3] = alphaValue; // Always set alpha for use in shader
+    baseCol[3] = alphaValue;
 
     if (enableAlpha)
     {
@@ -96,7 +98,6 @@ complexSceneHolder *setupScene(Colour squareColor, Colour sphereColor, bool enab
     }
 
     DrawerVisitor *sphereDwr = new DrawerVisitor(sphere);
-    sphereDwr->SetMyOrientation(obj);
     scene->addScene(sphereDwr);
 
     return scene;

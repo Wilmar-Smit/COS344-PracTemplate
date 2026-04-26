@@ -29,7 +29,7 @@ public:
     virtual int getNumPoints() const override { return 0; }
     virtual int getNumSides() const override { return 0; }
     virtual void print() const override {}
-    virtual float *exportValues(Vector<3> *) override { return Shape::exportValues(); }
+    virtual float *exportValues(Vector<3> *center) override { return Shape::exportValues(center); }
     virtual Vector<3> getCenter() = 0;
     virtual std::vector<Vector<3>> getVectors() override { return {}; }
     virtual void setVectors(std::vector<Vector<3>>) override {}

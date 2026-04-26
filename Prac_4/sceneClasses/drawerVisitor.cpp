@@ -394,6 +394,8 @@ DrawerVisitor::~DrawerVisitor()
 }
 void DrawerVisitor::draw()
 {
+    Vector<3> canonicalShapeCenter = this->shape->getCenter();
+
     GLint currentProgram = 0;
     glGetIntegerv(GL_CURRENT_PROGRAM, &currentProgram);
 
@@ -439,12 +441,13 @@ void DrawerVisitor::draw()
         const Surface &surface = shapes[i]->getSurface();
         if (shapeCenterLoc >= 0)
         {
-            Vector<3> center = shapes[i]->getCenter();
-            glUniform3f(shapeCenterLoc, center[0], center[1], center[2]);
+            glUniform3f(shapeCenterLoc,
+                        canonicalShapeCenter[0],
+                        canonicalShapeCenter[1],
+                        canonicalShapeCenter[2]);
         }
         if (displaceTowardCenterLoc >= 0)
         {
-            // Set true for inward displacement, false for outward displacement.
             glUniform1i(displaceTowardCenterLoc, 0);
         }
         const bool useTexture =

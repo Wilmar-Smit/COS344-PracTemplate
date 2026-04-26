@@ -22,6 +22,14 @@ void PointLight::setPosition(Vector<3> pos)
     this->sphere = new Sphere(pos, 0.05, 10, 5, this->colEnum);
 }
 
+void PointLight::setColour(Colour col)
+{
+    this->colEnum = col;
+    this->colour = SurfaceBuilder::buildColour(col);
+    // Ownership of the previous sphere was handled by the DrawerVisitor.
+    this->sphere = new Sphere(this->position, 0.05, 10, 5, this->colEnum);
+}
+
 // Calculate illumination at collision point X for a given surface
 Vector<4> PointLight::calculateIlluminations(Vector<3> X, Surface surface)
 {

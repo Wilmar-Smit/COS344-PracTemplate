@@ -10,11 +10,9 @@ Sphere::Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colou
     this->stacks = std::max(2, stacks);
     this->numSectors = std::max(3, numSectors);
 
-    // Keep quads closer to square by ensuring enough horizontal slices for the
-    // chosen vertical stack count. This increases side density around the sphere.
     this->numSectors = std::max(this->numSectors, this->stacks * 4);
 
-    this->centerCircle = new Circle(centerVec, rad, this->numSectors, col);
+    this->centerCircle = new Circle(centerVec, rad, this->numSectors, Colour::Invisible);
 
     Vector<3> topVec = centerVec;
     topVec[2] += rad;
@@ -27,17 +25,16 @@ Sphere::Sphere(Vector<3> centerVec, float rad, int numSectors, int stacks, Colou
     this->allSides.push_back(bottomCenter);
     DeltaY = radius / stacks;
     this->orientation = new OrientationObject(new Vector<3>(this->topCenter->getCenter()), new Vector<3>(bottomCenter->getCenter()));
-    generateSides();
-}
 
-Sphere::Sphere(const Sphere &other)
-    : _3DShape(Colour::White), numSquaresPerSurface(other.numSquaresPerSurface)
-{
-    this->setSurface(other.getSurface());
+    generateSides();
 }
 
 void Sphere::generateSides()
 {
+    circlesTop.clear();
+    circlesBottom.clear();
+    allSides.clear();
+
     for (int i = 0; i < stacks; i++)
     {
         float heightUp = yk(i);
@@ -46,9 +43,9 @@ void Sphere::generateSides()
         tempCen[2] += heightUp;
         Circle *tempCircle = new Circle(tempCen, tempRad, numSectors, Colour::Invisible);
         tempCircle->setSurface(this->getSurface());
-
         circlesTop.push_back(tempCircle);
     }
+
     for (int i = 0; i < stacks; i++)
     {
         float heightDown = -yk(i);
@@ -70,7 +67,7 @@ void Sphere::generateSides()
 
         std::vector<Vector<3>> baseSides = circlesTop[i]->getVectors();
         std::vector<Vector<3>> topSides = circlesTop[nextCircle]->getVectors();
-        addSides(baseSides, topSides);
+        addSides(baseSides, topSides, false);
     }
 
     for (int i = 0; i < stacks; i++)
@@ -83,7 +80,7 @@ void Sphere::generateSides()
 
         std::vector<Vector<3>> baseSides = circlesBottom[i]->getVectors();
         std::vector<Vector<3>> topSides = circlesBottom[nextCircle]->getVectors();
-        addSides(baseSides, topSides);
+        addSides(baseSides, topSides, true);
     }
 
     for (int i = 0; i < stacks; i++)
@@ -106,6 +103,7 @@ void Sphere::generateSides()
         square->setSurface(this->getSurface());
         allSides.push_back(square);
     }
+
     for (int i = 0; i < stacks; i++)
     {
         int nextCircle = 0;
@@ -124,8 +122,10 @@ void Sphere::generateSides()
 
         MultiFacedSurface *square = new MultiFacedSurface(bottomCurrent, topCurrent, topNext, bottomNext, numSquaresPerSurface, Colour::White);
         square->setSurface(this->getSurface());
+        square->getSurface().setFlipNormal(true);
         allSides.push_back(square);
     }
+
     std::vector<Vector<3>> topSides = circlesTop[circlesTop.size() - 1]->getVectors();
     for (int i = 1; i < numSectors; i++)
     {
@@ -142,6 +142,7 @@ void Sphere::generateSides()
         triangle->setSurface(this->getSurface());
         allSides.push_back(triangle);
     }
+
     Vector<3> bottomCurrent = topSides[1];
     Vector<3> bottomNext = topSides[topSides.size() - 2];
     Triangle *topCap = new Triangle(bottomCurrent, bottomNext, topCenter->getCenter(), Colour::White);
@@ -162,16 +163,19 @@ void Sphere::generateSides()
 
         Triangle *triangle = new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), Colour::White);
         triangle->setSurface(this->getSurface());
+        triangle->getSurface().setFlipNormal(true);
         allSides.push_back(triangle);
     }
+
     bottomCurrent = bottomSides[1];
-    bottomNext = bottomSides[topSides.size() - 2];
+    bottomNext = bottomSides[bottomSides.size() - 2];
     Triangle *bottomCap = new Triangle(bottomCurrent, bottomNext, bottomCenter->getCenter(), Colour::White);
     bottomCap->setSurface(this->getSurface());
+    bottomCap->getSurface().setFlipNormal(true);
     allSides.push_back(bottomCap);
 }
 
-void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides)
+void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> topSides, bool flipNormals)
 {
     for (int j = 1; j < numSectors; j++)
     {
@@ -188,21 +192,40 @@ void Sphere::addSides(std::vector<Vector<3>> baseSides, std::vector<Vector<3>> t
 
         MultiFacedSurface *square = new MultiFacedSurface(bottomCurrent, topCurrent, topNext, bottomNext, numSquaresPerSurface, Colour::White);
         square->setSurface(this->getSurface());
+        if (flipNormals)
+            square->getSurface().setFlipNormal(true);
         allSides.push_back(square);
     }
 }
 
+
 Vector<3> Sphere::getCenter()
 {
-    return centerCircle->getCenter();
+    if (topCenter != nullptr && bottomCenter != nullptr)
+    {
+        Vector<3> top = topCenter->getCenter();
+        Vector<3> bottom = bottomCenter->getCenter();
+        return Vector<3>({
+            (top[0] + bottom[0]) * 0.5f,
+            (top[1] + bottom[1]) * 0.5f,
+            (top[2] + bottom[2]) * 0.5f
+        });
+    }
+
+    if (centerCircle != nullptr)
+        return centerCircle->getCenter();
+
+    return Vector<3>({0.0f, 0.0f, 0.0f});
 }
 
 void Sphere::getBorders(Vector<3> &min, Vector<3> &max)
 {
-    Vector<3> center = centerCircle->getCenter();
+    Vector<3> center = getCenter();
     min = Vector<3>({center[0] - radius, center[1] - radius, center[2] - radius});
     max = Vector<3>({center[0] + radius, center[1] + radius, center[2] + radius});
 }
+
+
 
 void Sphere::acceptVisitor(DrawerVisitor *vis)
 {

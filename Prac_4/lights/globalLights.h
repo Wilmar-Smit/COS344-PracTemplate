@@ -8,6 +8,39 @@
 class GlobalLights
 {
 private:
+    static Colour cycleColour(Colour current, bool forward)
+    {
+        static const Colour palette[] = {
+            Colour::Red,
+            Colour::Green,
+            Colour::Blue,
+            Colour::Yellow,
+            Colour::Cyan,
+            Colour::Magenta,
+            Colour::Orange,
+            Colour::Purple,
+            Colour::White,
+        };
+
+        const int paletteSize = static_cast<int>(sizeof(palette) / sizeof(palette[0]));
+        int index = 0;
+        for (int i = 0; i < paletteSize; i++)
+        {
+            if (palette[i] == current)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (forward)
+            index = (index + 1) % paletteSize;
+        else
+            index = (index - 1 + paletteSize) % paletteSize;
+
+        return palette[index];
+    }
+
     GlobalLights() = default;
     ~GlobalLights()
     {
@@ -57,6 +90,16 @@ public:
     const std::vector<DrawerVisitor *> &getVisitors() const
     {
         return visitors;
+    }
+
+    void cycleLightColours(bool forward)
+    {
+        for (size_t i = 0; i < lights.size(); i++)
+        {
+            Colour next = cycleColour(lights[i]->getColourEnum(), forward);
+            lights[i]->setColour(next);
+            replaceVisitor(i, new DrawerVisitor(lights[i]->getShape()));
+        }
     }
 
     void clear()

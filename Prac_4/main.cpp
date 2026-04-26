@@ -137,28 +137,33 @@ int main()
 
     // Initial scene setup parameters
     Colour squareCol = Colour::Chrome;
-    Colour sphereCol = Colour::Red;
-    bool texEnabled = true;
-    bool dispEnabled = true;
+    Colour sphereCol = Colour::Chrome;
+    bool texEnabled = false;
+
+    bool dispEnabled = false;
     bool alphaTexEnabled = false;
     float alphaValue = 1.0f;
     int squareRes = 1;
-    int sphereRes = 5;
+    int sphereRes = 3;
 
-    complexSceneHolder* mainScene = nullptr;
+    complexSceneHolder *mainScene = nullptr;
 
-    auto resetScene = [&]() {
-        if (mainScene) delete mainScene;
+    auto resetScene = [&]()
+    {
+        if (mainScene)
+            delete mainScene;
         mainScene = setupScene(squareCol, sphereCol, texEnabled, dispEnabled, alphaTexEnabled, alphaValue, squareRes, sphereRes);
     };
 
-    auto nextColour = [](Colour current) {
+    auto nextColour = [](Colour current)
+    {
         int val = static_cast<int>(current);
-        val = (val + 1) % 19; 
+        val = (val + 1) % 19;
         return static_cast<Colour>(val);
     };
 
-    auto prevColour = [](Colour current) {
+    auto prevColour = [](Colour current)
+    {
         int val = static_cast<int>(current);
         val = (val - 1 + 19) % 19;
         return static_cast<Colour>(val);
@@ -173,7 +178,7 @@ int main()
     bool mPressed = false;
     bool plusPressed = false;
     bool minusPressed = false;
-    bool k1=false, k2=false, k3=false, k4=false, k5=false, k6=false, k7=false, k8=false;
+    bool k1 = false, k2 = false, k3 = false, k4 = false, k5 = false, k6 = false, k7 = false, k8 = false;
 
     do
     {
@@ -199,54 +204,64 @@ int main()
         mainScene->draw();
 
         // Draw lights from GlobalLights managed visitors
-        for (auto* visitor : GlobalLights::getInstance().getVisitors())
+        for (auto *visitor : GlobalLights::getInstance().getVisitors())
         {
             visitor->draw();
         }
 
         if (keyPressedOnce(window, GLFW_KEY_SPACE, spacePressed))
         {
-            squareRes++;
             resetScene();
             controls.setScene(mainScene);
         }
 
-        if (keyPressedOnce(window, GLFW_KEY_1, k1)) {
+        if (keyPressedOnce(window, GLFW_KEY_1, k1))
+        {
             squareRes++;
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_2, k2)) {
-            if (squareRes > 1) squareRes--;
+        if (keyPressedOnce(window, GLFW_KEY_2, k2))
+        {
+            if (squareRes > 1)
+                squareRes--;
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_3, k3)) {
+        if (keyPressedOnce(window, GLFW_KEY_3, k3))
+        {
             sphereRes++;
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_4, k4)) {
-            if (sphereRes > 3) sphereRes--;
+        if (keyPressedOnce(window, GLFW_KEY_4, k4))
+        {
+            if (sphereRes > 1)
+                sphereRes--;
+
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_5, k5)) {
+        if (keyPressedOnce(window, GLFW_KEY_5, k5))
+        {
             squareCol = nextColour(squareCol);
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_6, k6)) {
+        if (keyPressedOnce(window, GLFW_KEY_6, k6))
+        {
             squareCol = prevColour(squareCol);
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_7, k7)) {
+        if (keyPressedOnce(window, GLFW_KEY_7, k7))
+        {
             sphereCol = nextColour(sphereCol);
             resetScene();
             controls.setScene(mainScene);
         }
-        if (keyPressedOnce(window, GLFW_KEY_8, k8)) {
+        if (keyPressedOnce(window, GLFW_KEY_8, k8))
+        {
             sphereCol = prevColour(sphereCol);
             resetScene();
             controls.setScene(mainScene);

@@ -17,6 +17,8 @@ public:
     virtual Vector<4> calculateIlluminations(Vector<3> X, Surface Surface) = 0;
     virtual Vector<3> getPosition() = 0;
     virtual void setPosition(Vector<3> pos) = 0;
+    virtual void setColour(Colour col) = 0;
+    virtual Colour getColourEnum() const { return this->colEnum; }
     virtual Vector<4> getColour() { return this->colour; };
     virtual Sphere *getShape() = 0;
 };
