@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <iostream>
 
-#include <glad/glad.h>
+#include "include/glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include "shader.hpp"
@@ -301,7 +301,6 @@ int main()
             resetScene();
             controls.setScene(mainScene);
         }
-
         glfwSwapBuffers(window);
     } while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
              !glfwWindowShouldClose(window));

@@ -45,13 +45,9 @@ public:
 
     virtual void print() const
     {
-        std::cout << "_ P1 _ " << std::endl;
         tl.print();
-        std::cout << "_ P2 _ " << std::endl;
         tr.print();
-        std::cout << "_ P3 _ " << std::endl;
         br.print();
-        std::cout << "_ P4 _ " << std::endl;
         bl.print();
     }
 };

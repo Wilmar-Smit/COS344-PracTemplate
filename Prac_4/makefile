@@ -93,3 +93,7 @@ run r: $(PROJECT_NAME)
 
 valgrind v: $(TEST_NAME)
 	valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes ./$(TEST_NAME)
+
+bear: 
+	$(MAKE) clean
+	bear -- make

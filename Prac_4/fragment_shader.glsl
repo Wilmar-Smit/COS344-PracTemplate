@@ -29,12 +29,9 @@ void main()
     // Apply alpha texture requirements
     if (useAlpha)
     {
-        // Sample the alpha map (assuming red channel contains the mask)
-        // 0.0 = Dimple, 1.0 = Regular surface
+        
+      
         float mask = texture(alphaTex, TexCoord).r;
-
-        // When enabled: dimples (mask near 0) are transparent (alphaValue), 
-        // regular surface (mask near 1) is fully opaque (1.0).
         finalColor.a = mix(alphaValue, 1.0, mask);
     }
     else

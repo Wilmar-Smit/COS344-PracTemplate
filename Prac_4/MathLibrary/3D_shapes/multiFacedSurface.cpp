@@ -2,6 +2,7 @@
 #include "../../sceneClasses/drawerVisitor.h"
 #include "../../camera/camera.h"
 
+// Bilinear interpolation across a quad defined by tl, tr, br, bl
 Vector<3> bilerpQuad(const Vector<3> &tl, const Vector<3> &tr,
                      const Vector<3> &br, const Vector<3> &bl,
                      float u, float v)
@@ -9,12 +10,24 @@ Vector<3> bilerpQuad(const Vector<3> &tl, const Vector<3> &tr,
     Vector<3> p;
     for (int i = 0; i < 3; i++)
     {
-        p[i] = tl[i] * ((1.0f - u) * v) +
-               tr[i] * (u * v) +
-               bl[i] * ((1.0f - u) * (1.0f - v)) +
-               br[i] * (u * (1.0f - v));
+        // Each corner contributes with a weight based on (u,v):
+        // (1-u)(1-v) → bottom-left
+        // u(1-v)     → bottom-right
+        // (1-u)v     → top-left
+        // uv         → top-right   
+        p[i] = tl[i] * ((1.0f - u) * v) +     // top-left contribution
+               tr[i] * (u * v) +              // top-right contribution
+               bl[i] * ((1.0f - u) * (1.0f - v)) + // bottom-left contribution
+               br[i] * (u * (1.0f - v));      // bottom-right contribution
     }
     return p;
+}
+
+
+static void addVertex(float *arr, int &offset, const Vector<3> &v)
+{
+    for (int k = 0; k < 3; k++)
+        arr[offset++] = v[k];
 }
 
 float *MultiFacedSurface::getPoints() const
@@ -28,31 +41,23 @@ float *MultiFacedSurface::getPoints() const
     {
         for (int i = 0; i < N; i++)
         {
-            int i_tl = j * (N + 1) + i;
-            int i_tr = j * (N + 1) + (i + 1);
-            int i_br = (j + 1) * (N + 1) + (i + 1);
-            int i_bl = (j + 1) * (N + 1) + i;
+            int rowStart = j * (N + 1);
+            int nextRowStart = (j + 1) * (N + 1);
 
-            const Vector<3> &v_tl = grid[i_tl];
-            const Vector<3> &v_tr = grid[i_tr];
-            const Vector<3> &v_br = grid[i_br];
-            const Vector<3> &v_bl = grid[i_bl];
+            const Vector<3> &v_tl = grid[rowStart + i];
+            const Vector<3> &v_tr = grid[rowStart + i + 1];
+            const Vector<3> &v_bl = grid[nextRowStart + i];
+            const Vector<3> &v_br = grid[nextRowStart + i + 1];
 
             // Triangle 1: tl, tr, br
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_tl[k];
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_tr[k];
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_br[k];
+            addVertex(arr, offset, v_tl);
+            addVertex(arr, offset, v_tr);
+            addVertex(arr, offset, v_br);
 
             // Triangle 2: tl, br, bl
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_tl[k];
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_br[k];
-            for (int k = 0; k < 3; k++)
-                arr[offset++] = v_bl[k];
+            addVertex(arr, offset, v_tl);
+            addVertex(arr, offset, v_br);
+            addVertex(arr, offset, v_bl);
         }
     }
     return arr;
@@ -163,12 +168,12 @@ void MultiFacedSurface::rebuildCachedUVs()
             float v0 = 1.0f - (float)j / N;
             float v1 = 1.0f - (float)(j + 1) / N;
 
-            // Triangle 1: tl, tr, br
+        
             cachedUVs.push_back(Vector<2>({u0, v0}));
             cachedUVs.push_back(Vector<2>({u1, v0}));
             cachedUVs.push_back(Vector<2>({u1, v1}));
 
-            // Triangle 2: tl, br, bl
+       
             cachedUVs.push_back(Vector<2>({u0, v0}));
             cachedUVs.push_back(Vector<2>({u1, v1}));
             cachedUVs.push_back(Vector<2>({u0, v1}));

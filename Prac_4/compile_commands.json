@@ -1,0 +1,344 @@
+[
+  {
+    "file": "main.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "main.cpp",
+      "-o",
+      "main.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "main.o"
+  },
+  {
+    "file": "assets/assets.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "assets/assets.cpp",
+      "-o",
+      "assets/assets.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "assets/assets.o"
+  },
+  {
+    "file": "shader.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "shader.cpp",
+      "-o",
+      "shader.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "shader.o"
+  },
+  {
+    "file": "glad.c",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "glad.c",
+      "-o",
+      "glad.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "glad.o"
+  },
+  {
+    "file": "camera/camera.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "camera/camera.cpp",
+      "-o",
+      "camera/camera.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "camera/camera.o"
+  },
+  {
+    "file": "controls/controlManager.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "controls/controlManager.cpp",
+      "-o",
+      "controls/controlManager.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "controls/controlManager.o"
+  },
+  {
+    "file": "surfaces/surfaceBuilder.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "surfaces/surfaceBuilder.cpp",
+      "-o",
+      "surfaces/surfaceBuilder.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "surfaces/surfaceBuilder.o"
+  },
+  {
+    "file": "surfaces/surface.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "surfaces/surface.cpp",
+      "-o",
+      "surfaces/surface.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "surfaces/surface.o"
+  },
+  {
+    "file": "lights/pointLight.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "lights/pointLight.cpp",
+      "-o",
+      "lights/pointLight.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "lights/pointLight.o"
+  },
+  {
+    "file": "MathLibrary/LibraryTesting.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/LibraryTesting.cpp",
+      "-o",
+      "MathLibrary/LibraryTesting.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/LibraryTesting.o"
+  },
+  {
+    "file": "MathLibrary/2D_shapes/shape.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/2D_shapes/shape.cpp",
+      "-o",
+      "MathLibrary/2D_shapes/shape.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/2D_shapes/shape.o"
+  },
+  {
+    "file": "MathLibrary/2D_shapes/Triangle.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/2D_shapes/Triangle.cpp",
+      "-o",
+      "MathLibrary/2D_shapes/Triangle.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/2D_shapes/Triangle.o"
+  },
+  {
+    "file": "MathLibrary/2D_shapes/Square.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/2D_shapes/Square.cpp",
+      "-o",
+      "MathLibrary/2D_shapes/Square.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/2D_shapes/Square.o"
+  },
+  {
+    "file": "MathLibrary/2D_shapes/circle.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/2D_shapes/circle.cpp",
+      "-o",
+      "MathLibrary/2D_shapes/circle.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/2D_shapes/circle.o"
+  },
+  {
+    "file": "MathLibrary/3D_shapes/Cuboid.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/3D_shapes/Cuboid.cpp",
+      "-o",
+      "MathLibrary/3D_shapes/Cuboid.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/3D_shapes/Cuboid.o"
+  },
+  {
+    "file": "MathLibrary/3D_shapes/multiFacedSurface.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/3D_shapes/multiFacedSurface.cpp",
+      "-o",
+      "MathLibrary/3D_shapes/multiFacedSurface.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/3D_shapes/multiFacedSurface.o"
+  },
+  {
+    "file": "MathLibrary/3D_shapes/Sphere.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "MathLibrary/3D_shapes/Sphere.cpp",
+      "-o",
+      "MathLibrary/3D_shapes/Sphere.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "MathLibrary/3D_shapes/Sphere.o"
+  },
+  {
+    "file": "sceneClasses/drawerVisitor.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "sceneClasses/drawerVisitor.cpp",
+      "-o",
+      "sceneClasses/drawerVisitor.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "sceneClasses/drawerVisitor.o"
+  },
+  {
+    "file": "sceneClasses/complexSceneHolder.cpp",
+    "arguments": [
+      "/usr/bin/g++",
+      "-g",
+      "-I./include",
+      "-I./MathLibrary",
+      "-I./include/glad",
+      "-I./include/KHR",
+      "-Iglfw_local/install/include",
+      "-c",
+      "sceneClasses/complexSceneHolder.cpp",
+      "-o",
+      "sceneClasses/complexSceneHolder.o"
+    ],
+    "directory": "/home/smiwil/Documents/COS344/COS344-Pracs/Prac_4",
+    "output": "sceneClasses/complexSceneHolder.o"
+  }
+]

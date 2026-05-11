@@ -23,7 +23,6 @@ public:
     virtual _3DShape *operator*(const Matrix<3, 3> &) const override { return nullptr; }
     virtual float *getPoints() const override
     {
-        std::cout << "I ran 3d SHape" << std::endl;
         return nullptr;
     }
     virtual int getNumPoints() const override { return 0; }
